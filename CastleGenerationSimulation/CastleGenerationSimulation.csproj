@@ -3,14 +3,17 @@
     <PropertyGroup>
         <Nullable>enable</Nullable>
         <TargetFrameworks>net8.0;netstandard2.1</TargetFrameworks>
-        <UnityPluginsDir>..\..\CastleGeneration\Assets\Plugins</UnityPluginsDir>
+        <UnityPluginsDir>..\CastleGeneration\Assets\Plugins</UnityPluginsDir>
     </PropertyGroup>
 
-    <Target Name="CopyToUnityPlugins" AfterTargets="Build" Condition="'$(TargetFramework)' == 'netstandard2.1'">
-        <Copy 
+    <Target Name="CopyToUnityPlugins" AfterTargets="AfterBuild" Condition="'$(TargetFramework)' == 'netstandard2.1'">
+        <Message Text=">>> Copying Simulation.dll for Unity..." Importance="high" />
+        <Message Text="UnityPluginsDir=$(UnityPluginsDir)" Importance="high" />
+        <Message Text="OutputPath=$(OutputPath)" Importance="high" />
+        <Copy
             SourceFiles="$(OutputPath)$(AssemblyName).dll"
             DestinationFolder="$(UnityPluginsDir)"
-            SkipUnchangedFiles="false" 
+            SkipUnchangedFiles="false"
         />
     </Target>
     
