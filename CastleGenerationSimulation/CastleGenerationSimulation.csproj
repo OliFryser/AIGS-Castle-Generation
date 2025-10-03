@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <Nullable>enable</Nullable>
+        <TargetFrameworks>net8.0;netstandard2.1</TargetFrameworks>
+        <UnityPluginsDir>..\..\CastleGeneration\Assets\Plugins</UnityPluginsDir>
+    </PropertyGroup>
+
+    <Target Name="CopyToUnityPlugins" AfterTargets="Build" Condition="'$(TargetFramework)' == 'netstandard2.1'">
+        <Copy 
+            SourceFiles="$(OutputPath)$(AssemblyName).dll"
+            DestinationFolder="$(UnityPluginsDir)"
+            SkipUnchangedFiles="false" 
+        />
+    </Target>
+    
+</Project>
