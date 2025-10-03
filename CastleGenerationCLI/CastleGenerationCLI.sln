@@ -5,7 +5,7 @@ VisualStudioVersion = 17.14.36301.6 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CastleGenerationCLI", "CastleGenerationCLI\CastleGenerationCLI.csproj", "{398F6675-BBBA-43A7-97DE-87628B31F60C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CastleGenerationSimulation", "CastleGenerationSimulation\CastleGenerationSimulation.csproj", "{96FB25E2-9F36-47BF-8FBC-2BD81280E13E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CastleGenerationSimulation", "..\CastleGenerationSimulation\CastleGenerationSimulation.csproj", "{96FB25E2-9F36-47BF-8FBC-2BD81280E13E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
