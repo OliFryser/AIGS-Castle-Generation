@@ -1,0 +1,12 @@
+D:\source\AIGS\AIGS-Castle-Generation\CastleGenerationCLI\CastleGenerationSimulation\bin\Debug\net8.0\CastleGenerationSimulation.deps.json
+D:\source\AIGS\AIGS-Castle-Generation\CastleGenerationCLI\CastleGenerationSimulation\bin\Debug\net8.0\CastleGenerationSimulation.dll
+D:\source\AIGS\AIGS-Castle-Generation\CastleGenerationCLI\CastleGenerationSimulation\bin\Debug\net8.0\CastleGenerationSimulation.pdb
+D:\source\AIGS\AIGS-Castle-Generation\CastleGenerationCLI\CastleGenerationSimulation\obj\Debug\net8.0\CastleGenerationSimulation.GeneratedMSBuildEditorConfig.editorconfig
+D:\source\AIGS\AIGS-Castle-Generation\CastleGenerationCLI\CastleGenerationSimulation\obj\Debug\net8.0\CastleGenerationSimulation.AssemblyInfoInputs.cache
+D:\source\AIGS\AIGS-Castle-Generation\CastleGenerationCLI\CastleGenerationSimulation\obj\Debug\net8.0\CastleGenerationSimulation.AssemblyInfo.cs
+D:\source\AIGS\AIGS-Castle-Generation\CastleGenerationCLI\CastleGenerationSimulation\obj\Debug\net8.0\CastleGenerationSimulation.csproj.CoreCompileInputs.cache
+D:\source\AIGS\AIGS-Castle-Generation\CastleGenerationCLI\CastleGenerationSimulation\obj\Debug\net8.0\CastleGenerationSimulation.sourcelink.json
+D:\source\AIGS\AIGS-Castle-Generation\CastleGenerationCLI\CastleGenerationSimulation\obj\Debug\net8.0\CastleGenerationSimulation.dll
+D:\source\AIGS\AIGS-Castle-Generation\CastleGenerationCLI\CastleGenerationSimulation\obj\Debug\net8.0\refint\CastleGenerationSimulation.dll
+D:\source\AIGS\AIGS-Castle-Generation\CastleGenerationCLI\CastleGenerationSimulation\obj\Debug\net8.0\CastleGenerationSimulation.pdb
+D:\source\AIGS\AIGS-Castle-Generation\CastleGenerationCLI\CastleGenerationSimulation\obj\Debug\net8.0\ref\CastleGenerationSimulation.dll

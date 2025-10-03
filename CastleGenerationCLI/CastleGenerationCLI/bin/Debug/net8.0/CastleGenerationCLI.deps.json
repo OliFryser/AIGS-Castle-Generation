@@ -1,0 +1,39 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "CastleGenerationCLI/1.0.0": {
+        "dependencies": {
+          "CastleGenerationSimulation": "1.0.0"
+        },
+        "runtime": {
+          "CastleGenerationCLI.dll": {}
+        }
+      },
+      "CastleGenerationSimulation/1.0.0": {
+        "runtime": {
+          "CastleGenerationSimulation.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "CastleGenerationCLI/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "CastleGenerationSimulation/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
