@@ -1,7 +1,3 @@
-from dataclasses import dataclass
-
-
-@dataclass
 class InitializationParameters:
-    width: int
-    height: int
+    def __init__(self, cfg):
+        self.levelFilepath: str = cfg.levelFilepath

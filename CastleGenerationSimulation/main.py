@@ -2,17 +2,21 @@ import pygame
 import sys
 import mlxp
 
+from InitializationParameters import InitializationParameters
+from Simulation import Simulation
 from Level import Level
 
-#this is fast and dirty first lvl renderer
-def chaosDisplay(lvl, screen, backgroundColor):
+
+# this is fast and dirty first lvl renderer
+def chaosDisplay(level: Level, screen, backgroundColor):
     cell_size = 10
 
-    for r in range(len(lvl)):
-        for c in range(len(lvl[0])):
-            color = backgroundColor[0], lvl[r,c], backgroundColor[2]
+    for r in range(level.height):
+        for c in range(level.width):
+            color = backgroundColor[0], level.level[r, c], backgroundColor[2]
             rect = pygame.Rect(c * cell_size, r * cell_size, cell_size, cell_size)
             pygame.draw.rect(screen, color, rect)
+
 
 @mlxp.launch(config_path="./conf")
 def main(ctx: mlxp.Context) -> None:
@@ -25,9 +29,8 @@ def main(ctx: mlxp.Context) -> None:
     pygame.display.set_caption("Fortify Simulation")
 
     cfg = ctx.config
-
-    lvl = Level().getLevel()
-    print()
+    initParams = InitializationParameters(cfg)
+    simulation = Simulation(initParams)
 
     # Define a grass-green color (R, G, B)
     backgroundColor = (
@@ -36,7 +39,7 @@ def main(ctx: mlxp.Context) -> None:
         cfg.backgroundColor.b,
     )
 
-# Main loop
+    # Main loop
     running = True
     while running:
         for event in pygame.event.get():
@@ -46,8 +49,8 @@ def main(ctx: mlxp.Context) -> None:
         # Fill the background with green
         screen.fill(backgroundColor)
 
-        chaosDisplay(lvl,screen,backgroundColor)
-        #swap buffer
+        chaosDisplay(simulation.level, screen, backgroundColor)
+        # swap buffer
         pygame.display.flip()
 
     # Quit pygame cleanly

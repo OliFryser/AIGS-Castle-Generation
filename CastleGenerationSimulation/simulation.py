@@ -1,9 +1,10 @@
-from initializationParameters import InitializationParameters
+from Level import Level
+from InitializationParameters import InitializationParameters
 
 
 class Simulation:
     def __init__(self, initParams: InitializationParameters):
-        pass
+        self.level = Level(initParams.levelFilepath)
 
     def step(self):
         pass
