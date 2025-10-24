@@ -1,4 +1,5 @@
 import pygame
+
 class Renderer:
     def __init__(self, simulation, screen):
         self.simulation = simulation
@@ -18,6 +19,8 @@ class Renderer:
         self.screen.fill(backgroundColor)
 
         self.chaosDisplay(self.simulation.level, self.screen, backgroundColor)
+        for unit in self.simulation.units:
+            self.chaosUnitRender(unit)
         # swap buffer
         pygame.display.flip()
 
@@ -31,4 +34,7 @@ class Renderer:
                 color = backgroundColor[0], level.level[r, c], backgroundColor[2]
                 rect = pygame.Rect(c * cell_size, r * cell_size, cell_size, cell_size)
                 pygame.draw.rect(screen, color, rect)
+
+    def chaosUnitRender(self, unit):
+        pygame.draw.circle(self.screen, (255,255,255), (unit.position[0], unit.position[1]),5)
 
