@@ -36,5 +36,6 @@ class Renderer:
                 pygame.draw.rect(screen, color, rect)
 
     def chaosUnitRender(self, unit):
-        pygame.draw.circle(self.screen, (255,255,255), (unit.position[0], unit.position[1]),5)
+        pygame.draw.circle(self.screen, (0,0,0), (unit.position[0], unit.position[1]),7)
+        pygame.draw.circle(self.screen, (0,0,255), (unit.position[0], unit.position[1]),5)
 
