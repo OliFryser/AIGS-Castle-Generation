@@ -1,30 +1,43 @@
 import pygame
 import sys
+import mlxp
 
-print("Hello world")
-# Initialize pygame
-pygame.init()
 
-# Window size
-WIDTH, HEIGHT = 800, 600
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Fortify Simulation")
+@mlxp.launch(config_path="./conf")
+def main(ctx: mlxp.Context) -> None:
+    # Initialize pygame
+    pygame.init()
+    print(ctx.config.test)
+    # Window size
+    WIDTH, HEIGHT = 800, 600
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    pygame.display.set_caption("Fortify Simulation")
 
-# Define a grass-green color (R, G, B)
-GREEN = (34, 139, 34)
+    cfg = ctx.config
 
-# Main loop
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+    # Define a grass-green color (R, G, B)
+    backgroundColor = (
+        cfg.backgroundColor.r,
+        cfg.backgroundColor.g,
+        cfg.backgroundColor.b,
+    )
 
-    # Fill the background with green
-    screen.fill(GREEN)
+    # Main loop
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
 
-    pygame.display.flip()
+        # Fill the background with green
+        screen.fill(backgroundColor)
 
-# Quit pygame cleanly
-pygame.quit()
-sys.exit()
+        pygame.display.flip()
+
+    # Quit pygame cleanly
+    pygame.quit()
+    sys.exit()
+
+
+if __name__ == "__main__":
+    main()
