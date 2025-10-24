@@ -5,4 +5,4 @@ backgroundColor:
     g: 139
     b: 34
 
-levelFilepath: "megasejtlevel.txt"
+levelFilepath: "resources/levels/testlevel.txt"
