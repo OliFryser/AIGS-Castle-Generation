@@ -11,17 +11,19 @@ from Renderer import Renderer
 def main(ctx: mlxp.Context) -> None:
     # Initialize pygame
     pygame.init()
-    print(ctx.config.test)
     # Window size
-    WIDTH, HEIGHT = 800, 600
-    screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Fortify Simulation")
 
     cfg = ctx.config
     initParams = InitializationParameters(cfg)
     simulation = Simulation(initParams)
-    
-    renderer = Renderer(simulation, screen)
+
+    resolution: int = cfg.resolution
+    viewportWidth = resolution * simulation.level.width
+    viewportHeight = resolution * simulation.level.height
+    screen = pygame.display.set_mode((viewportWidth, viewportHeight))
+
+    renderer = Renderer(simulation, screen, resolution)
     # Main loop
     running = True
     while running:
@@ -31,7 +33,6 @@ def main(ctx: mlxp.Context) -> None:
         simulation.step()
         if cfg.render:
             renderer.render()
-            
 
     # Quit pygame cleanly
     pygame.quit()
