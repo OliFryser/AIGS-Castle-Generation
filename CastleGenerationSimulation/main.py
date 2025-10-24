@@ -2,6 +2,18 @@ import pygame
 import sys
 import mlxp
 
+from Level import Level
+
+def chaosDisplay(lvl, screen):
+    cell_size = 8
+
+    for r in range(len(lvl)):
+        for c in range(len(lvl[0])):
+            lvl
+            color = lvl[r][c],lvl[r][c],lvl[r][c]
+            rect = pygame.Rect(c * cell_size, r * cell_size, cell_size, cell_size)
+            pygame.draw.rect(screen, color, rect)
+            
 
 @mlxp.launch(config_path="./conf")
 def main(ctx: mlxp.Context) -> None:
@@ -15,6 +27,9 @@ def main(ctx: mlxp.Context) -> None:
 
     cfg = ctx.config
 
+    lvl = Level().getLevel()
+    print()
+
     # Define a grass-green color (R, G, B)
     backgroundColor = (
         cfg.backgroundColor.r,
@@ -22,7 +37,7 @@ def main(ctx: mlxp.Context) -> None:
         cfg.backgroundColor.b,
     )
 
-    # Main loop
+# Main loop
     running = True
     while running:
         for event in pygame.event.get():
@@ -32,6 +47,8 @@ def main(ctx: mlxp.Context) -> None:
         # Fill the background with green
         screen.fill(backgroundColor)
 
+        chaosDisplay(lvl,screen)
+        #swap buffer
         pygame.display.flip()
 
     # Quit pygame cleanly
