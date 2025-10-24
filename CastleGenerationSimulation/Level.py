@@ -6,7 +6,7 @@ class Level:
         self.createLevel()
 
     def createLevel(self):
-        self.level = np.zeros((self.height,self.width))
+        self.level = np.random.randint(0,256,(self.height,self.width))
 
     def getLevel(self):
         return self.level

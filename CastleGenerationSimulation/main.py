@@ -4,16 +4,15 @@ import mlxp
 
 from Level import Level
 
-def chaosDisplay(lvl, screen):
-    cell_size = 8
+#this is fast and dirty first lvl renderer
+def chaosDisplay(lvl, screen, backgroundColor):
+    cell_size = 10
 
     for r in range(len(lvl)):
         for c in range(len(lvl[0])):
-            lvl
-            color = lvl[r][c],lvl[r][c],lvl[r][c]
+            color = backgroundColor[0], lvl[r,c], backgroundColor[2]
             rect = pygame.Rect(c * cell_size, r * cell_size, cell_size, cell_size)
             pygame.draw.rect(screen, color, rect)
-            
 
 @mlxp.launch(config_path="./conf")
 def main(ctx: mlxp.Context) -> None:
@@ -47,7 +46,7 @@ def main(ctx: mlxp.Context) -> None:
         # Fill the background with green
         screen.fill(backgroundColor)
 
-        chaosDisplay(lvl,screen)
+        chaosDisplay(lvl,screen,backgroundColor)
         #swap buffer
         pygame.display.flip()
 
