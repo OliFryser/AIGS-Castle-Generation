@@ -22,7 +22,7 @@ def main():
         line = f"{width} {height} {max_height}"
         f.write(line + "\n")
         for _ in range(height):
-            line = " ".join(str(random.randint(0, max_height)) for _ in range(width))
+            line = " ".join(str(random.randint(0, 2)) for _ in range(width))
             f.write(line + "\n")
 
     print(

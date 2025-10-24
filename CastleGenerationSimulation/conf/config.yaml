@@ -7,4 +7,4 @@ backgroundColor:
 
 render: True
 
-levelFilepath: "resources/levels/testlevel.txt"
+levelFilepath: "resources/levels/darklevel.txt"
