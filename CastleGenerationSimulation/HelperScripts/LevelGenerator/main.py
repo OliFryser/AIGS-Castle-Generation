@@ -1,35 +1,29 @@
-import sys
+import mlxp
+
 from RandomLevelGenerator import RandomLevelGenerator
 from PerlinLevelGenerator import PerlinLevelGenerator
 
 
-def main():
-    if len(sys.argv) != 5:
-        print(
-            "Usage: python generate_numbers.py <width> <height> <max_height> <output_file>"
-        )
-        sys.exit(1)
-
-    try:
-        width = int(sys.argv[1])
-        height = int(sys.argv[2])
-        max_height = int(sys.argv[3])
-        output_file = sys.argv[4]
-    except ValueError:
-        print("width, height and max_height must be integers.")
-        sys.exit(1)
-
-    # generator = RandomLevelGenerator(max_height)
-    generator = PerlinLevelGenerator(50.0, max_height)
-    with open(output_file, "w") as f:
-        line = f"{width} {height} {max_height}"
+@mlxp.launch(config_path="LevelGenerationConfig")
+def main(ctx: mlxp.Context):
+    cfg = ctx.config
+    width = cfg.width
+    height = cfg.height
+    maxHeight = cfg.maxHeight
+    outputFile = cfg.outputFile
+    if cfg.generator == "random":
+        generator = RandomLevelGenerator(maxHeight)
+    else:
+        generator = PerlinLevelGenerator(cfg.perlinScale, maxHeight)
+    with open(outputFile, "w") as f:
+        line = f"{width} {height} {maxHeight}"
         f.write(line + "\n")
         for y in range(height):
             line = " ".join(str(generator.getHeight(x, y)) for x in range(width))
             f.write(line + "\n")
 
     print(
-        f"File '{output_file}' generated with {height} lines and {width} numbers per line."
+        f"File '{outputFile}' generated with {height} lines and {width} numbers per line."
     )
 
 

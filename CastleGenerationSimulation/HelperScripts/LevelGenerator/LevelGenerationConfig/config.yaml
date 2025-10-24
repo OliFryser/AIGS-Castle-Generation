@@ -1,0 +1,6 @@
+width: 80
+height: 60
+maxHeight: 1000
+outputFile: "resources/levels/perlinTest.txt"
+generator: "perlin" # Possible generators - random, perlin
+perlinScale: 20.0
