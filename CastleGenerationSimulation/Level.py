@@ -12,7 +12,7 @@ class Level:
             ]
             self.level = np.zeros((self.height, self.width))
             for y in range(self.height):
-                line = [int(num) for num in f.readline().rstrip().split()]
+                line = [float(num) for num in f.readline().rstrip().split()]
                 for x in range(self.width):
                     self.level[y][x] = line[x]
 
@@ -20,4 +20,4 @@ class Level:
         return self.level
 
     def getCell(self, x, y):
-        return self.level[y][x]
+        return float(self.level[y][x])

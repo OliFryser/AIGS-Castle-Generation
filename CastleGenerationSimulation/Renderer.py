@@ -34,7 +34,7 @@ class Renderer:
             for c in range(level.width):
                 color = (
                     backgroundColor[0],
-                    int((level.getCell(c, r) / level.max_height) * 255),
+                    round((level.getCell(c, r) / level.max_height) * 255),
                     backgroundColor[2],
                 )
                 rect = pygame.Rect(c * cell_size, r * cell_size, cell_size, cell_size)

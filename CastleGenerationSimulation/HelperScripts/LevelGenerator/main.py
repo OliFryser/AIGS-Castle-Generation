@@ -1,5 +1,6 @@
-import random
 import sys
+from RandomLevelGenerator import RandomLevelGenerator
+from PerlinLevelGenerator import PerlinLevelGenerator
 
 
 def main():
@@ -18,11 +19,13 @@ def main():
         print("width, height and max_height must be integers.")
         sys.exit(1)
 
+    # generator = RandomLevelGenerator(max_height)
+    generator = PerlinLevelGenerator(50.0, max_height)
     with open(output_file, "w") as f:
         line = f"{width} {height} {max_height}"
         f.write(line + "\n")
-        for _ in range(height):
-            line = " ".join(str(random.randint(0, max_height)) for _ in range(width))
+        for y in range(height):
+            line = " ".join(str(generator.getHeight(x, y)) for x in range(width))
             f.write(line + "\n")
 
     print(
