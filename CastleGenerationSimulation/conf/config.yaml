@@ -6,3 +6,5 @@ backgroundColor:
     b: 34
 
 levelFilepath: "megasejtlevel.txt"
+
+render: True
