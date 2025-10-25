@@ -26,14 +26,18 @@ def main(ctx: mlxp.Context) -> None:
     renderer = Renderer(simulation, screen, resolution)
     # Main loop
     running = True
+    i = 0
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-        simulation.step()
+        if not simulation.step():
+
+            running = False
         if cfg.render:
             renderer.render()
-
+        i+=1
+    print(i)
     # Quit pygame cleanly
     pygame.quit()
     sys.exit()
