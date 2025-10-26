@@ -46,12 +46,14 @@ class FSM:
 
     #These two on exit and on enter conditions are mostly meant for debugging
     def onExitPrint(self, result = ""):
+        for n in range(result.count("\n")):
+            result = result + "  "
         if self.currentState is not None:
             if isinstance(self.currentState, State):
                 result = result + f"exiting {self.currentState}"
                 print(result)
             else:
-                result = result + f"exiting sub fsm: {self.currentState}, \n    "
+                result = result + f"exiting sub fsm: {self.currentState}, \n"
                 self.currentState.onEnterPrint(result)
 
     def onEnterPrint(self, result = ""):
