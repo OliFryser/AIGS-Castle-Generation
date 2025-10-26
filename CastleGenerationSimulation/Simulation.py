@@ -7,16 +7,20 @@ class Simulation:
     def __init__(self, initParams: InitializationParameters):
         self.level = Level(initParams.levelFilepath)
         unit = Unit(self.level,(40,40,40))
+        unit0 = Unit(self.level,(10,10,50))
+        unit1 = Unit(self.level,(30,20,10))
         unit2 = Unit(self.level,(60,60,60))
         unit.target = unit2.position
-        self.units = [unit, unit2]
+        unit0.target = unit2.position
+        unit1.target = unit2.position
+        self.units = [unit, unit0, unit1, unit2]
 
     def step(self):
+        i = 0
         for unit in self.units:
-            if unit.position[0] < 1:
-                print("exit")
-                return False
             if not unit.step():
+                i+= 1                
+            if i > 2:
                 return False
         return True
         

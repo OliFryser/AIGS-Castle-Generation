@@ -2,10 +2,11 @@ import numpy as np
 from pygame import Vector3
 from Level import Level
 from queue import PriorityQueue
-
+from FSM import FSM
+from FSM import State
 
 class Unit:
-    def __init__(self, level: Level, position: Vector3 = Vector3 (10,0,10), health: int = 100, speed: float = 0.5, size = 0.5):
+    def __init__(self, level: Level, position: Vector3 = Vector3 (10,0,10), health: int = 100, speed: float = 0.2, size = 0.5):
         self.health = health
         self.speed = speed
         self.size = size
@@ -13,22 +14,65 @@ class Unit:
         self.position = Vector3(position[0], position[1],self.getBilinearHeight(position[0],position[1]))
         self.path = []
         self.target = None
-        # TODO: Init finite state machine
-        # this might be put down to the individual sub classes
+        self.initFSM()
+
+        # TODO: clean up, move code
 
     def step(self):
-        if self.target is not None:
-            if self.position.distance_to(self.target) > 0.5:
-                if self.path == []:
-                    self.path = self.aStar(self.target, self.moveHeuristic)
-                    if len(self.path)>1:
-                        self.path = self.smoothPath(self.path)
-                self.move((self.path[0] - self.position).normalize())
-                if self.position.distance_to(self.path[0]) <= 0.2:
-                    self.path.pop(0)
-            else:
-                return False
+        self.fsm.updateState()
+        state = self.fsm.getState()
+        if state in self.stateMap:
+            self.stateMap[state]()
         return True
+    
+    #yeah I think this might need to go, set target should probably be something else
+    def setTarget(self,x,y):
+        self.target = Vector3(x,y, self.level.getCell(x,y))
+
+    #making a finite state machine. This should be overwritten by subclasses
+    def initFSM(self):
+        self.fsm = FSM()
+
+        subFSM = FSM()
+        subFSM.addTransition(State.STOP, self.outOfReach, State.STOP)
+        subFSM.setState(State.STOP, subFSM.onExitPrint)
+        
+        self.fsm.addTransition(State.MOVETO, self.closeEnough, subFSM, self.fsm.onEnterPrint, self.fsm.onExitPrint)
+        self.fsm.addTransition(subFSM, self.outOfReach, State.MOVETO, self.fsm.onEnterPrint, self.fsm.onExitPrint)
+        
+        self.fsm.setState(State.MOVETO, self.fsm.onExitPrint)
+        
+        self.stateMap = {
+            State.MOVETO: self.goToTarget,
+            State.STOP: self.wait
+        }
+
+
+    ######################
+    # Transitions
+    ######################
+    def closeEnough(self):
+        return self.target is not None and self.position.distance_to(self.target) < self.size
+        
+    def outOfReach(self):
+        return self.target is not None and self.position.distance_to(self.target) > self.size
+
+    ######################
+    # Actions
+    ######################
+
+    def wait(self):
+        print("waiting")
+
+    def goToTarget(self):
+        if self.target is not None:
+            if self.path == []:
+                self.path = self.aStar(self.target, self.moveHeuristic)
+                if len(self.path)>1:
+                    self.path = self.smoothPath(self.path)
+            self.move((self.path[0] - self.position).normalize())
+            if self.position.distance_to(self.path[0]) <= self.size:
+                self.path.pop(0)
 
     def move(self, direction: Vector3):
         #project new position in 2d-space
@@ -47,9 +91,9 @@ class Unit:
             newPosition[2] = self.getBilinearHeight(newPosition[0],newPosition[1])
             self.position = newPosition
 
-    #yeah I think this might need to go set target should be something else
-    def setTarget(self,x,y):
-        self.target = Vector3(x,y, self.level.getCell(x,y))
+    #######################
+    # These are all candidates for going to util, and perhaps one in level
+
     #this is a candidate for going to util, could be used for interpolationg between points for smoothing rendering of terrain
     def getBilinearHeight(self, x:float, y:float) -> float:
         x0 = int(np.floor(x))
@@ -74,7 +118,7 @@ class Unit:
             self.level.getCell(x1,y1) * tx * ty
         )
 
-    #
+    #angle percentage calculation
     def slopeAnglePercentage(self, h0, h1):
         dh = h0 - h1
         return 1 /(self.speed / np.sqrt(self.speed*self.speed + dh*dh))
@@ -124,14 +168,6 @@ class Unit:
                 cost = heuristic(cNode, nNode)
 
                 new_distance = distances[cNode] + cost
-                """
-                if neighbor not in distances or new_distance < distances[neighbor]:
-                    distances[neighbor] = new_distance
-                    #the predicted total is where the heuristic is applied
-                    predicted_total = new_distance + heuristic(nNode, end_node)
-                    incomming_nodes[neighbor] = current_node
-                    open_nodes.put((predicted_total, np.random.rand(), neighbor))
-                """
 
                 if nNode not in distances or new_distance < distances[nNode]:
                     distances[nNode] = new_distance
@@ -165,7 +201,8 @@ class Unit:
             return euclidDist * euclidDist
         return euclidDist
 
-    def getImmediateNeighbors(self, x,y,xMax = 1000,yMax = 1000):
+    #This should probably be in level
+    def getImmediateNeighbors(self, x,y):
         x0 = int(np.floor(x))
         y0 = int(np.floor(y))
         x1 = x0 + 1
@@ -177,7 +214,7 @@ class Unit:
             (x1,y1)
             ]
     
-    def smoothPath(self, path, angleTolerance = 15):
+    def smoothPath(self, path, angleTolerance = 55):
         currentPos = self.position
         tmpPath = [path[0],path[1]]
         for n in range(len(path) -1 ):
