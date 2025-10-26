@@ -33,10 +33,15 @@ class Unit:
     def initFSM(self):
         self.fsm = FSM()
 
-        subFSM = FSM()
-        subFSM.addTransition(State.STOP, self.outOfReach, State.STOP)
-        subFSM.setState(State.STOP, subFSM.onExitPrint)
+        subsubFSM = FSM()
+
+        subsubFSM.addTransition(State.STOP, self.outOfReach, State.STOP)
+        subsubFSM.setState(State.STOP, subsubFSM.onExitPrint)
         
+        subFSM = FSM()
+        subFSM.addTransition(subsubFSM, self.outOfReach, subsubFSM)
+        subFSM.setState(subsubFSM, subFSM.onExitPrint)
+
         self.fsm.addTransition(State.MOVETO, self.closeEnough, subFSM, self.fsm.onEnterPrint, self.fsm.onExitPrint)
         self.fsm.addTransition(subFSM, self.outOfReach, State.MOVETO, self.fsm.onEnterPrint, self.fsm.onExitPrint)
         
@@ -62,7 +67,8 @@ class Unit:
     ######################
 
     def wait(self):
-        print("waiting")
+        pass
+        #print("waiting")
 
     def goToTarget(self):
         if self.target is not None:

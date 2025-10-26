@@ -55,10 +55,12 @@ class FSM:
                 self.currentState.onEnterPrint(result)
 
     def onEnterPrint(self, result = ""):
+        for n in range(result.count("\n")):
+            result = result + "  "
         if self.currentState is not None:
             if isinstance(self.currentState, State):
                 result = result + f"entering {self.currentState}"
                 print(result)
             else:
-                result = result + f"entering sub fsm: {self.currentState}, \n    "
+                result = result + f"entering sub fsm: {self.currentState}, \n"
                 self.currentState.onEnterPrint(result)
