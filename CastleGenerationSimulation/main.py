@@ -24,10 +24,12 @@ def main(ctx: mlxp.Context) -> None:
     screen = pygame.display.set_mode((viewportWidth, viewportHeight))
 
     renderer = Renderer(simulation, screen, resolution)
-    # Main loop
+
     running = True
+    simulationStarted = False
     mouseButtonHeld = False
 
+    # Main loop
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -39,10 +41,16 @@ def main(ctx: mlxp.Context) -> None:
             elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 mouseButtonHeld = False
 
-        if mouseButtonHeld:
+            elif event.type == pygame.KEYDOWN:
+                # process key events
+                if event.key == pygame.K_SPACE:
+                    simulationStarted = True
+
+        if mouseButtonHeld and not simulationStarted:
             drawWall(simulation, resolution, 2)
 
-        simulation.step()
+        if simulationStarted:
+            simulation.step()
 
         if cfg.render:
             renderer.render()

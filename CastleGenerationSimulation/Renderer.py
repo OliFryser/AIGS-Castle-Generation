@@ -1,4 +1,5 @@
 import pygame
+from Target import Target
 from Level import Level
 
 
@@ -15,6 +16,7 @@ class Renderer:
         self.chaosDisplay(self.simulation.level, self.screen)
         for unit in self.simulation.units:
             self.chaosUnitRender(unit)
+        self.renderTarget(self.simulation.target)
         # swap buffer
         pygame.display.flip()
 
@@ -38,4 +40,12 @@ class Renderer:
         )
         pygame.draw.circle(
             self.screen, (0, 0, 255), (unit.position[0], unit.position[1]), 5
+        )
+
+    def renderTarget(self, target: Target):
+        pygame.draw.circle(
+            self.screen, (0, 0, 0), (target.position[0], target.position[1]), 7
+        )
+        pygame.draw.circle(
+            self.screen, (252, 188, 27), (target.position[0], target.position[1]), 5
         )
