@@ -1,6 +1,6 @@
 width: 100
 height: 100
-maxHeight: 1000
-outputFile: "resources/levels/perlinTest.txt"
+maxHeight: 10
+outputFile: "resources/levels/perlinMap.txt"
 generator: "perlin" # Possible generators - random, perlin
 perlinScale: 20.0
