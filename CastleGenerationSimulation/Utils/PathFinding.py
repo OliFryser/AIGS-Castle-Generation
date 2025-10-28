@@ -2,59 +2,100 @@ from pygame import Vector3
 from queue import PriorityQueue
 import numpy as np
 
-def aStar(startPosition, endPosition, level, heuristic):
-    start_node = (startPosition[0], startPosition[1], startPosition[2])
-    immediateNeighbors = level.getImmediateNeighbors(start_node[0],start_node[1])
-    targetNeihbors = level.getImmediateNeighbors(endPosition[0],endPosition[1])
-    #distances is for storing the shortest distance to node
-    distances = {start_node : 0.}
-    
-    open_nodes = PriorityQueue()
-    #counter is for tie-breaking distances random
-    open_nodes.put((heuristic(Vector3(start_node), Vector3(endPosition)), np.random.rand(), start_node))
+from Level import Level
 
-    #incomming nodes is for storing the shortest path between nodes
+
+def aStar(startPosition: Vector3, endPosition: Vector3, level: Level, heuristic):
+    start_node: tuple[float, float, float] = (
+        startPosition[0],
+        startPosition[1],
+        startPosition[2],
+    )
+    immediateNeighbors: list[tuple[int, int]] = level.getImmediateNeighbors(
+        start_node[0], start_node[2]
+    )
+    targetNeighbors: list[tuple[int, int]] = level.getImmediateNeighbors(
+        endPosition[0], endPosition[2]
+    )
+    # distances is for storing the shortest distance to node
+    distances: dict[tuple[float, float, float], float] = {start_node: 0.0}
+
+    open_nodes = PriorityQueue()
+    # counter is for tie-breaking distances random
+    open_nodes.put(
+        (
+            heuristic(Vector3(start_node), Vector3(endPosition)),
+            np.random.rand(),
+            start_node,
+        )
+    )
+
+    # incomming nodes is for storing the shortest path between nodes
     incomming_nodes = {}
 
     neighbors = immediateNeighbors
     while open_nodes.not_empty:
-        #we only really need the next node
-        _,r, current_node = open_nodes.get()
-        #if the next node is the target node the path has been set
-        if current_node in targetNeihbors: #current_node == endPosition:
-            #bestTargetNode = current_node
-            #backtrak to reconstruct path
+        # we only really need the next node
+        _, r, current_node = open_nodes.get()
+        # if the next node is the target node the path has been set
+        if current_node in targetNeighbors:  # current_node == endPosition:
+            # bestTargetNode = current_node
+            # backtrak to reconstruct path
             path = []
             while current_node not in immediateNeighbors:
-                path.insert(0, Vector3(current_node[0],current_node[1], level.getCell(current_node[0], current_node[1])))
+                path.insert(
+                    0,
+                    Vector3(
+                        current_node[0] + 0.5,
+                        level.getCell(current_node[0], current_node[1]),
+                        current_node[1] + 0.5,
+                    ),
+                )
                 current_node = incomming_nodes[current_node]
-            #printNodesList(path)
-            path.insert(0, Vector3(current_node[0],current_node[1], level.getCell(current_node[0], current_node[1])))
+            path.insert(
+                0,
+                Vector3(
+                    current_node[0] + 0.5,
+                    level.getCell(current_node[0], current_node[1]),
+                    current_node[1] + 0.5,
+                ),
+            )
             return path
+
         if current_node == start_node:
             neighbors = immediateNeighbors
         else:
             neighbors = level.getNeighbors(current_node[0], current_node[1])
         for neighbor in neighbors:
-            
-            #the cost is the distance from the current_node to the neighbour
+            # the cost is the distance from the current_node to the neighbour
             if current_node == start_node:
                 cNode = start_node
             else:
-                cNode = (current_node[0], current_node[1], level.getCell(current_node[0], current_node[1]))
-            nNode = (neighbor[0], neighbor[1], level.getCell(neighbor[0], neighbor[1]))
-            cost = heuristic(Vector3(cNode), Vector3(nNode))
+                cNode = (
+                    current_node[0],
+                    level.getCell(current_node[0], current_node[1]),
+                    current_node[1],
+                )
+            neighborNode = (
+                neighbor[0],
+                level.getCell(neighbor[0], neighbor[1]),
+                neighbor[1],
+            )
+            cost = heuristic(Vector3(cNode), Vector3(neighborNode))
 
             new_distance = distances[cNode] + cost
 
-            if nNode not in distances or new_distance < distances[nNode]:
-                distances[nNode] = new_distance
-                #the predicted total is where the heuristic is applied
-                predicted_total = new_distance + heuristic(Vector3(nNode), Vector3(endPosition))
+            if neighborNode not in distances or new_distance < distances[neighborNode]:
+                distances[neighborNode] = new_distance
+                # the predicted total is where the heuristic is applied
+                predicted_total = new_distance + heuristic(
+                    Vector3(neighborNode), Vector3(endPosition)
+                )
                 incomming_nodes[neighbor] = current_node
                 open_nodes.put((predicted_total, np.random.rand(), neighbor))
-        
+
     return []
+
 
 """
 def smoothPath(self, path, angleTolerance = 12):
@@ -74,30 +115,7 @@ def smoothPath(self, path, angleTolerance = 12):
     return tmpPath
 """
 
-def slopeAnglePercentage(d, h0, h1):
-    dh = h0 - h1
-    return 1 /(d / np.sqrt(d*d + dh*dh))
 
-def getBilinearHeight(x:float, y:float, level) -> float:
-    x0 = int(np.floor(x))
-    y0 = int(np.floor(y))
-    x1 = x0 + 1
-    y1 = y0 + 1
-
-    #edge guard
-    max_y, max_x = level.height, level.width
-    x0 = np.clip(x0, 0, max_x - 1)
-    x1 = np.clip(x1, 0, max_x - 1)
-    y0 = np.clip(y0, 0, max_y - 1)
-    y1 = np.clip(y1, 0, max_y - 1)
-
-    tx = x - x0
-    ty = y - y0
-
-    return (
-        level.getCell(x0,y0)* (1 - tx) * (1 - ty) +
-        level.getCell(x1,y0) * tx * (1 - ty) +
-        level.getCell(x0,y1) * (1 - tx) * ty +
-        level.getCell(x1,y1) * tx * ty
-    )
-
+def slopeAnglePercentage(distance: float, height0: float, height1: float) -> float:
+    deltaHeight = height0 - height1
+    return distance / np.sqrt(distance * distance + deltaHeight * deltaHeight)
