@@ -24,9 +24,13 @@ class Renderer:
 
         for r in range(level.height):
             for c in range(level.width):
-                heightColor = round((level.getCell(c, r) / level.max_height) * 255)
+                height = level.getCell(c, r)
+                if height <= level.max_height:
+                    color = (34, round((height / level.max_height) * 255), 34)
+                else:
+                    color = (148, 148, 148)
                 rect = pygame.Rect(c * cell_size, r * cell_size, cell_size, cell_size)
-                pygame.draw.rect(screen, (34, heightColor, 34), rect)
+                pygame.draw.rect(screen, color, rect)
 
     def chaosUnitRender(self, unit):
         pygame.draw.circle(

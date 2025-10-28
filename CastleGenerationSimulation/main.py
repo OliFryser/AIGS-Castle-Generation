@@ -26,17 +26,54 @@ def main(ctx: mlxp.Context) -> None:
     renderer = Renderer(simulation, screen, resolution)
     # Main loop
     running = True
+    mouseButtonHeld = False
+
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                mouseButtonHeld = True
+
+            elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+                mouseButtonHeld = False
+
+        if mouseButtonHeld:
+            drawWall(simulation, resolution, 2)
+
         simulation.step()
+
         if cfg.render:
             renderer.render()
 
     # Quit pygame cleanly
     pygame.quit()
     sys.exit()
+
+
+def drawWall(simulation: Simulation, resolution: int, brushSize: int):
+    mouse_x, mouse_y = pygame.mouse.get_pos()
+
+    cell_x = mouse_x // resolution
+    cell_y = mouse_y // resolution
+
+    level = simulation.level
+    brushSize = brushSize // 2
+    # Check bounds before accessing
+    for dy in range(-brushSize, brushSize + 1):
+        for dx in range(-brushSize, brushSize + 1):
+            x = cell_x + dx
+            y = cell_y + dy
+
+            if withinLevelBounds(simulation, x, y):
+                level.level[y][x] = 100100
+
+
+def withinLevelBounds(simulation, cell_x, cell_y):
+    return (
+        0 <= cell_x < simulation.level.width and 0 <= cell_y < simulation.level.height
+    )
 
 
 if __name__ == "__main__":
