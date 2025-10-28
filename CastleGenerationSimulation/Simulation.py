@@ -6,6 +6,7 @@ from Unit import Unit
 class Simulation:
     def __init__(self, initParams: InitializationParameters):
         self.level = Level(initParams.levelFilepath)
+        #these are test things
         unit = Unit(self.level,(40,40,40))
         unit0 = Unit(self.level,(10,10,50))
         unit1 = Unit(self.level,(30,20,10))

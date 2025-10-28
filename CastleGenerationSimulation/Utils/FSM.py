@@ -24,25 +24,26 @@ class FSM:
         self.onExit = onExit
 
     def updateState(self):
-        if self.currentState not in self.transitions:
+        if self.currentState not in self.transitions: 
             print("current state does not exist in state machine")
-        else:
-            for transition, stateTuple in self.transitions[self.currentState].items():
-                if transition():
-                    if self.onExit is not None:
-                        self.onExit()
-                    state, onEnter, onExit = stateTuple
-                    self.currentState = state
-                    if onEnter is not None:
-                        onEnter()
-                    self.onExit = onExit
+            return
+    
+        for transition, stateTuple in self.transitions[self.currentState].items():
+            if not transition():
+                return
+            if self.onExit is not None:
+                self.onExit()
+            state, onEnter, onExit = stateTuple
+            self.currentState = state
+            if onEnter is not None:
+                onEnter()
+            self.onExit = onExit
 
     def getState(self):
         if self.currentState is not None:    
             if isinstance(self.currentState, State):
                 return self.currentState
-            else:
-                return self.currentState.getState()
+            return self.currentState.getState()
 
     #These two on exit and on enter conditions are mostly meant for debugging
     def onExitPrint(self, result = ""):
