@@ -30,10 +30,10 @@ def main(ctx: mlxp.Context) -> None:
     running = True
     simulationStarted = False
     mouseButtonHeld = False
+    currentTool = ElementType.KEEP
 
     # Main loop
     while running:
-        i += 1
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -46,17 +46,26 @@ def main(ctx: mlxp.Context) -> None:
 
             elif event.type == pygame.KEYDOWN:
                 # process key events
+                if event.key == pygame.K_1:
+                    currentTool = ElementType(0)
+                if event.key == pygame.K_2:
+                    currentTool = ElementType(1)
+                if event.key == pygame.K_3:
+                    currentTool = ElementType(2)
+                if event.key == pygame.K_4:
+                    currentTool = ElementType(3)
                 if event.key == pygame.K_SPACE:
                     simulationStarted = True
 
         if mouseButtonHeld and not simulationStarted:
-            drawWall(simulation, resolution, 3)
+            drawElement(simulation, resolution, currentTool)
 
         if simulationStarted:
+            i += 1
             simulation.step()
 
         if cfg.render:
-            renderer.render()
+            renderer.render(currentTool.name)
 
     print(i)
     # Quit pygame cleanly
@@ -64,14 +73,14 @@ def main(ctx: mlxp.Context) -> None:
     sys.exit()
 
 
-def drawWall(simulation: Simulation, resolution: int, brushSize: int):
+def drawElement(simulation: Simulation, resolution: int, currentTool: ElementType):
     mouse_x, mouse_y = pygame.mouse.get_pos()
 
     cell_x = mouse_x // resolution
     cell_y = mouse_y // resolution
 
     level = simulation.level
-    brushSize = brushSize // 2
+    brushSize = 3 // 2
     # Check bounds before accessing
     for dy in range(-brushSize, brushSize + 1):
         for dx in range(-brushSize, brushSize + 1):
@@ -79,7 +88,7 @@ def drawWall(simulation: Simulation, resolution: int, brushSize: int):
             y = cell_y + dy
 
             if withinLevelBounds(simulation, x, y):
-                level.castleMap[y][x] = CastleElement(elementType=ElementType.WALL)
+                level.castleMap[y][x] = CastleElement(currentTool)
 
 
 def withinLevelBounds(simulation, cell_x, cell_y):

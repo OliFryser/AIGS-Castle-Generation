@@ -1,4 +1,5 @@
 import pygame
+from CastleElement import ElementType
 from Simulation import Simulation
 from Unit import Unit
 from Target import Target
@@ -10,8 +11,15 @@ class Renderer:
         self.screen = screen
         self.resolution = resolution
 
-    def render(self):
-        # Fill the background with green
+        self.font = pygame.font.Font(None, 48)
+        self.elementTypeToColor = {
+            ElementType.KEEP: (163, 145, 117),
+            ElementType.WALL: (91, 91, 91),
+            ElementType.TOWER: (160, 160, 160),
+            ElementType.GATE: (102, 58, 1),
+        }
+
+    def render(self, currentTool: str):
         self.screen.fill((255, 0, 255))
 
         self.displayTerrainMap(self.screen)
@@ -19,6 +27,11 @@ class Renderer:
         for unit in self.simulation.units:
             self.chaosUnitRender(unit)
         self.renderTarget(self.simulation.target)
+
+        text = self.font.render(f"Tool: {currentTool}", True, (255, 255, 255))
+        text_rect = text.get_rect()
+        text_rect.topleft = (10, 10)
+        self.screen.blit(text, text_rect)  # Draw text
         # swap buffer
         pygame.display.flip()
 
@@ -29,7 +42,7 @@ class Renderer:
             for x in range(level.width):
                 castleElement = level.castleMap[y][x]
                 if castleElement is not None:
-                    color = (148, 148, 148)
+                    color = self.elementTypeToColor[castleElement.elementType]
                     rect = pygame.Rect(x * cellSize, y * cellSize, cellSize, cellSize)
                     pygame.draw.rect(self.screen, color, rect)
 
