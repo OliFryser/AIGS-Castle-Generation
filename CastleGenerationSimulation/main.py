@@ -74,18 +74,23 @@ def main(ctx: mlxp.Context) -> None:
 
 
 def drawElement(simulation: Simulation, resolution: int, currentTool: ElementType):
-    mouse_x, mouse_y = pygame.mouse.get_pos()
+    mouseX, mouseY = pygame.mouse.get_pos()
 
-    cell_x = mouse_x // resolution
-    cell_y = mouse_y // resolution
+    cellX = mouseX // resolution
+    cellY = mouseY // resolution
+
+    # Snap to 3x3 grid
+    castleGridSize = 3
+    brushSize = castleGridSize // 2
+    cellX = (cellX // castleGridSize) * castleGridSize + brushSize
+    cellY = (cellY // castleGridSize) * castleGridSize + brushSize
 
     level = simulation.level
-    brushSize = 3 // 2
     # Check bounds before accessing
     for dy in range(-brushSize, brushSize + 1):
         for dx in range(-brushSize, brushSize + 1):
-            x = cell_x + dx
-            y = cell_y + dy
+            x = cellX + dx
+            y = cellY + dy
 
             if withinLevelBounds(simulation, x, y):
                 level.castleMap[y][x] = CastleElement(currentTool)
