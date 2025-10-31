@@ -4,21 +4,25 @@ from Utils.FSM import FSM
 from Utils.FSM import State
 from Utils.PathFinding import aStar
 from Utils.PathFinding import slopeAnglePercentage
+import numpy as np
 
 
 class Unit:
     def __init__(
         self,
+        graph: dict,
         level: Level,
         position: Vector2,
         health: int = 100,
         speed: float = 0.2,
         size=0.5,
+        
     ):
         self.health = health
         self.speed = speed
         self.size = size
         self.level = level
+        self.ng = graph
         self.position: Vector3 = Vector3(
             position.x, level.getBilinearHeight(position.x, position.y), position.y
         )
@@ -97,8 +101,9 @@ class Unit:
 
         if self.path == []:
             self.path = aStar(
-                self.position, self.target, self.level, self.moveHeuristic
+                self.position, self.target, self.ng, self.moveHeuristic
             )
+            print(len(self.path))
 
         self.move((self.path[0] - self.position).normalize())
         if self.position.distance_to(self.path[0]) <= self.size:
@@ -112,6 +117,7 @@ class Unit:
         # slopeAngle = slopeAnglePercentage(self.speed, self.position.y, newHeight)
         slopeAngle = 1
         # if it is higher than the new position add a bit of incline fatigue slopeangle squared
+        """
         if newHeight > self.position.y:
             newPosition = self.position + direction * (
                 self.speed * slopeAngle * slopeAngle
@@ -119,13 +125,25 @@ class Unit:
             newPosition.y = self.level.getBilinearHeight(newPosition.x, newPosition.z)
             self.position = newPosition
         else:
-            newPosition = self.position + direction * self.speed * slopeAngle
-            newPosition.y = self.level.getBilinearHeight(newPosition.x, newPosition.z)
-            self.position = newPosition
+        """
+        newPosition = self.position + direction * self.speed #* slopeAngle
+        #newPosition.y = self.level.getBilinearHeight(newPosition.x, newPosition.z)
+        self.position = newPosition
 
     # Heuristic for a star calculation, this is here because of relevance to individual units movement
+    """
     def moveHeuristic(self, pos0: Vector3, pos1: Vector3):
         euclidDist = pos0.distance_to(pos1)
-        if pos0.y < pos1.y:
-            return euclidDist * euclidDist
+        #if pos0.y < pos1.y:
+        #    return euclidDist * euclidDist
         return euclidDist
+    """
+
+    def moveHeuristic(self, pos0: Vector3, pos1: Vector3):
+        dx = pos0.x - pos1.x
+        dz = pos0.z - pos1.z
+        base = np.sqrt(dx * dx + dz * dz)
+        # *soft* uphill penalty, proportional but not squared
+        if pos1.y > pos0.y:
+            return base * (1 + (pos1.y - pos0.y) * 0.1)
+        return base

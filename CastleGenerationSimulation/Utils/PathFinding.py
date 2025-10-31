@@ -1,119 +1,115 @@
 from pygame import Vector3
 from queue import PriorityQueue
+from Utils.Node import Node, Edge, removeNode
 import numpy as np
 
-from Level import Level
+def smoothPath(startPosition, path, angleTolerance=15):
+    if not path:
+        return []
 
+    smoothed = [path[0]]
+    bundleStart = startPosition
+    n = 0
+    for i in range(len(path) - 1):
+        # vector from bundle start to current and next points
+        vec0 = path[i] - bundleStart
+        vec1 = path[i + 1] - path[i]
 
-def aStar(startPosition: Vector3, endPosition: Vector3, level: Level, heuristic):
-    start_node: tuple[float, float, float] = (
-        startPosition[0],
-        startPosition[1],
-        startPosition[2],
-    )
-    immediateNeighbors: list[tuple[int, int]] = level.getImmediateNeighbors(
-        start_node[0], start_node[2]
-    )
-    targetNeighbors: list[tuple[int, int]] = level.getImmediateNeighbors(
-        endPosition[0], endPosition[2]
-    )
+        angle = vec0.angle_to(vec1)
+        n +=1
+        # when we deviate too far from the current direction, finalize path bundle
+        if abs(angle) > angleTolerance:
+            smoothed.append(path[i])
+            bundleStart = path[i]
+            print(n)
+            n=0
+    
+    smoothed.append(path[-1])
+    return smoothed
+
+def getAsNodeOnGraph(startPosition: Vector3 , graph: dict[Node, list[Edge]], tmpNodes):
+    node = Node(startPosition)
+    if node in graph:
+        return node
+    
+    x, y, z = startPosition.x, startPosition.y, startPosition.z
+    # Each coordinate is centered at 0.5 + int(n)
+    x0 = np.floor(x - 0.5) + 0.5
+    x1 = np.ceil(x - 0.5) + 0.5
+    z0 = np.floor(z - 0.5) + 0.5
+    z1 = np.ceil(z - 0.5) + 0.5
+
+    positions = [
+        Vector3(x0, y, z0),  # Northwest
+        Vector3(x1, y, z0),  # Northeast
+        Vector3(x0, y, z1),  # Southwest
+        Vector3(x1, y, z1),  # Southeast
+    ]
+
+    edges = []
+    for pos in positions:
+        tmpNode = Node(pos)
+        if tmpNode in graph:
+            graph[tmpNode].append(Edge(node, tmpNode.position.distance_to(node.position)))
+            tmpEdge = Edge(tmpNode, node.position.distance_to(tmpNode.position))
+            edges.append(tmpEdge)
+
+    graph[node] = edges
+    tmpNodes.append(node)
+    return node
+
+def aStar(startPosition: Vector3, endPosition: Vector3, graph: dict[Node, list[Edge]], heuristic):
+    tmpNodes = []
+    startNode = getAsNodeOnGraph(startPosition, graph, tmpNodes)
+    targetNode = getAsNodeOnGraph(endPosition, graph, tmpNodes)
     # distances is for storing the shortest distance to node
-    distances: dict[tuple[float, float, float], float] = {start_node: 0.0}
-
+    distances: dict[Node, float] = {startNode: 0.0}
     open_nodes = PriorityQueue()
-    # counter is for tie-breaking distances random
+    # random is for tie-breaking distances random
     open_nodes.put(
         (
-            heuristic(Vector3(start_node), Vector3(endPosition)),
+            heuristic(startPosition, endPosition),
             np.random.rand(),
-            start_node,
+            startNode,
         )
     )
 
     # incomming nodes is for storing the shortest path between nodes
     incomming_nodes = {}
-
-    neighbors = immediateNeighbors
+    
     while open_nodes.not_empty:
         # we only really need the next node
-        _, r, current_node = open_nodes.get()
+        _, r, currentNode = open_nodes.get()
         # if the next node is the target node the path has been set
-        if current_node in targetNeighbors:  # current_node == endPosition:
-            # bestTargetNode = current_node
+        if currentNode == targetNode:
             # backtrak to reconstruct path
             path = []
-            while current_node not in immediateNeighbors:
-                path.insert(
-                    0,
-                    Vector3(
-                        current_node[0] + 0.5,
-                        level.getCell(current_node[0], current_node[1]),
-                        current_node[1] + 0.5,
-                    ),
-                )
-                current_node = incomming_nodes[current_node]
-            path.insert(
-                0,
-                Vector3(
-                    current_node[0] + 0.5,
-                    level.getCell(current_node[0], current_node[1]),
-                    current_node[1] + 0.5,
-                ),
-            )
-            return path
+            while currentNode != startNode:
+                path.insert(0, currentNode.position)
+                currentNode = incomming_nodes[currentNode]
+            
+            for node in tmpNodes:
+                removeNode(node, graph)
+            return smoothPath(startPosition,path)
+        
+        for edge in graph[currentNode]:
+            cost = edge.cost
+            new_distance = distances[currentNode] + cost
 
-        if current_node == start_node:
-            neighbors = immediateNeighbors
-        else:
-            neighbors = level.getNeighbors(current_node[0], current_node[1])
-        for neighbor in neighbors:
-            # the cost is the distance from the current_node to the neighbour
-            if current_node == start_node:
-                cNode = start_node
-            else:
-                cNode = (
-                    current_node[0],
-                    level.getCell(current_node[0], current_node[1]),
-                    current_node[1],
-                )
-            neighborNode = (
-                neighbor[0],
-                level.getCell(neighbor[0], neighbor[1]),
-                neighbor[1],
-            )
-            cost = heuristic(Vector3(cNode), Vector3(neighborNode))
-
-            new_distance = distances[cNode] + cost
-
-            if neighborNode not in distances or new_distance < distances[neighborNode]:
-                distances[neighborNode] = new_distance
+            if edge.node not in graph:
+                print(f'Error node not in graph {edge.node.position}, start Node: {startNode.position}')
+                continue
+            if edge.node not in distances or new_distance < distances[edge.node]:
+                distances[edge.node] = new_distance
                 # the predicted total is where the heuristic is applied
                 predicted_total = new_distance + heuristic(
-                    Vector3(neighborNode), Vector3(endPosition)
+                    Vector3(edge.node.position), Vector3(endPosition)
                 )
-                incomming_nodes[neighbor] = current_node
-                open_nodes.put((predicted_total, np.random.rand(), neighbor))
-
-    return []
+                incomming_nodes[edge.node] = currentNode
+                open_nodes.put((predicted_total, np.random.rand(), edge.node))
 
 
-"""
-def smoothPath(self, path, angleTolerance = 12):
-    currentPos = self.position
-    tmpPath = [path[0],path[1]]
-    for n in range(len(path) -1 ):
-        vec0 = (path[n] - currentPos)
-        vec0.z = 0
-        vec1 = (path[n+1] - path[n])
-        vec1.z = 0
-        angle = vec0.angle_to(vec1)
-        currentPos = path[n]
-        if angle < angleTolerance:
-            tmpPath = [path[n+1]]
-        else:
-            return tmpPath
-    return tmpPath
-"""
+    return [startPosition]
 
 
 def slopeAnglePercentage(distance: float, height0: float, height1: float) -> float:
