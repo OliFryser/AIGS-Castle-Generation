@@ -1,4 +1,4 @@
-from pygame import Vector2, Vector3
+from pygame import Vector2
 from Target import Target
 from Level import Level
 from InitializationParameters import InitializationParameters
@@ -7,7 +7,9 @@ from Unit import Unit
 
 class Simulation:
     def __init__(self, initParams: InitializationParameters):
-        self.level = Level(initParams.levelFilepath)
+        self.level = Level(
+            initParams.levelFilepath, initParams.castleGenerationFilepath
+        )
 
         # these are test things
         unit = Unit(self.level, Vector2(20, 80))
