@@ -1,10 +1,11 @@
 import pygame
+from Simulation import Simulation
 from Unit import Unit
 from Target import Target
 
 
 class Renderer:
-    def __init__(self, simulation, screen, resolution: int):
+    def __init__(self, simulation: Simulation, screen, resolution: int):
         self.simulation = simulation
         self.screen = screen
         self.resolution = resolution
@@ -13,25 +14,34 @@ class Renderer:
         # Fill the background with green
         self.screen.fill((255, 0, 255))
 
-        self.chaosDisplay(self.screen)
+        self.displayTerrainMap(self.screen)
+        self.renderCastleMap()
         for unit in self.simulation.units:
             self.chaosUnitRender(unit)
         self.renderTarget(self.simulation.target)
         # swap buffer
         pygame.display.flip()
 
+    def renderCastleMap(self):
+        cellSize = self.resolution
+        level = self.simulation.level
+        for y in range(level.height):
+            for x in range(level.width):
+                castleElement = level.castleMap[y][x]
+                if castleElement is not None:
+                    color = (148, 148, 148)
+                    rect = pygame.Rect(x * cellSize, y * cellSize, cellSize, cellSize)
+                    pygame.draw.rect(self.screen, color, rect)
+
     # this is fast and dirty first lvl renderer
-    def chaosDisplay(self, screen):
-        cell_size = self.resolution
+    def displayTerrainMap(self, screen):
+        cellSize = self.resolution
         level = self.simulation.level
         for r in range(level.height):
             for c in range(level.width):
                 height = level.getCell(c, r)
-                if height <= level.max_height:
-                    color = (34, round((height / level.max_height) * 255), 34)
-                else:
-                    color = (148, 148, 148)
-                rect = pygame.Rect(c * cell_size, r * cell_size, cell_size, cell_size)
+                color = (34, round((height / level.max_height) * 255), 34)
+                rect = pygame.Rect(c * cellSize, r * cellSize, cellSize, cellSize)
                 pygame.draw.rect(screen, color, rect)
 
     def chaosUnitRender(self, unit: Unit):

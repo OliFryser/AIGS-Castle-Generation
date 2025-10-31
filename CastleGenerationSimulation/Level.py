@@ -1,26 +1,33 @@
+from typing import Optional
 import numpy as np
+
+from CastleElement import CastleElement
 
 
 class Level:
     def __init__(self, levelFilepath: str):
-        self.createLevel(levelFilepath)
+        self.createTerrainMap(levelFilepath)
 
-    def createLevel(self, levelFilepath: str):
+        self.castleMap: list[list[Optional[CastleElement]]] = [
+            [None for _ in range(self.width)] for _ in range(self.height)
+        ]
+
+    def createTerrainMap(self, levelFilepath: str):
         with open(levelFilepath, "r") as f:
             self.width, self.height, self.max_height = [
                 int(x) for x in f.readline().rstrip().split()
             ]
-            self.level = np.zeros((self.height, self.width))
+            self.terrainMap = np.zeros((self.height, self.width))
             for y in range(self.height):
                 line = [float(num) for num in f.readline().rstrip().split()]
                 for x in range(self.width):
-                    self.level[y][x] = line[x]
+                    self.terrainMap[y][x] = line[x]
 
     def getLevel(self):
-        return self.level
+        return self.terrainMap
 
     def getCell(self, x, y):
-        return float(self.level[y][x])
+        return float(self.terrainMap[y][x])
 
     def getNeighbors(self, x, y) -> list[tuple[int, int]]:
         return [

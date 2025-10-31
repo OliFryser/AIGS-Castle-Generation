@@ -2,6 +2,7 @@ import pygame
 import sys
 import mlxp
 
+from CastleElement import CastleElement, ElementType
 from InitializationParameters import InitializationParameters
 from Simulation import Simulation
 from Renderer import Renderer
@@ -49,7 +50,7 @@ def main(ctx: mlxp.Context) -> None:
                     simulationStarted = True
 
         if mouseButtonHeld and not simulationStarted:
-            drawWall(simulation, resolution, 2)
+            drawWall(simulation, resolution, 3)
 
         if simulationStarted:
             simulation.step()
@@ -78,7 +79,7 @@ def drawWall(simulation: Simulation, resolution: int, brushSize: int):
             y = cell_y + dy
 
             if withinLevelBounds(simulation, x, y):
-                level.level[y][x] = 100100
+                level.castleMap[y][x] = CastleElement(elementType=ElementType.WALL)
 
 
 def withinLevelBounds(simulation, cell_x, cell_y):
