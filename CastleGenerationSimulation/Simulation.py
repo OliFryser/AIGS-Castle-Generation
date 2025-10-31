@@ -10,7 +10,7 @@ class Simulation:
         self.level = Level(initParams.levelFilepath)
 
         # these are test things
-        unit = Unit(self.level, Vector2(40, 40))
+        unit = Unit(self.level, Vector2(20, 80))
         unit0 = Unit(self.level, Vector2(10, 50))
         unit1 = Unit(self.level, Vector2(30, 10))
         self.target = Target(

@@ -54,6 +54,8 @@ def main(ctx: mlxp.Context) -> None:
                     currentTool = ElementType(2)
                 if event.key == pygame.K_4:
                     currentTool = ElementType(3)
+                if event.key == pygame.K_0:
+                    currentTool = None
                 if event.key == pygame.K_SPACE:
                     simulationStarted = True
 
@@ -65,7 +67,10 @@ def main(ctx: mlxp.Context) -> None:
             simulation.step()
 
         if cfg.render:
-            renderer.render(currentTool.name)
+            currentToolName: str = (
+                currentTool.name if currentTool is not None else "Eraser"
+            )
+            renderer.render(currentToolName)
 
     print(i)
     # Quit pygame cleanly
@@ -73,7 +78,9 @@ def main(ctx: mlxp.Context) -> None:
     sys.exit()
 
 
-def drawElement(simulation: Simulation, resolution: int, currentTool: ElementType):
+def drawElement(
+    simulation: Simulation, resolution: int, currentTool: ElementType | None
+):
     mouseX, mouseY = pygame.mouse.get_pos()
 
     cellX = mouseX // resolution
@@ -93,7 +100,9 @@ def drawElement(simulation: Simulation, resolution: int, currentTool: ElementTyp
             y = cellY + dy
 
             if withinLevelBounds(simulation, x, y):
-                level.castleMap[y][x] = CastleElement(currentTool)
+                level.castleMap[y][x] = (
+                    CastleElement(currentTool) if currentTool is not None else None
+                )
 
 
 def withinLevelBounds(simulation, cell_x, cell_y):
