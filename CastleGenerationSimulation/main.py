@@ -14,7 +14,6 @@ def main(ctx: mlxp.Context) -> None:
     pygame.init()
     # Window size
     pygame.display.set_caption("Fortify Simulation")
-
     cfg = ctx.config
     initParams = InitializationParameters(cfg)
     simulation = Simulation(initParams)
@@ -58,6 +57,7 @@ def main(ctx: mlxp.Context) -> None:
                     currentTool = None
                 if event.key == pygame.K_SPACE:
                     simulationStarted = True
+                    simulation.updateNodeGraph()
 
         if mouseButtonHeld and not simulationStarted:
             drawElement(simulation, resolution, currentTool)

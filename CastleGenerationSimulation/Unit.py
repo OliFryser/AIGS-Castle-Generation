@@ -4,6 +4,8 @@ from Utils.FSM import FSM
 from Utils.FSM import State
 from Utils.PathFinding import aStar
 from Utils.PathFinding import slopeAnglePercentage
+from Utils.Node import Node, Edge
+from CastleElement import MaterialBlock
 import numpy as np
 
 
@@ -15,8 +17,7 @@ class Unit:
         position: Vector2,
         health: int = 100,
         speed: float = 0.2,
-        size=0.5,
-        
+        size=0.1,
     ):
         self.health = health
         self.speed = speed
@@ -28,6 +29,7 @@ class Unit:
         )
         self.path: list[Vector3] = []
         self.target = None
+        self.count = 0
         self.initFSM()
 
     def step(self):
@@ -43,35 +45,39 @@ class Unit:
 
     # making a finite state machine. This should be overwritten by subclasses
     def initFSM(self):
-        self.fsm = FSM()
+        """
+        goToTargetFSM = FSM(State.PLANPATH)
+        goToTargetFSM.addTransition(State.PLANPATH, self.hasPlan, State.MOVETO)
+        goToTargetFSM.addTransition(State.MOVETO, self.closeEnough, State.STOP)
+        """
 
-        subsubFSM = FSM()
+        fsm = FSM(State.WAIT)
 
-        subsubFSM.addTransition(State.STOP, self.outOfReach, State.STOP)
-        subsubFSM.setState(State.STOP, subsubFSM.onExitPrint)
-
-        subFSM = FSM()
-        subFSM.addTransition(subsubFSM, self.outOfReach, subsubFSM)
-        subFSM.setState(subsubFSM, subFSM.onExitPrint)
-
-        self.fsm.addTransition(
-            State.MOVETO,
-            self.closeEnough,
-            subFSM,
-            self.fsm.onEnterPrint,
-            self.fsm.onExitPrint,
+        fsm.addTransition(
+            State.MOVETO, State.WAIT, self.notHasPlan, self.planPath, fsm.onExitPrint,
         )
-        self.fsm.addTransition(
-            subFSM,
-            self.outOfReach,
+        fsm.addTransition(
+            State.MOVETO, State.STOP, self.closeEnough, fsm.onEnterPrint, fsm.onExitPrint,
+        )
+        fsm.addTransition(
+            State.WAIT,
             State.MOVETO,
-            self.fsm.onEnterPrint,
-            self.fsm.onExitPrint,
+            self.hasCounted,
+            lambda: setattr(self, "count", 4),
+            lambda: setattr(self, "count", 0),
+        )
+        fsm.addTransition(
+            State.STOP, State.WAIT,
+            self.outOfReach
         )
 
-        self.fsm.setState(State.MOVETO, self.fsm.onExitPrint)
-
-        self.stateMap = {State.MOVETO: self.goToTarget, State.STOP: self.wait}
+        self.fsm = fsm
+        self.stateMap = {
+            State.MOVETO: self.goToTarget,
+            State.STOP: self.wait,
+            State.PLANPATH : self.planPath,
+            State.WAIT : self.wait
+            }
 
     ######################
     # Transitions
@@ -79,71 +85,65 @@ class Unit:
     def closeEnough(self):
         return (
             self.target is not None
-            and self.position.distance_to(self.target) < self.size
+            and self.position.distance_to(self.target) < self.size *3
         )
 
     def outOfReach(self):
         return (
             self.target is not None
-            and self.position.distance_to(self.target) > self.size
+            and self.position.distance_to(self.target) > self.size *3
         )
+    
+    def hasPlan(self):
+        return (
+            not self.path == []
+        )
+    def notHasPlan(self):
+        return not self.hasPlan()
+    
+    def hasCounted(self):
+        return self.count < 1
 
     ######################
     # Actions
     ######################
 
     def wait(self):
+        self.count -= 1
         pass
 
-    def goToTarget(self):
+    def planPath(self):
         if self.target is None:
             return
-
-        if self.path == []:
-            self.path = aStar(
-                self.position, self.target, self.ng, self.moveHeuristic
+        self.path = aStar(
+                self.position, self.target, self.ng, costAdjustFunc= self.moveCostAdjust
             )
-            print(len(self.path))
+        print(len(self.path))
 
-        self.move((self.path[0] - self.position).normalize())
+    def goToTarget(self):
+        if self.notHasPlan():
+            return
+        self.move(self.path[0] - self.position)
         if self.position.distance_to(self.path[0]) <= self.size:
             self.path.pop(0)
 
     def move(self, direction: Vector3):
-        # project new position in 2d-space
-        tmpPosition = self.position + direction * self.speed
-        # use billinear height to find the elevation of the projection
-        newHeight = self.level.getBilinearHeight(tmpPosition.x, tmpPosition.z)
-        # slopeAngle = slopeAnglePercentage(self.speed, self.position.y, newHeight)
-        slopeAngle = 1
-        # if it is higher than the new position add a bit of incline fatigue slopeangle squared
-        """
-        if newHeight > self.position.y:
-            newPosition = self.position + direction * (
-                self.speed * slopeAngle * slopeAngle
-            )
-            newPosition.y = self.level.getBilinearHeight(newPosition.x, newPosition.z)
-            self.position = newPosition
-        else:
-        """
-        newPosition = self.position + direction * self.speed #* slopeAngle
-        #newPosition.y = self.level.getBilinearHeight(newPosition.x, newPosition.z)
+        direction.normalize
+        newPosition = self.position + direction * self.speed
+        for x,y in self.level.getImmediateNeighbors(newPosition.x -0.5,self.position.z-0.5):
+            #if walking into a castle bit nudge a bit away
+            if self.level.castleMap[y][x] is not None:
+                tilePosition = Vector3(x+0.5,self.level.getCell(x,y),y+0.5)
+                if newPosition.distance_to(tilePosition) < self.size:
+                    newPosition = self.position + (direction + (self.position - tilePosition).normalize()).normalize() * self.speed
+
         self.position = newPosition
-
+    
     # Heuristic for a star calculation, this is here because of relevance to individual units movement
-    """
-    def moveHeuristic(self, pos0: Vector3, pos1: Vector3):
-        euclidDist = pos0.distance_to(pos1)
-        #if pos0.y < pos1.y:
-        #    return euclidDist * euclidDist
-        return euclidDist
-    """
-
-    def moveHeuristic(self, pos0: Vector3, pos1: Vector3):
-        dx = pos0.x - pos1.x
-        dz = pos0.z - pos1.z
-        base = np.sqrt(dx * dx + dz * dz)
-        # *soft* uphill penalty, proportional but not squared
-        if pos1.y > pos0.y:
-            return base * (1 + (pos1.y - pos0.y) * 0.1)
-        return base
+    # and how they account for wall pieces, this can be used to accomodate different kinds of behaviour
+    def moveCostAdjust(self, node: Node, edge: Edge):
+        cost = edge.cost
+        if node.materialBlock is None:
+            return cost
+        mBlock = node.materialBlock
+        return cost + mBlock.health

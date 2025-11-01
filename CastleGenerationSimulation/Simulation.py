@@ -4,6 +4,7 @@ from Level import Level
 from InitializationParameters import InitializationParameters
 from Unit import Unit
 from Utils.Node import createNodeGraph
+from Utils.Node import createHexNodeGrap
 
 
 class Simulation:
@@ -36,7 +37,10 @@ class Simulation:
         pass
 
     def updateNodeGraph(self):
-        self.ng = createNodeGraph(self.level)
-    
+        graphs = [
+            createNodeGraph(self.level),
+            #createHexNodeGrap(self.level),
+        ]
+        self.ng = graphs[0]
         for unit in self.units:
             unit.ng = self.ng

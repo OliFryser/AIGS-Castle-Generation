@@ -4,6 +4,7 @@ from Utils.Node import Node, Edge, removeNode
 import numpy as np
 
 def smoothPath(startPosition, path, angleTolerance=15):
+    return path
     if not path:
         return []
 
@@ -20,14 +21,29 @@ def smoothPath(startPosition, path, angleTolerance=15):
         # when we deviate too far from the current direction, finalize path bundle
         if abs(angle) > angleTolerance:
             smoothed.append(path[i])
+            break
             bundleStart = path[i]
-            print(n)
             n=0
     
-    smoothed.append(path[-1])
+    #smoothed.append(path[-1])
     return smoothed
 
 def getAsNodeOnGraph(startPosition: Vector3 , graph: dict[Node, list[Edge]], tmpNodes):
+    node = Node(startPosition)
+    if node in graph:
+        return node
+    positions = sorted(graph.keys(), key=lambda node: node.position.distance_to(startPosition))[:3]
+    edges = []
+    for tmpNode in positions:
+        graph[tmpNode].append(Edge(node, tmpNode.position.distance_to(node.position)))
+        tmpEdge = Edge(tmpNode, node.position.distance_to(tmpNode.position))
+        edges.append(tmpEdge)
+
+    graph[node] = edges
+    tmpNodes.append(node)
+    return node
+
+def getAsNodeOnGraph2(startPosition: Vector3 , graph: dict[Node, list[Edge]], tmpNodes):
     node = Node(startPosition)
     if node in graph:
         return node
@@ -58,17 +74,23 @@ def getAsNodeOnGraph(startPosition: Vector3 , graph: dict[Node, list[Edge]], tmp
     tmpNodes.append(node)
     return node
 
-def aStar(startPosition: Vector3, endPosition: Vector3, graph: dict[Node, list[Edge]], heuristic):
+def distanceCost(node: Node, edge: Edge):
+    return edge.cost
+
+def euclidianDistance(node0: Node, node1: Node):
+    return node0.position.distance_to(node1.position)
+
+def aStar(startPosition: Vector3, targetPosition: Vector3, graph: dict[Node, list[Edge]], heuristic = euclidianDistance, costAdjustFunc = distanceCost, budget = 1000):
     tmpNodes = []
-    startNode = getAsNodeOnGraph(startPosition, graph, tmpNodes)
-    targetNode = getAsNodeOnGraph(endPosition, graph, tmpNodes)
+    startNode = getAsNodeOnGraph2(startPosition, graph, tmpNodes)
+    targetNode = getAsNodeOnGraph2(targetPosition, graph, tmpNodes)
     # distances is for storing the shortest distance to node
     distances: dict[Node, float] = {startNode: 0.0}
     open_nodes = PriorityQueue()
     # random is for tie-breaking distances random
     open_nodes.put(
         (
-            heuristic(startPosition, endPosition),
+            heuristic(startNode, targetNode),
             np.random.rand(),
             startNode,
         )
@@ -81,6 +103,9 @@ def aStar(startPosition: Vector3, endPosition: Vector3, graph: dict[Node, list[E
         # we only really need the next node
         _, r, currentNode = open_nodes.get()
         # if the next node is the target node the path has been set
+        if distances[currentNode] > budget:
+            print(f"could not find path within budget {distances[currentNode]}")
+            break
         if currentNode == targetNode:
             # backtrak to reconstruct path
             path = []
@@ -93,7 +118,8 @@ def aStar(startPosition: Vector3, endPosition: Vector3, graph: dict[Node, list[E
             return smoothPath(startPosition,path)
         
         for edge in graph[currentNode]:
-            cost = edge.cost
+            #cost is calculated here
+            cost = costAdjustFunc(currentNode, edge)
             new_distance = distances[currentNode] + cost
 
             if edge.node not in graph:
@@ -102,9 +128,7 @@ def aStar(startPosition: Vector3, endPosition: Vector3, graph: dict[Node, list[E
             if edge.node not in distances or new_distance < distances[edge.node]:
                 distances[edge.node] = new_distance
                 # the predicted total is where the heuristic is applied
-                predicted_total = new_distance + heuristic(
-                    Vector3(edge.node.position), Vector3(endPosition)
-                )
+                predicted_total = new_distance + heuristic(edge.node, targetNode)
                 incomming_nodes[edge.node] = currentNode
                 open_nodes.put((predicted_total, np.random.rand(), edge.node))
 
