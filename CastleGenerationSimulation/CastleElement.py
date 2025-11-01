@@ -2,10 +2,10 @@ from enum import Enum
 
 
 class ElementType(Enum):
-    KEEP = 0
-    WALL = 1
-    TOWER = 2
-    GATE = 3
+    KEEP = "keep"
+    WALL = "wall"
+    TOWER = "tower"
+    GATE = "gate"
 
 
 class CastleElement:

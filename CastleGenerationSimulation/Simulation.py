@@ -9,8 +9,8 @@ from Utils.Node import createNodeGraph
 class Simulation:
     def __init__(self, initParams: InitializationParameters):
         self.level = Level(
-            initParams.levelFilepath, initParams.castleGenerationFilepath
-        )
+            initParams.levelFilepath, initParams.castleGenerationFilepath, initParams.castleTilesFilepath
+        )   
         self.units = []
         self.updateNodeGraph()
         # these are test things
@@ -18,7 +18,7 @@ class Simulation:
         unit0 = Unit(self.ng,self.level, Vector2(10, 50))
         unit1 = Unit(self.ng,self.level, Vector2(30, 10))
         self.target = Target(
-            self.level, Vector2(self.level.width / 2, self.level.height / 2)
+            self.level, Vector2(self.level.width / 2 +1.5, self.level.height / 2 +2.5)
         )
         unit.target = self.target.position
         unit0.target = self.target.position

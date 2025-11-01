@@ -6,11 +6,11 @@ from CastleGenerator import CastleGenerator
 
 
 class Level:
-    def __init__(self, levelFilepath: str, castleGenerationFilepath: str):
+    def __init__(self, levelFilepath: str, castleGenerationFilepath: str, castleTilesFilePath: str):
         self.createTerrainMap(levelFilepath)
 
         castleGenerator = CastleGenerator(
-            castleGenerationFilepath, self.width, self.height
+            castleGenerationFilepath, castleTilesFilePath, self.width, self.height
         )
 
         self.castleMap = castleGenerator.getCastleMapInTerrainScale()
