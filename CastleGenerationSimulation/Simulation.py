@@ -2,7 +2,7 @@ from pygame import Vector2
 from Target import Target
 from Level import Level
 from InitializationParameters import InitializationParameters
-from Unit import Unit
+from Units.AxeMan import AxeMan
 from Utils.Node import createNodeGraph
 from Utils.Node import createHexNodeGrap
 
@@ -15,16 +15,17 @@ class Simulation:
         self.units = []
         self.updateNodeGraph()
         # these are test things
-        unit = Unit(self.ng,self.level, Vector2(20, 80))
-        unit0 = Unit(self.ng,self.level, Vector2(10, 50))
-        unit1 = Unit(self.ng,self.level, Vector2(30, 10))
+        unit = AxeMan(self.ng,self.level, Vector2(20, 80))
+        unit0 = AxeMan(self.ng,self.level, Vector2(10, 50))
+        unit1 = AxeMan(self.ng,self.level, Vector2(30, 10))
         self.target = Target(
             self.level, Vector2(self.level.width / 2 +1.5, self.level.height / 2 +2.5)
         )
-        unit.target = self.target.position
-        unit0.target = self.target.position
-        unit1.target = self.target.position
+        
         self.units = [unit, unit0, unit1]
+        for u in self.units:
+            u.goal = self.target.position
+            u.targetGoal()
 
     def step(self):
         for unit in self.units:

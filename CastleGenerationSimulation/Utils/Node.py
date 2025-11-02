@@ -33,8 +33,9 @@ def createNodeGraph(level : Level):
         for x in range(level.width):
             node = Node(Vector3(x+ .5,level.getCell(x,y),y+.5))
             nodes[node.position2] = node
-            if level.castleMap[y][x] is not None:
-                node.setMaterialBlock(level.castleMap[y][x].material)
+            castleCell = level.castleMap[y][x] 
+            if castleCell is not None:
+                node.setMaterialBlock(castleCell.material)
     for node in nodes.values():
             edges = []
             east = (node.position.x +1, node.position.z)

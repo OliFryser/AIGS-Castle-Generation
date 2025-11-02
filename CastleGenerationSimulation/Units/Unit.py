@@ -3,11 +3,8 @@ from Level import Level
 from Utils.FSM import FSM
 from Utils.FSM import State
 from Utils.PathFinding import aStar
-from Utils.PathFinding import slopeAnglePercentage
 from Utils.Node import Node, Edge
 from CastleElement import MaterialBlock
-import numpy as np
-
 
 class Unit:
     def __init__(
@@ -27,10 +24,12 @@ class Unit:
         self.position: Vector3 = Vector3(
             position.x, level.getBilinearHeight(position.x, position.y), position.y
         )
-        self.path: list[Vector3] = []
+        self.path: list[Node] = []
         self.target = None
+        self.goal = None
         self.count = 0
         self.initFSM()
+        self.nodesToSkip = []
 
     def step(self):
         self.fsm.updateState()
@@ -39,18 +38,11 @@ class Unit:
             self.stateMap[state]()
         return True
 
-    # yeah I think this might need to go, set target should probably be something else
-    def setTarget(self, x, y):
-        self.target = Vector3(x, y, self.level.getCell(x, y))
+    def targetGoal(self):
+        self.target = self.goal
 
     # making a finite state machine. This should be overwritten by subclasses
     def initFSM(self):
-        """
-        goToTargetFSM = FSM(State.PLANPATH)
-        goToTargetFSM.addTransition(State.PLANPATH, self.hasPlan, State.MOVETO)
-        goToTargetFSM.addTransition(State.MOVETO, self.closeEnough, State.STOP)
-        """
-
         fsm = FSM(State.WAIT)
 
         fsm.addTransition(
@@ -110,6 +102,7 @@ class Unit:
 
     def wait(self):
         self.count -= 1
+        print(self.count)
         pass
 
     def planPath(self):
@@ -123,8 +116,8 @@ class Unit:
     def goToTarget(self):
         if self.notHasPlan():
             return
-        self.move(self.path[0] - self.position)
-        if self.position.distance_to(self.path[0]) <= self.size:
+        self.move(self.path[0].position - self.position)
+        if self.position.distance_to(self.path[0].position) <= self.size:
             self.path.pop(0)
 
     def move(self, direction: Vector3):
@@ -134,8 +127,8 @@ class Unit:
             #if walking into a castle bit nudge a bit away
             if self.level.castleMap[y][x] is not None:
                 tilePosition = Vector3(x+0.5,self.level.getCell(x,y),y+0.5)
-                if newPosition.distance_to(tilePosition) < self.size:
-                    newPosition = self.position + (direction + (self.position - tilePosition).normalize()).normalize() * self.speed
+                if newPosition.distance_to(tilePosition) < self.size *2:
+                    newPosition = self.position + (direction + (self.position - tilePosition).normalize() * 2).normalize() * self.speed
 
         self.position = newPosition
     
@@ -145,5 +138,5 @@ class Unit:
         cost = edge.cost
         if node.materialBlock is None:
             return cost
-        mBlock = node.materialBlock
+        mBlock: MaterialBlock = node.materialBlock
         return cost + mBlock.health

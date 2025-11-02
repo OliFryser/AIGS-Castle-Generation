@@ -6,6 +6,8 @@ class State(Enum):
     UNDER = 2
     PLANPATH = 3
     WAIT = 4
+    ATTACK = 5
+    DEMOLISH = 6
 
 class FSM:
     def __init__(self, defaultState, defaultExit = None) -> None:
@@ -42,17 +44,26 @@ class FSM:
     
         for transition, stateTuple in self.transitions[self.currentState].items():
             if not transition():
-                return
+                continue
+            
             if self.onExit is not None:
                 self.onExit()
+            self.onExitPrint()
             state, onEnter, onExit = stateTuple
             self.currentState = state
             if onEnter is not None:
                 onEnter()
+            self.onEnterPrint()
             self.onExit = onExit
+        
+        
+        if isinstance(self.currentState, FSM):
+            self.currentState.updateState()
+    
 
     def getState(self):
-        if self.currentState is not None:    
+        if self.currentState is not None:
+            #print(self.currentState)
             if isinstance(self.currentState, State):
                 return self.currentState
             return self.currentState.getState()

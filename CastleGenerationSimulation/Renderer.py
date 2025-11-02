@@ -1,7 +1,7 @@
 import pygame
 from CastleElement import ElementType
 from Simulation import Simulation
-from Unit import Unit
+from Units.Unit import Unit
 from Target import Target
 
 
@@ -82,7 +82,7 @@ class Renderer:
                 self.screen,
                 (255, 255, 0),
                 False,
-                [self.modelToViewSpace(pos) for pos in unit.path],
+                [self.modelToViewSpace(pos.position) for pos in unit.path],
             )
 
     def renderTarget(self, target: Target):

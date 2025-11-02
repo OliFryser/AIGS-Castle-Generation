@@ -110,12 +110,14 @@ def aStar(startPosition: Vector3, targetPosition: Vector3, graph: dict[Node, lis
             # backtrak to reconstruct path
             path = []
             while currentNode != startNode:
-                path.insert(0, currentNode.position)
+                path.insert(0, currentNode)
+                #if currentNode.materialBlock is not None:
+                    #path = []
                 currentNode = incomming_nodes[currentNode]
             
             for node in tmpNodes:
                 removeNode(node, graph)
-            return smoothPath(startPosition,path)
+            return path
         
         for edge in graph[currentNode]:
             #cost is calculated here
@@ -133,7 +135,7 @@ def aStar(startPosition: Vector3, targetPosition: Vector3, graph: dict[Node, lis
                 open_nodes.put((predicted_total, np.random.rand(), edge.node))
 
 
-    return [startPosition]
+    return []
 
 
 def slopeAnglePercentage(distance: float, height0: float, height1: float) -> float:
