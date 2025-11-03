@@ -57,7 +57,7 @@ def main(ctx: mlxp.Context) -> None:
                     currentTool = None
                 if event.key == pygame.K_SPACE:
                     simulationStarted = True
-                    simulation.updateNodeGraph()
+                    #simulation.updateNodeGraph()
 
         if mouseButtonHeld and not simulationStarted:
             drawElement(simulation, resolution, currentTool)

@@ -10,7 +10,8 @@ class State(Enum):
     DEMOLISH = 6
 
 class FSM:
-    def __init__(self, defaultState, defaultExit = None) -> None:
+    def __init__(self, name, defaultState, defaultExit = None, show = False) -> None:
+        self.name = name
         self.defaultState = defaultState
         if defaultExit is None:
             self.defaultExit = self.onExitPrint
@@ -19,19 +20,13 @@ class FSM:
         self.currentState = defaultState
         self.onExit = self.defaultExit
         self.transitions = {}
+        self.show = show
 
     def addTransition(self, state0, state1, transition, onEnter = None, onExit = None):
         if state0 in self.transitions.keys():
             self.transitions[state0].update({transition: (state1, onEnter, onExit)})
         else:
             self.transitions[state0] = {transition: (state1, onEnter, onExit)}
-    """
-    def setState(self, state, onExit):
-        if state not in self.transitions:
-            print("forced into non-existant state")
-        self.currentState = state
-        self.onExit = onExit
-    """    
 
     def resetState(self):
         self.currentState = self.defaultState
@@ -70,6 +65,8 @@ class FSM:
 
     #These two on exit and on enter conditions are mostly meant for debugging
     def onExitPrint(self, result = ""):
+        if not self.show:
+            return
         for n in range(result.count("\n")):
             result = result + "  "
         if self.currentState is not None:
@@ -77,10 +74,12 @@ class FSM:
                 result = result + f"exiting {self.currentState}"
                 print(result)
             else:
-                result = result + f"exiting sub fsm: {self.currentState}, \n"
-                self.currentState.onEnterPrint(result)
+                result = result + f"exiting sub fsm: {self.currentState.name}, \n"
+                self.currentState.onExitPrint(result)
 
     def onEnterPrint(self, result = ""):
+        if not self.show:
+            return
         for n in range(result.count("\n")):
             result = result + "  "
         if self.currentState is not None:
@@ -88,5 +87,18 @@ class FSM:
                 result = result + f"entering {self.currentState}"
                 print(result)
             else:
-                result = result + f"entering sub fsm: {self.currentState}, \n"
+                result = result + f"entering sub fsm: {self.currentState.name}, \n"
+                self.currentState.onEnterPrint(result)
+
+    def printState(self, result = ""):
+        if not self.show:
+            return
+        for n in range(result.count("\n")):
+            result = result + "  "
+        if self.currentState is not None:
+            if isinstance(self.currentState, State):
+                result = result + f"State {self.currentState}"
+                print(result)
+            else:
+                result = result + f"Sub fsm: {self.currentState.name}, \n"
                 self.currentState.onEnterPrint(result)

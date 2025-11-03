@@ -1,6 +1,7 @@
-from pygame import Vector3
+from pygame import Vector2,Vector3
 from Level import Level
 from CastleElement import MaterialBlock
+import numpy as np
 
 class Edge:
     def __init__(self, node, cost) -> None:
@@ -49,20 +50,12 @@ class Graph:
         del graph[toBeRemoved]
 
     def getNodeFromPosition(self, position: Vector3):
-        x = round(position.x) + 0.5
-        z = round(position.z) + 0.5
-        nodeid = (x,z)
+        nodeid = (np.floor(position.x)+0.5, np.floor(position.z) +0.5)
         if nodeid in self.nodes:
             return self.nodes[nodeid]
-
-    def getGraph(self):
-        return self.graph
-    
-    def getNodes(self):
-        return self.nodes
-    
     
 #  in an alternate universe you can look up by a tuple of x,z coordinates-> dict[tuple[float,float], dict[Node,list[Edge]]]
+#  but the graph class was better in the end instead of a super nested dict T_T
 def createNodeGraph(level : Level):
     nodes = {}
     graph = {}
@@ -70,7 +63,7 @@ def createNodeGraph(level : Level):
         for x in range(level.width):
             node = Node(Vector3(x+ .5,level.getCell(x,y),y+.5))
             nodes[node.position2] = node
-            castleCell = level.castleMap[y][x] 
+            castleCell = level.castleMap[y][x]
             if castleCell is not None:
                 node.setMaterialBlock(castleCell.material)
     for node in nodes.values():
@@ -90,7 +83,7 @@ def createNodeGraph(level : Level):
                     edges.append(tmpEdge)
             #graph[node.position2] = {node: edges}
             graph[node] = edges
-    print(len(level.getLevel()),len(level.castleMap),len(graph.keys()))
+    print(f"Initiating node graph; level : {len(level.getLevel())} * {len(level.getLevel()[0])}, graph nodes: {len(graph.keys())}")
     return graph, nodes
 
 def createHexNodeGrap(level: Level):

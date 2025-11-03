@@ -3,6 +3,7 @@ from CastleElement import ElementType
 from Simulation import Simulation
 from Units.Unit import Unit
 from Target import Target
+from Utils.Node import Graph
 
 
 class Renderer:
@@ -41,8 +42,14 @@ class Renderer:
         for y in range(level.height):
             for x in range(level.width):
                 castleElement = level.castleMap[y][x]
+                
                 if castleElement is not None:
                     color = self.elementTypeToColor[castleElement.elementType]
+                    rect = pygame.Rect(x * cellSize, y * cellSize, cellSize, cellSize)
+                    pygame.draw.rect(self.screen, color, rect)
+                node = self.simulation.ng.nodes[(x+0.5,y+0.5)]
+                if node.unit is not None:
+                    color = (255,0,0)
                     rect = pygame.Rect(x * cellSize, y * cellSize, cellSize, cellSize)
                     pygame.draw.rect(self.screen, color, rect)
 

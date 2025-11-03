@@ -111,9 +111,11 @@ def aStar(startPosition: Vector3, targetPosition: Vector3, nodeGraph: Graph,
         # we only really need the next node
         _, r, currentNode = open_nodes.get()
         
+        """
         if (currentNode.unit is not None and currentNode.unit is not unit):
             print(f" unit {currentNode.unit}, {unit}")
             print(f"price {distances[currentNode]}")
+        """
 
         if (currentNode in ignoreNodes ):
             print("this should have been ignored")
@@ -122,8 +124,11 @@ def aStar(startPosition: Vector3, targetPosition: Vector3, nodeGraph: Graph,
         if distances[currentNode] > budget:
             print(f"could not find path within budget {distances[currentNode]}")
             break
+
         if currentNode == targetNode:
+            """
             print(f"path cost {distances[currentNode]}")
+            """
 
             # backtrak to reconstruct path
             path = []

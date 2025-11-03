@@ -8,7 +8,7 @@ class AxeMan(Unit):
     def __init__(self, graph: Graph, level: Level, position: Vector2, health: int = 100, speed: float = 0.1, size=0.3):
         super().__init__(graph, level, position, health, speed, size)
         self.attackDamage = 10
-        self.attackRange = 0.5
+        self.attackRange = 0.8
         self.count = 0
         self.targetBlock = None
         self.attackCoolDown = False
@@ -18,13 +18,13 @@ class AxeMan(Unit):
         ######################################################
         #Demolishion FSM
         ######################################################
-        demolishFsm = FSM(State.MOVETO)
+        demolishFsm = FSM("demolish", State.MOVETO)
 
         demolishFsm.addTransition(
             State.MOVETO, State.DEMOLISH, self.closeEnoughToBlock
         )
         demolishFsm.addTransition(
-            State.DEMOLISH, State.WAIT, self.onAttackCoolDown, onEnter= (lambda: setattr(self, "count", 40))
+            State.DEMOLISH, State.WAIT, self.onAttackCoolDown, onEnter= (lambda: setattr(self, "count", 10))#, onExit=demolishFsm.resetState
         )
         demolishFsm.addTransition(
             State.WAIT, State.DEMOLISH, self.hasCounted, onExit= (lambda: setattr(self, "attackCoolDown", False))
@@ -33,7 +33,7 @@ class AxeMan(Unit):
         #######################################################
         #Top FSM
         #######################################################
-        fsm = FSM(State.WAIT)
+        fsm = FSM("top",State.WAIT)
 
         fsm.addTransition(
             State.MOVETO, demolishFsm, self.foundWallWeakPoint, 
@@ -79,7 +79,7 @@ class AxeMan(Unit):
         print(self.target)
         return (
             self.target is not None
-            and self.position.distance_to(self.target) < self.size *3 +0.6
+            and self.position.distance_to(self.target) < self.size + self.attackRange
         )
 
     
@@ -98,12 +98,15 @@ class AxeMan(Unit):
 
     #Action!
     def hitWall(self):
+        
+        self.fsm.printState()
+        
         block = self.targetBlock
         if block is not None and self.position.distance_to(block.position) < self.size + self.attackRange +0.6:
             mBlock = block.materialBlock
             if mBlock is not None:
                 mBlock.health -= self.attackDamage - mBlock.damageThreshold
-                print(f"attacking block {block.position}, {self.position} {mBlock.health} health left")
+                #print(f"attacking block {block.position}, {self.position} {mBlock.health} health left")
                 self.attackCoolDown = True
                 if mBlock.health < 0:   
                     self.destroyCastleElement(block)

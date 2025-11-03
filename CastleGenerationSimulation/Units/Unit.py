@@ -103,6 +103,7 @@ class Unit:
 
     def wait(self):
         self.count -= 1
+        print(self.count)
         pass
 
     def planPath(self):
@@ -113,19 +114,17 @@ class Unit:
                 costAdjustFunc= self.moveCostAdjust, ignoreNodes=self.nodesToSkip
             )
         print(len(self.path))
+        self.fsm.printState()
+
 
     def goToTarget(self):
         if self.notHasPlan():
             return
-        """
-        for nod in self.path[:10]:
-            if nod.unit is not None and nod.unit is not self: 
-                #for edge in self.ng.graph[nod]:
-                #    self.nodesToSkip.append(edge.node)
+
+        for node in self.path[:3]:
+            if node.unit is not None and node.unit is not self: 
                 self.planPath()
-                #self.nodesToSkip = []
                 break
-        """
                 #return
         self.move(self.path[0].position - self.position)
         if self.position.distance_to(self.path[0].position) <= self.size:
@@ -138,6 +137,10 @@ class Unit:
         node0 = self.ng.getNodeFromPosition(self.position)
         node1 = self.ng.getNodeFromPosition(newPosition)
         #node is none shield
+
+        ###
+        # this stuff needs to be exchanged for the most bare bones but workable hit detection ever
+        ###
         adjustmentVector = Vector3()
         if node0 is not None and node1 is not None:
             if node0 is not node1:
@@ -214,13 +217,26 @@ class Unit:
     # and how they account for wall pieces, this can be used to accomodate different kinds of behaviour
     def moveCostAdjust(self, node: Node, edge: Edge):
         cost = edge.cost
-        if edge.node.materialBlock is not None:
-            mBlock: MaterialBlock = edge.node.materialBlock
-            cost += mBlock.health
-        if edge.node.unit is not None and edge.node.unit is not self:
-            #print(f"big cost {edge.node.position}, {node.position}")
-            cost += 1000
+        cost += self.blockCost(edge.node)
+        cost += self.unitCost(node)
+        
+        #if perpendicular take corners into account
+        perp = abs(node.position.x - edge.node.position.x) + abs(node.position.z - edge.node.position.z)
+        if perp >= 2:
+            node1 = self.ng.nodes[(edge.node.position.x, node.position.z)]
+            node2 = self.ng.nodes[(node.position.x, edge.node.position.z)]
+            cost += max(self.blockCost(node1), self.blockCost(node2)) + max(self.unitCost(node1) , self.unitCost(node2))
+        
+        return cost
+    
+    def blockCost(self, node):
+        if node.materialBlock is not None:
+            mBlock: MaterialBlock = node.materialBlock
+            return mBlock.health
+        return 0.
+
+    def unitCost(self, node):
         if node.unit is not None and node.unit is not self:
             #print(f"big cost {node.position}, {edge.node.position}")
-            cost += 1000
-        return cost
+            return 800
+        return 0.
