@@ -1,9 +1,6 @@
-from typing import Optional
 import numpy as np
 
-from CastleElement import CastleElement
 from CastleGenerator import CastleGenerator
-
 
 class Level:
     def __init__(self, levelFilepath: str, castleGenerationFilepath: str, castleTilesFilePath: str):

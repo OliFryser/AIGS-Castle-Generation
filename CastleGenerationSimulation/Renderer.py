@@ -62,20 +62,20 @@ class Renderer:
             self.screen,
             (0, 0, 0),
             self.modelToViewSpace(unit.position),
-            5,
-            # unit.size
-            # * self.resolution
-            # * (1 + (unit.position[1] / self.simulation.level.max_height)),
+            #5,
+             unit.size
+             * self.resolution
+             * (1 + (unit.position[1] / self.simulation.level.max_height)),
         )
         pygame.draw.circle(
             self.screen,
             (0, 0, 255),
             self.modelToViewSpace(unit.position),
-            # unit.size
-            # * self.resolution
-            # * (1 + (unit.position[1] / self.simulation.level.max_height))
-            # +1
-            7,
+             unit.size
+             * self.resolution
+             * (1 + (unit.position[1] / self.simulation.level.max_height))
+             +1
+            #7,
         )
         if len(unit.path) > 1:
             pygame.draw.lines(

@@ -1,7 +1,6 @@
 from pygame import Vector3
 from Level import Level
 from CastleElement import MaterialBlock
-import numpy as np
 
 class Edge:
     def __init__(self, node, cost) -> None:
@@ -14,10 +13,14 @@ class Node:
         self.position = position
         self.position2 = (position.x,position.z)
         self.materialBlock = None
+        self.unit = None
 
     def setMaterialBlock(self, materialBlock: MaterialBlock):
         self.materialBlock = materialBlock
 
+    ##
+    # this is a good idea, but slightly annoying you can't get a key by a key from a dict, then it loses a bit of usability
+    ##
     def __hash__(self) -> int:
         return hash((self.position.x,self.position.z))
     
@@ -25,7 +28,41 @@ class Node:
         if not isinstance(value, Node):
             return False
         return (self.position2 == value.position2)
-            
+    
+class Graph:
+    def __init__(self, level: Level) -> None:
+        self.graph: dict[Node, list[Edge]] = {}
+        self.nodes: dict[tuple[float,float], Node] = {}
+        self.graph, self.nodes = createNodeGraph(level)
+
+    def removeNode(self, toBeRemoved: Node):
+        graph = self.graph
+        if toBeRemoved not in graph:
+            print(f"node {toBeRemoved.position} is not in graph")
+            return
+        edges = graph[toBeRemoved]
+        for edge in edges:
+            for nedge in graph[edge.node]:
+                if nedge.node == toBeRemoved:
+                    graph[edge.node].remove(nedge)
+
+        del graph[toBeRemoved]
+
+    def getNodeFromPosition(self, position: Vector3):
+        x = round(position.x) + 0.5
+        z = round(position.z) + 0.5
+        nodeid = (x,z)
+        if nodeid in self.nodes:
+            return self.nodes[nodeid]
+
+    def getGraph(self):
+        return self.graph
+    
+    def getNodes(self):
+        return self.nodes
+    
+    
+#  in an alternate universe you can look up by a tuple of x,z coordinates-> dict[tuple[float,float], dict[Node,list[Edge]]]
 def createNodeGraph(level : Level):
     nodes = {}
     graph = {}
@@ -51,9 +88,10 @@ def createNodeGraph(level : Level):
                     tmpNode = nodes[v2]
                     tmpEdge = Edge(tmpNode, node.position.distance_to(tmpNode.position))
                     edges.append(tmpEdge)
+            #graph[node.position2] = {node: edges}
             graph[node] = edges
     print(len(level.getLevel()),len(level.castleMap),len(graph.keys()))
-    return graph
+    return graph, nodes
 
 def createHexNodeGrap(level: Level):
     nodes = {}
@@ -89,9 +127,11 @@ def createHexNodeGrap(level: Level):
                     tmpEdge = Edge(tmpNode, node.position.distance_to(tmpNode.position))
                     edges.append(tmpEdge)
             #print(edges)
-            graph[node] = edges
-    
-    return graph
+            graph[node.position2] = {node: edges}
+            #graph[node] = edges
+
+    print(len(level.getLevel()),len(level.castleMap),len(graph.keys()))
+    return graph, nodes
 
 
 def getHexSquares(x: float, y: float):
@@ -102,14 +142,4 @@ def getHexSquares(x: float, y: float):
             
     ]
 
-def removeNode(toBeRemoved: Node, graph: dict[Node, list[Edge]]):
-    if toBeRemoved not in graph:
-        print(f"node {toBeRemoved.position} is not in graph")
-        return
-    edges = graph[toBeRemoved]
-    for edge in edges:
-        for nedge in graph[edge.node]:
-            if nedge.node == toBeRemoved:
-                graph[edge.node].remove(nedge)
 
-    del graph[toBeRemoved]

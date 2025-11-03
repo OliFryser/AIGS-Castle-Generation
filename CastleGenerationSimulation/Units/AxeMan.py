@@ -2,10 +2,10 @@ from pygame import Vector2
 from Level import Level
 from Units.Unit import Unit
 from Utils.FSM import FSM,State
-from Utils.Node import Node
+from Utils.Node import Node, Graph
 
 class AxeMan(Unit):
-    def __init__(self, graph: dict, level: Level, position: Vector2, health: int = 100, speed: float = 0.2, size=0.2):
+    def __init__(self, graph: Graph, level: Level, position: Vector2, health: int = 100, speed: float = 0.1, size=0.3):
         super().__init__(graph, level, position, health, speed, size)
         self.attackDamage = 10
         self.attackRange = 0.5
@@ -24,7 +24,7 @@ class AxeMan(Unit):
             State.MOVETO, State.DEMOLISH, self.closeEnoughToBlock
         )
         demolishFsm.addTransition(
-            State.DEMOLISH, State.WAIT, self.onAttackCoolDown, onEnter= (lambda: setattr(self, "count", 100))
+            State.DEMOLISH, State.WAIT, self.onAttackCoolDown, onEnter= (lambda: setattr(self, "count", 40))
         )
         demolishFsm.addTransition(
             State.WAIT, State.DEMOLISH, self.hasCounted, onExit= (lambda: setattr(self, "attackCoolDown", False))
@@ -40,7 +40,7 @@ class AxeMan(Unit):
             self.setNodeTarget, onExit= self.targetGoal
         )
         fsm.addTransition(
-            State.MOVETO, State.STOP, self.closeEnough, fsm.onEnterPrint, fsm.onExitPrint,
+            State.MOVETO, State.STOP, self.closeEnough
         )
         fsm.addTransition(
             State.MOVETO, State.WAIT, self.notHasPlan,(lambda: setattr(self, "count", 15)), fsm.onExitPrint,
@@ -68,6 +68,8 @@ class AxeMan(Unit):
         
     #Transition conditions
     def foundWallWeakPoint(self):
+        if self.path == []:
+            return False
         return (
             self.path[0].materialBlock is not None
         )
@@ -101,13 +103,13 @@ class AxeMan(Unit):
             mBlock = block.materialBlock
             if mBlock is not None:
                 mBlock.health -= self.attackDamage - mBlock.damageThreshold
-                print(f"attacking block {mBlock.health} health left")
+                print(f"attacking block {block.position}, {self.position} {mBlock.health} health left")
                 self.attackCoolDown = True
                 if mBlock.health < 0:   
                     self.destroyCastleElement(block)
             self.targetBlock = None
-
     
+    #this should probably be somewhere else and handled on a different level
     def destroyCastleElement(self, node: Node):
         node.materialBlock = None
         self.level.castleMap[int(node.position.z - 0.5)][int(node.position.x - 0.5)] = None

@@ -3,13 +3,13 @@ from Level import Level
 from Utils.FSM import FSM
 from Utils.FSM import State
 from Utils.PathFinding import aStar
-from Utils.Node import Node, Edge
+from Utils.Node import Node, Edge, Graph
 from CastleElement import MaterialBlock
 
 class Unit:
     def __init__(
         self,
-        graph: dict,
+        graph: Graph,
         level: Level,
         position: Vector2,
         health: int = 100,
@@ -32,6 +32,7 @@ class Unit:
         self.nodesToSkip = []
 
     def step(self):
+        #print(self)
         self.fsm.updateState()
         state = self.fsm.getState()
         if state in self.stateMap:
@@ -102,41 +103,123 @@ class Unit:
 
     def wait(self):
         self.count -= 1
-        print(self.count)
         pass
 
     def planPath(self):
         if self.target is None:
             return
         self.path = aStar(
-                self.position, self.target, self.ng, costAdjustFunc= self.moveCostAdjust
+                self.position, self.target, self.ng, unit= self,
+                costAdjustFunc= self.moveCostAdjust, ignoreNodes=self.nodesToSkip
             )
         print(len(self.path))
 
     def goToTarget(self):
         if self.notHasPlan():
             return
+        for nod in self.path[:10]:
+            if nod.unit is not None and nod.unit is not self: 
+                #for edge in self.ng.graph[nod]:
+                #    self.nodesToSkip.append(edge.node)
+                self.planPath()
+                #self.nodesToSkip = []
+                break
+                #return
         self.move(self.path[0].position - self.position)
         if self.position.distance_to(self.path[0].position) <= self.size:
             self.path.pop(0)
 
     def move(self, direction: Vector3):
-        direction.normalize
+        direction.normalize()
         newPosition = self.position + direction * self.speed
+        # "hit detection"
+        node0 = self.ng.getNodeFromPosition(self.position)
+        node1 = self.ng.getNodeFromPosition(newPosition)
+        #node is none shield
+        adjustmentVector = Vector3()
+        if node0 is not None and node1 is not None:
+            if node0 is not node1:
+                node0.unit = None
+                node1.unit = self
+            
+                    
+
         for x,y in self.level.getImmediateNeighbors(newPosition.x -0.5,self.position.z-0.5):
             #if walking into a castle bit nudge a bit away
             if self.level.castleMap[y][x] is not None:
                 tilePosition = Vector3(x+0.5,self.level.getCell(x,y),y+0.5)
+                node = self.ng.getNodeFromPosition(newPosition)
+                if node is not None:
+                    print(node.materialBlock)
                 if newPosition.distance_to(tilePosition) < self.size *2:
                     newPosition = self.position + (direction + (self.position - tilePosition).normalize() * 2).normalize() * self.speed
 
         self.position = newPosition
+        """
+            #if the nodes are the same keep traveling through
+            if node0 == node1:
+                return
+                self.position = newPosition
+            # now we are moving onto a new node
+            else:
+                #if there is a unit on the node
+                if node1.unit is not None and node1.unit is not self:
+                    #self.adjustMoveVector(direction, newPosition,node1.position)
+                    #print("unit on node") 
+                    #self.move(- direction)# *self.speed
+                    #self.planPath()
+                    #self.path = [node0, self.ng.nodes[(node0.position.x - (node0.position.x - node1.position.x),(node0.position.z - (node0.position.z - node1.position.z) ))]]
+                    #self.nodesToSkip =[ #[node0, self.ng.nodes[(node0.position.x - (node0.position.x - node1.position.x),(node0.position.z - (node0.position.z - node1.position.z) ))]]
+                    for edge in self.ng.graph[node1]:
+                        self.nodesToSkip.append(edge.node)
+
+                    #node1, 
+                    #self.ng.nodes[(node1.position.x +1, node1.position.z)],
+                    #self.ng.nodes[(node1.position.x, node1.position.z +1)],
+                    #self.ng.nodes[(node1.position.x -1, node1.position.z)],
+                    #self.ng.nodes[(node1.position.x, node1.position.z-1)],
+                    #]
+                    
+                    self.path = aStar(
+                        node0.position, self.target, self.ng, unit= self,
+                        costAdjustFunc= self.moveCostAdjust, ignoreNodes=[node1]
+                    )
+                    self.nodesToSkip = []
+                    return
+                #if there is a block on the node
+                if node1.materialBlock is not None:
+                    #self.adjustMoveVector(direction, newPosition, node1.position)
+                    return
+
+                    pass
+
+                node0.unit = None
+                node1.unit = self
+                self.position = newPosition
+            """
+
     
+
+    def adjustMoveVector(self, direction, newPosition, hitPosition):
+
+        if newPosition.distance_to(hitPosition) < self.size *2:
+                    newPosition = self.position + (direction + (self.position - hitPosition).normalize()).normalize() * self.speed
+        self.position = newPosition
+        #newDirection = self.position + (direction + (self.position - hitPosition).normalize())
+        
+        #self.move(newDirection)
+
     # Heuristic for a star calculation, this is here because of relevance to individual units movement
     # and how they account for wall pieces, this can be used to accomodate different kinds of behaviour
     def moveCostAdjust(self, node: Node, edge: Edge):
         cost = edge.cost
-        if node.materialBlock is None:
-            return cost
-        mBlock: MaterialBlock = node.materialBlock
-        return cost + mBlock.health
+        if edge.node.materialBlock is not None:
+            mBlock: MaterialBlock = edge.node.materialBlock
+            cost += mBlock.health +50
+        if edge.node.unit is not None and edge.node.unit is not self:
+            print(f"big cost {edge.node.position}, {node.position}")
+            cost += 1000
+        if node.unit is not None and node.unit is not self:
+            print(f"big cost {node.position}, {edge.node.position}")
+            cost += 1000
+        return cost
