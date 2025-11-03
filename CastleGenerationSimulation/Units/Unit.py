@@ -103,7 +103,7 @@ class Unit:
 
     def wait(self):
         self.count -= 1
-        print(self.count)
+        #print(self.count)
         pass
 
     def planPath(self):
@@ -121,7 +121,7 @@ class Unit:
         if self.notHasPlan():
             return
 
-        for node in self.path[:3]:
+        for node in self.path[:5]:
             if node.unit is not None and node.unit is not self: 
                 self.planPath()
                 break
