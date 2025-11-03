@@ -140,9 +140,11 @@ def aStar(startPosition: Vector3, targetPosition: Vector3, nodeGraph: Graph,
         for edge in graph[currentNode]:
             #cost is calculated here
             cost = costAdjustFunc(currentNode, edge)
+            """
             if cost > 200:
                 print(cost)
                 #continue
+            """
                 
             new_distance = distances[currentNode] + cost
 

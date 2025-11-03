@@ -117,6 +117,7 @@ class Unit:
     def goToTarget(self):
         if self.notHasPlan():
             return
+        """
         for nod in self.path[:10]:
             if nod.unit is not None and nod.unit is not self: 
                 #for edge in self.ng.graph[nod]:
@@ -124,6 +125,7 @@ class Unit:
                 self.planPath()
                 #self.nodesToSkip = []
                 break
+        """
                 #return
         self.move(self.path[0].position - self.position)
         if self.position.distance_to(self.path[0].position) <= self.size:
@@ -141,16 +143,15 @@ class Unit:
             if node0 is not node1:
                 node0.unit = None
                 node1.unit = self
-            
-                    
-
+        
         for x,y in self.level.getImmediateNeighbors(newPosition.x -0.5,self.position.z-0.5):
             #if walking into a castle bit nudge a bit away
             if self.level.castleMap[y][x] is not None:
                 tilePosition = Vector3(x+0.5,self.level.getCell(x,y),y+0.5)
                 node = self.ng.getNodeFromPosition(newPosition)
                 if node is not None:
-                    print(node.materialBlock)
+                    pass
+                    #print(node.materialBlock)
                 if newPosition.distance_to(tilePosition) < self.size *2:
                     newPosition = self.position + (direction + (self.position - tilePosition).normalize() * 2).normalize() * self.speed
 
@@ -215,11 +216,11 @@ class Unit:
         cost = edge.cost
         if edge.node.materialBlock is not None:
             mBlock: MaterialBlock = edge.node.materialBlock
-            cost += mBlock.health +50
+            cost += mBlock.health
         if edge.node.unit is not None and edge.node.unit is not self:
-            print(f"big cost {edge.node.position}, {node.position}")
+            #print(f"big cost {edge.node.position}, {node.position}")
             cost += 1000
         if node.unit is not None and node.unit is not self:
-            print(f"big cost {node.position}, {edge.node.position}")
+            #print(f"big cost {node.position}, {edge.node.position}")
             cost += 1000
         return cost
