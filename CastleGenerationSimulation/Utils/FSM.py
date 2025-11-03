@@ -91,14 +91,12 @@ class FSM:
                 self.currentState.onEnterPrint(result)
 
     def printState(self, result = ""):
-        if not self.show:
-            return
         for n in range(result.count("\n")):
             result = result + "  "
         if self.currentState is not None:
             if isinstance(self.currentState, State):
-                result = result + f"State {self.currentState}"
+                result = result + f"{self.currentState}"
                 print(result)
             else:
                 result = result + f"Sub fsm: {self.currentState.name}, \n"
-                self.currentState.onEnterPrint(result)
+                self.currentState.printState(result)

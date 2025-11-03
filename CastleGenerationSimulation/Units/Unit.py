@@ -114,7 +114,7 @@ class Unit:
                 costAdjustFunc= self.moveCostAdjust, ignoreNodes=self.nodesToSkip
             )
         print(len(self.path))
-        self.fsm.printState()
+        #self.fsm.printState()
 
 
     def goToTarget(self):
@@ -138,10 +138,16 @@ class Unit:
         node1 = self.ng.getNodeFromPosition(newPosition)
         #node is none shield
 
+        frontNodes = self.getFrontNodes(direction)
+        for tnode in frontNodes:
+            if tnode.materialBlock is not None:
+                hit = self.sweepingCircleRect(direction,(tnode.position.x,tnode.position.z,1,1))
+                #print(hit)
+
         ###
         # this stuff needs to be exchanged for the most bare bones but workable hit detection ever
         ###
-        adjustmentVector = Vector3()
+        
         if node0 is not None and node1 is not None:
             if node0 is not node1:
                 node0.unit = None
@@ -202,7 +208,34 @@ class Unit:
                 self.position = newPosition
             """
 
-    
+    def getFrontNodes(self, direction):
+        node = self.ng.getNodeFromPosition(self.position)
+        (x, y) = node.position2
+
+        dx = int(round(direction.x))
+        dy = int(round(direction.z))
+        nodes = [self.ng.nodes[(x+dx,y+dy)]]
+        if abs(dx) + abs(dy) >=2:
+            
+            nodes = nodes + [
+                self.ng.nodes[(x+dx,y)],
+                self.ng.nodes[(x,y+dy)],
+                ]           
+        elif dx == 0:
+
+            nodes = nodes + [
+                self.ng.nodes[(x+1, y+dy)],
+                self.ng.nodes[(x-1, y+dy)],
+            ]
+        elif dy == 0:
+
+            nodes = nodes + [
+                self.ng.nodes[(x+dx, y+1)],
+                self.ng.nodes[(x+dx, y-1)],
+            ]
+            
+        return nodes
+
 
     def adjustMoveVector(self, direction, newPosition, hitPosition):
 
@@ -213,7 +246,7 @@ class Unit:
         
         #self.move(newDirection)
 
-    # Heuristic for a star calculation, this is here because of relevance to individual units movement
+    # Heuristic for a-star calculation, this is here because of relevance to individual units movement
     # and how they account for wall pieces, this can be used to accomodate different kinds of behaviour
     def moveCostAdjust(self, node: Node, edge: Edge):
         cost = edge.cost
@@ -238,5 +271,37 @@ class Unit:
     def unitCost(self, node):
         if node.unit is not None and node.unit is not self:
             #print(f"big cost {node.position}, {edge.node.position}")
-            return 800
+            return 400
         return 0.
+    
+    #this should probably get adjusted
+    #I am not proud of this
+    def sweepingCircleRect(self, direction, rect):
+        r = self.size
+        p0 = self.position
+        (x, z, w, h) = rect
+        # Expand rect by radius
+        x -= r
+        z -= r
+        w += 2 * r
+        h += 2 * r
+
+        # Ray parameters
+        inv_dir_x = 1.0 / direction.x if direction.x != 0 else float('inf')
+        inv_dir_z = 1.0 / direction.z if direction.z != 0 else float('inf')
+
+        t1 = (x - p0.x) * inv_dir_x
+        t2 = (x + w - p0.x) * inv_dir_x
+        t3 = (z - p0.z) * inv_dir_z
+        t4 = (z + h - p0.z) * inv_dir_z
+
+        tmin = max(min(t1, t2), min(t3, t4))
+        tmax = min(max(t1, t2), max(t3, t4))
+
+        if tmax < 0 or tmin > tmax:
+            return None  # no hit
+
+        # collision fraction along direction
+        t_hit = max(0, tmin)
+        hit_point = p0 + direction * t_hit
+        return t_hit, hit_point

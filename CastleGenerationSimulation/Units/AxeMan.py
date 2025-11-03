@@ -63,7 +63,7 @@ class AxeMan(Unit):
             State.STOP: self.wait,
             State.PLANPATH : self.planPath,
             State.WAIT : self.wait,
-            State.DEMOLISH : self.hitWall
+            State.DEMOLISH : self.strikeWall
             }
         
     #Transition conditions
@@ -75,8 +75,8 @@ class AxeMan(Unit):
         )
     
     def closeEnoughToBlock(self):
-        print(self.position.distance_to(self.target))
-        print(self.target)
+        #print(self.position.distance_to(self.target))
+        #print(self.target)
         return (
             self.target is not None
             and self.position.distance_to(self.target) < self.size + self.attackRange
@@ -97,9 +97,9 @@ class AxeMan(Unit):
         return self.attackCoolDown
 
     #Action!
-    def hitWall(self):
+    def strikeWall(self):
         
-        self.fsm.printState()
+        #self.fsm.printState()
         
         block = self.targetBlock
         if block is not None and self.position.distance_to(block.position) < self.size + self.attackRange +0.6:
@@ -110,7 +110,7 @@ class AxeMan(Unit):
                 self.attackCoolDown = True
                 if mBlock.health < 0:   
                     self.destroyCastleElement(block)
-            self.targetBlock = None
+                    self.targetBlock = None
     
     #this should probably be somewhere else and handled on a different level
     def destroyCastleElement(self, node: Node):
