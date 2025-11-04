@@ -1,17 +1,19 @@
-from typing import Optional
 import numpy as np
 
-from CastleElement import CastleElement
 from CastleGenerator import CastleGenerator
+from Utils.Timer import Timer
 
 
 class Level:
     def __init__(self, levelFilepath: str, castleGenerationFilepath: str):
         self.createTerrainMap(levelFilepath)
 
+        timer = Timer("Castle generator")
+        timer.start()
         castleGenerator = CastleGenerator(
             castleGenerationFilepath, self.width, self.height
         )
+        timer.stop()
 
         self.castleMap = castleGenerator.getCastleMapInTerrainScale()
 
