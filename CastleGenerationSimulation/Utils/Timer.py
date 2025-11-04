@@ -11,4 +11,4 @@ class Timer:
 
     def stop(self):
         elapsedTime = time.time() - self.startTime
-        print(f"Ended timer for {self.name} - Took {elapsedTime:.3f} s")
+        print(f"Stopped timer for {self.name} - Took {elapsedTime:.3f} s")
