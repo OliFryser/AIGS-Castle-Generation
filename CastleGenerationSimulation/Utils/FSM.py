@@ -13,10 +13,7 @@ class FSM:
     def __init__(self, name, defaultState, defaultExit = None, show = False) -> None:
         self.name = name
         self.defaultState = defaultState
-        if defaultExit is None:
-            self.defaultExit = self.onExitPrint
-        else:
-            self.defaultExit = defaultExit
+        self.defaultExit = defaultExit
         self.currentState = defaultState
         self.onExit = self.defaultExit
         self.transitions = {}
@@ -42,12 +39,16 @@ class FSM:
                 continue
             
             if self.onExit is not None:
-                self.onExit()
+                #print(f"exit {self.onExit}")
+                func, args, kwargs = self.onExit
+                func(*args,**kwargs)
             self.onExitPrint()
             state, onEnter, onExit = stateTuple
             self.currentState = state
             if onEnter is not None:
-                onEnter()
+                #print(f"enter {onEnter}")
+                func, args, kwargs = onEnter
+                func(*args,**kwargs)
             self.onEnterPrint()
             self.onExit = onExit
         

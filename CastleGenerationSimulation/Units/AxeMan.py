@@ -24,10 +24,10 @@ class AxeMan(Unit):
             State.MOVETO, State.DEMOLISH, self.closeEnoughToBlock
         )
         demolishFsm.addTransition(
-            State.DEMOLISH, State.WAIT, self.onAttackCoolDown, onEnter= (lambda: setattr(self, "count", 10))#, onExit=demolishFsm.resetState
+            State.DEMOLISH, State.WAIT, self.onAttackCoolDown, onEnter= (self.setTimer,(15,),{})
         )
         demolishFsm.addTransition(
-            State.WAIT, State.DEMOLISH, self.hasCounted, onExit= (lambda: setattr(self, "attackCoolDown", False))
+            State.WAIT, State.DEMOLISH, self.hasCounted, onExit= (self.setAttackCooldown, (False,), {})
         )
 
         #######################################################
@@ -37,24 +37,24 @@ class AxeMan(Unit):
 
         fsm.addTransition(
             State.MOVETO, demolishFsm, self.foundWallWeakPoint, 
-            self.setNodeTarget, onExit= self.targetGoal
+            (self.setNodeTargetAndPath, (), {}), onExit= (self.targetGoal, (), {})
         )
         fsm.addTransition(
             State.MOVETO, State.STOP, self.closeEnough
         )
         fsm.addTransition(
-            State.MOVETO, State.WAIT, self.notHasPlan,(lambda: setattr(self, "count", 15)), fsm.onExitPrint,
+            State.MOVETO, State.WAIT, self.notHasPlan,(self.setTimer,(15,),{})
         )
         fsm.addTransition(
             State.WAIT, State.MOVETO, self.hasCounted,
-             self.planPath, (lambda: setattr(self, "count", 0)),
+             (self.planPath, (), {}), (self.setTimer, (1,),{}),
         )
         fsm.addTransition(
             State.STOP, State.WAIT,
             self.outOfReach
         )
         fsm.addTransition(
-            demolishFsm, State.WAIT, self.nodeTargetDestroyed, (lambda: setattr(self, "count", 4))
+            demolishFsm, State.WAIT, self.nodeTargetDestroyed, (self.setTimer, (4,),{})
         )
 
         self.fsm = fsm
@@ -75,26 +75,41 @@ class AxeMan(Unit):
         )
     
     def closeEnoughToBlock(self):
-        #print(self.position.distance_to(self.target))
-        #print(self.target)
         return (
             self.target is not None
             and self.position.distance_to(self.target) < self.size + self.attackRange
         )
-
-    
-    #transition thingy
-    def setNodeTarget(self):
-        node = self.path[0]
-        self.targetBlock = node
-        self.target = node.position
-        self.path = [self.path[0]]
 
     def nodeTargetDestroyed(self):
         return self.targetBlock is None
     
     def onAttackCoolDown(self):
         return self.attackCoolDown
+    
+    ################
+    # Enter /exit
+    ###########################
+
+
+    #three/four functions, some might be redundant
+    
+    def setNodeTargetAndPath(self):
+        node = self.path[0]
+        self.targetBlock = node
+        self.target = node.position
+        self.path = [node]
+
+    def setTargetBlock(self, node):
+        self.targetBlock = node
+    
+    def setPath(self, path):
+        self.path = path
+
+    def setTarget(self, position):
+        self.target = position
+
+    def setAttackCooldown(self, boo):
+        self.attackCoolDown = boo
 
     #Action!
     def strikeWall(self):

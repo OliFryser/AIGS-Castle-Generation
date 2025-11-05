@@ -73,7 +73,7 @@ class Unit:
             }
 
     ######################
-    # Transitions
+    # Transition bools
     ######################
     def closeEnough(self):
         return (
@@ -96,6 +96,12 @@ class Unit:
     
     def hasCounted(self):
         return self.count < 1
+    
+    ##########################
+    # on enter / exit
+    #####################################
+    def setTimer(self, n):
+        self.count = n
 
     ######################
     # Actions
@@ -130,7 +136,9 @@ class Unit:
         if self.position.distance_to(self.path[0].position) <= self.size:
             self.path.pop(0)
 
-    def move(self, direction: Vector3):
+    def move(self, direction: Vector3, n =0):
+        if n > 8:
+            return
         direction.normalize()
         newPosition = self.position + direction * self.speed
         # "hit detection"
@@ -141,8 +149,30 @@ class Unit:
         frontNodes = self.getFrontNodes(direction)
         for tnode in frontNodes:
             if tnode.materialBlock is not None:
+                
                 hit = self.sweepingCircleRect(direction,(tnode.position.x,tnode.position.z,1,1))
                 #print(hit)
+                
+                pass
+                """
+                closestPoint = np.clip(circle_center, rect_min, rect_max)
+                offset = circle_center - closest_point
+                distance = length(offset)
+
+                if distance < circle_radius:
+                    push = normalize(offset)
+                    new_direction = normalize(direction + push)
+                    retry move with new_direction
+                """
+            if tnode.unit is not None and tnode.unit is not self:
+                other = tnode.unit
+                if newPosition.distance_to(other.position) < self.size + other.size:
+                # compute push away from other
+                    push = (self.position - other.position).normalize()
+                    # combine with intended direction
+                    new_direction = (direction + push).normalize()
+                    self.move(new_direction, n+1)
+                    
 
         ###
         # this stuff needs to be exchanged for the most bare bones but workable hit detection ever
@@ -236,7 +266,7 @@ class Unit:
             
         return nodes
 
-
+    """
     def adjustMoveVector(self, direction, newPosition, hitPosition):
 
         if newPosition.distance_to(hitPosition) < self.size *2:
@@ -246,6 +276,7 @@ class Unit:
         
         #self.move(newDirection)
 
+    """
     # Heuristic for a-star calculation, this is here because of relevance to individual units movement
     # and how they account for wall pieces, this can be used to accomodate different kinds of behaviour
     def moveCostAdjust(self, node: Node, edge: Edge):
