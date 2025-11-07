@@ -1,5 +1,6 @@
 from enum import IntEnum
 from CastleElement import CastleElement, ElementType
+import numpy as np
 
 
 class Direction(IntEnum):
@@ -36,9 +37,16 @@ class CastleGenerationAgent:
             return None
         return self.instructions.pop()
 
-    def placeNextElement(self, elementType: ElementType):
-        self.moveCursorInDirection()
-        self.grid[self.cursor[1]][self.cursor[0]] = CastleElement(elementType)
+    def placeNextElement(self, tile, elemap):
+        self.moveCursorInDirection(len(tile[0]))
+        if self.direction == Direction.UP or self.direction == Direction.DOWN:
+            tile = np.transpose(tile)
+        for n in range(len(tile)):
+            for i in range(len(tile[n])):
+                    
+                t  = tile[n][i]
+                if t in elemap:
+                    self.grid[self.cursor[1]+ n][self.cursor[0] + i] = CastleElement(elemap[t])
 
     def turnClockwise(self):
         # Add 1 modulo 4
@@ -48,22 +56,23 @@ class CastleGenerationAgent:
         # Subtract 1 modulo 4
         self.direction = Direction((self.direction - 1) % 4)
 
-    def moveCursorInDirection(self):
+    def moveCursorInDirection(self, range = 1):
         offset = self.directionToOffset[self.direction]
-        self.cursor = (self.cursor[0] + offset[0], self.cursor[1] + offset[1])
+        self.cursor = (self.cursor[0] + offset[0] * range, self.cursor[1] + offset[1] * range)
 
 
 class CastleGenerator:
-    def __init__(self, filepath, width: int, height: int):
+    def __init__(self, filepath, tilePath, width: int, height: int):
         self.letterToElementType = {
             "K": ElementType.KEEP,
             "W": ElementType.WALL,
             "G": ElementType.GATE,
             "T": ElementType.TOWER,
         }
+        self.tileMap = self.loadTileMap(tilePath)
 
-        self.width = width // 3
-        self.height = height // 3
+        self.width = width #// 3
+        self.height = height #// 3
 
         self.grid: list[list[None | CastleElement]] = [
             [None for _ in range(self.width)] for _ in range(self.height)
@@ -71,9 +80,18 @@ class CastleGenerator:
 
         # Place keep in center
         self.center = (self.width // 2, self.height // 2)
-        self.grid[self.center[1]][self.center[0]] = CastleElement(ElementType.KEEP)
+        #self.grid[self.center[1]][self.center[0]] = CastleElement(ElementType.KEEP)
 
         self.generate(filepath)
+
+    def loadTileMap(self, filepath: str):
+        
+        tileMap = {}
+        for element in ElementType:
+            with open(filepath + element.value + ".txt", "r") as f:
+                tileMap[element] = [line.strip().split() for line in f]
+            f.close()
+        return tileMap
 
     def generate(self, filepath: str):
         with open(filepath, "r") as f:
@@ -112,10 +130,10 @@ class CastleGenerator:
                 )
             else:
                 elementType = self.letterToElementType[instruction]
-                agent.placeNextElement(elementType)
+                agent.placeNextElement(self.tileMap[elementType], self.letterToElementType)
 
     def getCastleMapInTerrainScale(self):
-        scale = 3
+        scale = 1
         return [
             [cell for cell in row for _ in range(scale)]
             for row in self.grid

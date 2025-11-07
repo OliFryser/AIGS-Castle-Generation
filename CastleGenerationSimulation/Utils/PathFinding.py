@@ -1,9 +1,11 @@
+import random
 from pygame import Vector3
 from queue import PriorityQueue
-from Utils.Node import Node, Edge, removeNode
+from Utils.Node import Node, Edge, Graph
 import numpy as np
 
 def smoothPath(startPosition, path, angleTolerance=15):
+    return path
     if not path:
         return []
 
@@ -20,14 +22,31 @@ def smoothPath(startPosition, path, angleTolerance=15):
         # when we deviate too far from the current direction, finalize path bundle
         if abs(angle) > angleTolerance:
             smoothed.append(path[i])
+            break
             bundleStart = path[i]
-            print(n)
             n=0
     
-    smoothed.append(path[-1])
+    #smoothed.append(path[-1])
     return smoothed
 
-def getAsNodeOnGraph(startPosition: Vector3 , graph: dict[Node, list[Edge]], tmpNodes):
+#get as node on Graph 2 gets the 3 closest nodes by distance
+def getAsNodeOnGraph2(startPosition: Vector3 , graph: dict[Node, list[Edge]], tmpNodes, ignoreNodes):
+    node = Node(startPosition)
+    if node in graph:
+        return node
+    positions = sorted(graph.keys(), key=lambda node: node not in ignoreNodes and node.position.distance_to(startPosition))[:5]
+    edges = []
+    for tmpNode in positions:
+        graph[tmpNode].append(Edge(node, tmpNode.position.distance_to(node.position)))
+        tmpEdge = Edge(tmpNode, node.position.distance_to(tmpNode.position))
+        edges.append(tmpEdge)
+
+    graph[node] = edges
+    tmpNodes.append(node)
+    return node
+
+#get as node on graph gets the four closest nodes directly from the graph
+def getAsNodeOnGraph(startPosition: Vector3 , graph: dict[Node, list[Edge]], tmpNodes, ignoreNodes):
     node = Node(startPosition)
     if node in graph:
         return node
@@ -49,7 +68,7 @@ def getAsNodeOnGraph(startPosition: Vector3 , graph: dict[Node, list[Edge]], tmp
     edges = []
     for pos in positions:
         tmpNode = Node(pos)
-        if tmpNode in graph:
+        if tmpNode not in ignoreNodes and tmpNode in graph:
             graph[tmpNode].append(Edge(node, tmpNode.position.distance_to(node.position)))
             tmpEdge = Edge(tmpNode, node.position.distance_to(tmpNode.position))
             edges.append(tmpEdge)
@@ -58,17 +77,28 @@ def getAsNodeOnGraph(startPosition: Vector3 , graph: dict[Node, list[Edge]], tmp
     tmpNodes.append(node)
     return node
 
-def aStar(startPosition: Vector3, endPosition: Vector3, graph: dict[Node, list[Edge]], heuristic):
+def distanceCost(node: Node, edge: Edge):
+    return edge.cost
+
+def euclidianDistance(node0: Node, node1: Node):
+    return node0.position.distance_to(node1.position)
+
+def aStar(startPosition: Vector3, targetPosition: Vector3, nodeGraph: Graph,
+          unit,
+          heuristic = euclidianDistance, costAdjustFunc = distanceCost, budget = 1000, 
+          ignoreNodes: list[Node] = []
+          ):
+    graph = nodeGraph.graph
     tmpNodes = []
-    startNode = getAsNodeOnGraph(startPosition, graph, tmpNodes)
-    targetNode = getAsNodeOnGraph(endPosition, graph, tmpNodes)
+    startNode = getAsNodeOnGraph(startPosition, graph, tmpNodes, ignoreNodes)
+    targetNode = getAsNodeOnGraph(targetPosition, graph, tmpNodes, ignoreNodes)
     # distances is for storing the shortest distance to node
     distances: dict[Node, float] = {startNode: 0.0}
     open_nodes = PriorityQueue()
     # random is for tie-breaking distances random
     open_nodes.put(
         (
-            heuristic(startPosition, endPosition),
+            heuristic(startNode, targetNode),
             np.random.rand(),
             startNode,
         )
@@ -80,36 +110,61 @@ def aStar(startPosition: Vector3, endPosition: Vector3, graph: dict[Node, list[E
     while open_nodes.not_empty:
         # we only really need the next node
         _, r, currentNode = open_nodes.get()
+        
+        """
+        if (currentNode.unit is not None and currentNode.unit is not unit):
+            print(f" unit {currentNode.unit}, {unit}")
+            print(f"price {distances[currentNode]}")
+        """
+
+        if (currentNode in ignoreNodes ):
+            print("this should have been ignored")
+
         # if the next node is the target node the path has been set
+        if distances[currentNode] > budget:
+            print(f"could not find path within budget {distances[currentNode]}")
+            break
+
         if currentNode == targetNode:
+            """
+            print(f"path cost {distances[currentNode]}")
+            """
+
             # backtrak to reconstruct path
             path = []
             while currentNode != startNode:
-                path.insert(0, currentNode.position)
+                path.insert(0, currentNode)
+                #if currentNode.materialBlock is not None:
+                    #path = []
                 currentNode = incomming_nodes[currentNode]
             
             for node in tmpNodes:
-                removeNode(node, graph)
+                nodeGraph.removeNode(node)
             return smoothPath(startPosition,path)
-        
+        random.shuffle((graph[currentNode]))
         for edge in graph[currentNode]:
-            cost = edge.cost
+            #cost is calculated here
+            cost = costAdjustFunc(currentNode, edge)
+            """
+            if cost > 200:
+                print(cost)
+                #continue
+            """
+                
             new_distance = distances[currentNode] + cost
 
-            if edge.node not in graph:
+            if edge.node in ignoreNodes or edge.node not in graph:
                 print(f'Error node not in graph {edge.node.position}, start Node: {startNode.position}')
                 continue
             if edge.node not in distances or new_distance < distances[edge.node]:
                 distances[edge.node] = new_distance
                 # the predicted total is where the heuristic is applied
-                predicted_total = new_distance + heuristic(
-                    Vector3(edge.node.position), Vector3(endPosition)
-                )
+                predicted_total = new_distance + heuristic(edge.node, targetNode)
                 incomming_nodes[edge.node] = currentNode
                 open_nodes.put((predicted_total, np.random.rand(), edge.node))
 
 
-    return [startPosition]
+    return []
 
 
 def slopeAnglePercentage(distance: float, height0: float, height1: float) -> float:
