@@ -1,4 +1,6 @@
+from collections import defaultdict
 from enum import IntEnum
+import queue
 from CastleElement import CastleElement, ElementType
 import numpy as np
 
@@ -18,6 +20,9 @@ class CastleGenerationAgent:
         instructions: str,
         grid: list[list[None | CastleElement]],
     ):
+        # store the original instructions as each agent id. TODO: Wastes memory, could just be a number
+        self.id = instructions
+
         self.directionToOffset = {
             Direction.UP: (0, -1),
             Direction.DOWN: (0, 1),
@@ -95,14 +100,16 @@ class CastleGenerator:
 
     def generate(self, filepath: str):
         with open(filepath, "r") as f:
-            self.instructions = [line.strip() for line in f]
-            self.instructions.reverse()
+            self.instructions = [line.rstrip() for line in f]
+            # Make sure we use real tabs
+            self.convert4SpacesToTab()
+
+        # instruction dict. Each instruction maps to a list of its children
+        self.generateInstructionTree(self.instructions)
 
         agents: list[CastleGenerationAgent] = []
         agents.append(
-            CastleGenerationAgent(
-                self.center, Direction.UP, self.instructions.pop(), self.grid
-            )
+            CastleGenerationAgent(self.center, Direction.UP, self.root, self.grid)
         )
 
         while len(agents) > 0:
@@ -124,13 +131,39 @@ class CastleGenerator:
                     CastleGenerationAgent(
                         agent.cursor,
                         agent.direction,
-                        self.instructions.pop(),
+                        self.instructionTree[agent.id].get(),
                         self.grid,
                     )
                 )
             else:
                 elementType = self.letterToElementType[instruction]
                 agent.placeNextElement(self.tileMap[elementType], self.letterToElementType)
+
+    def generateInstructionTree(self, instructions: list[str]):
+        self.instructionTree: defaultdict[str, queue.Queue[str]] = defaultdict(
+            queue.Queue[str]
+        )
+        self.root = instructions[0]
+        instructions.remove(self.root)
+
+        parentStack = []
+        lastInstruction = self.root
+        level = 0
+        for instruction in instructions:
+            currentLevel = instruction.count("\t")
+            # remove tabs here
+            instruction = instruction.lstrip()
+            if currentLevel > level:
+                # go a level deeper
+                level += 1
+                parentStack.append(lastInstruction)
+            if currentLevel < level:
+                # go a level back
+                level -= 1
+                parentStack.pop()
+
+            self.instructionTree[parentStack[-1]].put(instruction)
+            lastInstruction = instruction
 
     def getCastleMapInTerrainScale(self):
         scale = 1
@@ -139,3 +172,7 @@ class CastleGenerator:
             for row in self.grid
             for _ in range(scale)
         ]
+
+    def convert4SpacesToTab(self):
+        for i, instruction in enumerate(self.instructions):
+            self.instructions[i] = instruction.replace(" " * 4, "\t")
