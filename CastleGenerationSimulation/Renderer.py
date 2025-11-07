@@ -1,8 +1,9 @@
 import pygame
 from CastleElement import ElementType
 from Simulation import Simulation
-from Unit import Unit
+from Units.Unit import Unit
 from Target import Target
+from Utils.Node import Graph
 
 
 class Renderer:
@@ -41,8 +42,14 @@ class Renderer:
         for y in range(level.height):
             for x in range(level.width):
                 castleElement = level.castleMap[y][x]
+                
                 if castleElement is not None:
                     color = self.elementTypeToColor[castleElement.elementType]
+                    rect = pygame.Rect(x * cellSize, y * cellSize, cellSize, cellSize)
+                    pygame.draw.rect(self.screen, color, rect)
+                node = self.simulation.ng.nodes[(x+0.5,y+0.5)]
+                if node.unit is not None:
+                    color = (255,0,0)
                     rect = pygame.Rect(x * cellSize, y * cellSize, cellSize, cellSize)
                     pygame.draw.rect(self.screen, color, rect)
 
@@ -62,27 +69,27 @@ class Renderer:
             self.screen,
             (0, 0, 0),
             self.modelToViewSpace(unit.position),
-            5,
-            # unit.size
-            # * self.resolution
-            # * (1 + (unit.position[1] / self.simulation.level.max_height)),
+            #5,
+             unit.size
+             * self.resolution
+             * (1 + (unit.position[1] / self.simulation.level.max_height)),
         )
         pygame.draw.circle(
             self.screen,
             (0, 0, 255),
             self.modelToViewSpace(unit.position),
-            # unit.size
-            # * self.resolution
-            # * (1 + (unit.position[1] / self.simulation.level.max_height))
-            # +1
-            7,
+             unit.size
+             * self.resolution
+             * (1 + (unit.position[1] / self.simulation.level.max_height))
+             +1
+            #7,
         )
         if len(unit.path) > 1:
             pygame.draw.lines(
                 self.screen,
                 (255, 255, 0),
                 False,
-                [self.modelToViewSpace(pos) for pos in unit.path],
+                [self.modelToViewSpace(pos.position) for pos in unit.path],
             )
 
     def renderTarget(self, target: Target):

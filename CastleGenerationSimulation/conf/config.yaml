@@ -1,4 +1,5 @@
 render: True
 levelFilepath: "resources/terrainMaps/perlinBy3.txt"
 castleGenerationFilepath: "resources/castleGenerationInstructions/test2.txt"
+catleTilesFilepath: "resources/castleTiles/"
 resolution: 8
