@@ -113,9 +113,7 @@ class AxeMan(Unit):
 
     #Action!
     def strikeWall(self):
-        
         #self.fsm.printState()
-        
         block = self.targetBlock
         if block is not None and self.position.distance_to(block.position) < self.size + self.attackRange +0.6:
             mBlock = block.materialBlock
@@ -127,7 +125,8 @@ class AxeMan(Unit):
                     self.destroyCastleElement(block)
                     self.targetBlock = None
     
-    #this should probably be somewhere else and handled on a different level
+    #this should maybe be somewhere else and handled on a different level
+    # it removes the material block from the node, and removes the block from the 
     def destroyCastleElement(self, node: Node):
         node.materialBlock = None
         self.level.castleMap[int(node.position.z - 0.5)][int(node.position.x - 0.5)] = None

@@ -47,7 +47,7 @@ class Renderer:
                     color = self.elementTypeToColor[castleElement.elementType]
                     rect = pygame.Rect(x * cellSize, y * cellSize, cellSize, cellSize)
                     pygame.draw.rect(self.screen, color, rect)
-                node = self.simulation.ng.nodes[(x+0.5,y+0.5)]
+                node = self.simulation.nodeGraph.nodes[(x+0.5,y+0.5)]
                 if node.unit is not None:
                     color = (255,0,0)
                     rect = pygame.Rect(x * cellSize, y * cellSize, cellSize, cellSize)

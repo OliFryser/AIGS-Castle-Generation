@@ -3,3 +3,21 @@ T T T T T
 W W W W W
 T T T T T
 0 0 0 0 0
+
+0 0 0 0 0
+T T T T 0
+W W W T 0
+T T W T 0
+0 T W T 0
+
+0 0 0 0 0
+T T T T T
+W W W W W
+T T W T T
+0 T W T 0
+
+0 T W T 0
+T T W T T
+W W W W W
+T T W T T
+0 T W T 0

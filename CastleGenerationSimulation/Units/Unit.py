@@ -20,7 +20,7 @@ class Unit:
         self.speed = speed
         self.size = size
         self.level = level
-        self.ng = graph
+        self.nodeGraph = graph
         self.position: Vector3 = Vector3(
             position.x, level.getBilinearHeight(position.x, position.y), position.y
         )
@@ -116,10 +116,10 @@ class Unit:
         if self.target is None:
             return
         self.path = aStar(
-                self.position, self.target, self.ng, unit= self,
+                self.position, self.target, self.nodeGraph, unit= self,
                 costAdjustFunc= self.moveCostAdjust, ignoreNodes=self.nodesToSkip
             )
-        print(len(self.path))
+        #print(len(self.path))
         #self.fsm.printState()
 
 
@@ -127,6 +127,7 @@ class Unit:
         if self.notHasPlan():
             return
 
+        #for avoiding units
         for node in self.path[:5]:
             if node.unit is not None and node.unit is not self: 
                 self.planPath()
@@ -142,8 +143,8 @@ class Unit:
         direction.normalize()
         newPosition = self.position + direction * self.speed
         # "hit detection"
-        node0 = self.ng.getNodeFromPosition(self.position)
-        node1 = self.ng.getNodeFromPosition(newPosition)
+        node0 = self.nodeGraph.getNodeFromPosition(self.position)
+        node1 = self.nodeGraph.getNodeFromPosition(newPosition)
         #node is none shield
 
         frontNodes = self.getFrontNodes(direction)
@@ -187,7 +188,7 @@ class Unit:
             #if walking into a castle bit nudge a bit away
             if self.level.castleMap[y][x] is not None:
                 tilePosition = Vector3(x+0.5,self.level.getCell(x,y),y+0.5)
-                node = self.ng.getNodeFromPosition(newPosition)
+                node = self.nodeGraph.getNodeFromPosition(newPosition)
                 if node is not None:
                     pass
                     #print(node.materialBlock)
@@ -239,29 +240,29 @@ class Unit:
             """
 
     def getFrontNodes(self, direction):
-        node = self.ng.getNodeFromPosition(self.position)
+        node = self.nodeGraph.getNodeFromPosition(self.position)
         (x, y) = node.position2
 
         dx = int(round(direction.x))
         dy = int(round(direction.z))
-        nodes = [self.ng.nodes[(x+dx,y+dy)]]
+        nodes = [self.nodeGraph.nodes[(x+dx,y+dy)]]
         if abs(dx) + abs(dy) >=2:
             
             nodes = nodes + [
-                self.ng.nodes[(x+dx,y)],
-                self.ng.nodes[(x,y+dy)],
+                self.nodeGraph.nodes[(x+dx,y)],
+                self.nodeGraph.nodes[(x,y+dy)],
                 ]           
         elif dx == 0:
 
             nodes = nodes + [
-                self.ng.nodes[(x+1, y+dy)],
-                self.ng.nodes[(x-1, y+dy)],
+                self.nodeGraph.nodes[(x+1, y+dy)],
+                self.nodeGraph.nodes[(x-1, y+dy)],
             ]
         elif dy == 0:
 
             nodes = nodes + [
-                self.ng.nodes[(x+dx, y+1)],
-                self.ng.nodes[(x+dx, y-1)],
+                self.nodeGraph.nodes[(x+dx, y+1)],
+                self.nodeGraph.nodes[(x+dx, y-1)],
             ]
             
         return nodes
@@ -287,8 +288,8 @@ class Unit:
         #if perpendicular take corners into account
         perp = abs(node.position.x - edge.node.position.x) + abs(node.position.z - edge.node.position.z)
         if perp >= 2:
-            node1 = self.ng.nodes[(edge.node.position.x, node.position.z)]
-            node2 = self.ng.nodes[(node.position.x, edge.node.position.z)]
+            node1 = self.nodeGraph.nodes[(edge.node.position.x, node.position.z)]
+            node2 = self.nodeGraph.nodes[(node.position.x, edge.node.position.z)]
             cost += max(self.blockCost(node1), self.blockCost(node2)) + max(self.unitCost(node1) , self.unitCost(node2))
         
         return cost
