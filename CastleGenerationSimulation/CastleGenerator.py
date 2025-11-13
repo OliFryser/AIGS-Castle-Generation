@@ -198,17 +198,17 @@ class CastleGenerator:
                 if grid[row][column] is not None and grid[row][column].elementType is not ElementType.GATE:
                     neighbors = self.castleElementNeighbors(row, column)
                     if len(neighbors) == 1:                      
-                        print(f"{column, row} stands alone")
+                        #print(f"{column, row} stands alone")
                         for emptyNeighbor in [e for e in Direction if e is not neighbors[0]]:
                             #print(Vector2(self.directionToOffset[emptyNeighbor]) * 2)
                             nextOverPos = Vector2(column, row) + Vector2(self.directionToOffset[emptyNeighbor]) * 2
                             nextOver = grid[int(nextOverPos.y)][int(nextOverPos.x)]
-                            print(f" next over: {nextOverPos.x, nextOverPos.y} is {nextOver}")
+                            #print(f" next over: {nextOverPos.x, nextOverPos.y} is {nextOver}")
                             if nextOver is not None and nextOver.elementType is not ElementType.GATE:
                                 toBeGate = Vector2(column, row) + Vector2(self.directionToOffset[emptyNeighbor])
                                 toBeGateNeighbors = self.castleElementNeighbors(int(toBeGate.y),int(toBeGate.x))
                                 if len(toBeGateNeighbors) == 2:
-                                    print(f"make a gate at {toBeGate}")
+                                    #print(f"make a gate at {toBeGate}")
                                     grid[int(toBeGate.y)][int(toBeGate.x)] = CastleElement(ElementType.GATE)
 
     #this assumes square tiles
