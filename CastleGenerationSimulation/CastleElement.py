@@ -16,7 +16,7 @@ class MaterialType(Enum):
     EMPTY = "empty"
 
 class CastleElement:
-    def __init__(self, elementType: ElementType, materialType: MaterialType = MaterialType.WOOD):
+    def __init__(self, elementType: ElementType, materialType: MaterialType):
         self.elementType = elementType
         self.material = MaterialBlock(materialType)
 

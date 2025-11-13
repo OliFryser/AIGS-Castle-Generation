@@ -214,9 +214,7 @@ class CastleGenerator:
     #this assumes square tiles
     def fillTile(self,castleElement, grid, x, y):
         blockMap = self.tileMap[castleElement]
-        
         neighbors = self.castleElementNeighbors(x,y)
-    
         tile = self.morphATile(blockMap, neighbors)
 
         for column in range(len(tile)):
