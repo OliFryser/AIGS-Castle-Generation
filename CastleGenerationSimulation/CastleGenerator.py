@@ -1,8 +1,10 @@
 from collections import defaultdict
 from enum import IntEnum
+from pygame import Vector2
 import queue
-from CastleElement import CastleElement, ElementType
 import numpy as np
+
+from CastleElement import CastleElement, ElementType, MaterialType
 
 class Direction(IntEnum):
     LEFT = 0
@@ -27,7 +29,7 @@ class CastleGenerationAgent:
             Direction.LEFT: (-1, 0),
             Direction.RIGHT: (1, 0),
         }
-
+        
         self.cursor = cursor
         self.grid = grid
         self.instructions = instructions.split()
@@ -71,7 +73,6 @@ class CastleGenerator:
             Direction.LEFT: (-1, 0),
             Direction.RIGHT: (1, 0),
         }
-
         
         self.tileMap = self.loadTileMap(tilePath)
         self.scale = len(list(self.tileMap.values())[0][0])
@@ -169,32 +170,74 @@ class CastleGenerator:
             lastInstruction = instruction
 
     def getCastleMapInTerrainScale(self):    
-
+        grid = self.grid.copy()
+        self.addGates(grid)
         gridToScale = np.full((self.height, self.width), None)
-        for row in range(len(self.grid)):
-            for column in range(len(self.grid[0])):
-                if self.grid[row][column] is not None:
-                    self.fillTile(self.grid[row][column].elementType, gridToScale, row, column)
+        for row in range(len(grid)):
+            for column in range(len(grid[0])):
+                if grid[row][column] is not None:
+                    self.fillTile(grid[row][column].elementType, gridToScale, row, column)
 
 
         return gridToScale
 
-    
+    #this is just a simple placeholder way to do it
+    def addGates2(self, grid):
+        for row in range(len(grid)):
+            for column in range(len(self.grid[0])):
+                if grid[row][column] is None:
+                    neighbors = self.castleElementNeighbors(row, column)
+                    if len(neighbors) == 2:
+                        if (Direction.LEFT in neighbors and Direction.RIGHT in neighbors) or (Direction.DOWN in neighbors and Direction.UP in neighbors):
+                            print(neighbors)
+                            grid[row][column] = CastleElement(ElementType.GATE)
+
+    def addGates(self, grid):
+        for row in range(len(grid)):
+            for column in range(len(self.grid[0])):
+                if grid[row][column] is not None and grid[row][column].elementType is not ElementType.GATE:
+                    neighbors = self.castleElementNeighbors(row, column)
+                    if len(neighbors) == 1:                      
+                        print(f"{column, row} stands alone")
+                        for emptyNeighbor in [e for e in Direction if e is not neighbors[0]]:
+                            #print(Vector2(self.directionToOffset[emptyNeighbor]) * 2)
+                            nextOverPos = Vector2(column, row) + Vector2(self.directionToOffset[emptyNeighbor]) * 2
+                            nextOver = grid[int(nextOverPos.y)][int(nextOverPos.x)]
+                            print(f" next over: {nextOverPos.x, nextOverPos.y} is {nextOver}")
+                            if nextOver is not None and nextOver.elementType is not ElementType.GATE:
+                                toBeGate = Vector2(column, row) + Vector2(self.directionToOffset[emptyNeighbor])
+                                toBeGateNeighbors = self.castleElementNeighbors(int(toBeGate.y),int(toBeGate.x))
+                                if len(toBeGateNeighbors) == 2:
+                                    print(f"make a gate at {toBeGate}")
+                                    grid[int(toBeGate.y)][int(toBeGate.x)] = CastleElement(ElementType.GATE)
+
     #this assumes square tiles
-    def fillTile(self,castleElement, grid, x, y):  
+    def fillTile(self,castleElement, grid, x, y):
         blockMap = self.tileMap[castleElement]
-        tile = self.morphATile(blockMap, x, y)
+        
+        neighbors = self.castleElementNeighbors(x,y)
+    
+        tile = self.morphATile(blockMap, neighbors)
 
         for column in range(len(tile)):
             for row in range(len(tile[column])):
-                t  = tile[column][row]                
-                if t in self.letterToElementType.keys():
-                    grid[x * self.scale+ column][y*self.scale + row] = CastleElement(self.letterToElementType[t])
+                materialType  = tile[column][row]
+                if any (materialType == e.value for e in MaterialType):
+                    grid[x * self.scale+ column][y*self.scale + row] = CastleElement(castleElement, MaterialType(materialType))
 
-    def morphATile(self, blocks, x, y):
-        neighbors = self.castleElementNeighbors(x,y)
+    def morphATile(self, blocks, neighbors):
+        if len(neighbors) == 1 and len(blocks) >= 5:
+            if neighbors[0] == Direction.UP:
+                return np.transpose(blocks[4])
+            if neighbors[0] == Direction.DOWN:
+                return np.flipud(np.transpose(blocks[4]))
+            if neighbors[0] == Direction.RIGHT:
+                return np.fliplr(blocks[4])
+            return blocks[4]
+        #Full four cornered neighbours
         if len(neighbors) == 4 and len(blocks) >= 4:
             return blocks[3]
+        # T section
         if len(neighbors) == 3 and len(blocks) >= 3:
             if Direction.UP not in neighbors:
                 return blocks[2]
@@ -204,7 +247,9 @@ class CastleGenerator:
                 return np.transpose(blocks[2])
             if Direction.RIGHT not in neighbors:
                 return np.fliplr(np.transpose(blocks[2]))
+        # Two neighbors
         if len(neighbors) == 2 and len(blocks) >= 2:
+            # Corner
             if Direction.LEFT in neighbors and Direction.DOWN in neighbors:              
                 return blocks[1]
             if Direction.LEFT in neighbors and Direction.UP in neighbors:
@@ -213,9 +258,10 @@ class CastleGenerator:
                 return np.fliplr(blocks[1])
             if Direction.RIGHT in neighbors and Direction.UP in neighbors:
                 return np.transpose(blocks[1])
-        if Direction.UP in neighbors or Direction.DOWN in neighbors:
-         
+        # Straight bit
+        if Direction.UP in neighbors or Direction.DOWN in neighbors:  
             return np.transpose(blocks[0])
+        # Default
         return blocks[0]
 
 

@@ -8,27 +8,49 @@ class ElementType(Enum):
     GATE = "gate"
 
 class MaterialType(Enum):
-    WOOD = "wood"
-    GRANITE = "granite"
-    STONE = "stone"
-    SANDSTONE = "sandstone"
+    WOOD = "W"
+    GRANITE = "G"
+    STONE = "R"
+    SANDSTONE = "S"
+    PAVEMENT = "P"
     EMPTY = "empty"
 
 class CastleElement:
     def __init__(self, elementType: ElementType, materialType: MaterialType = MaterialType.WOOD):
         self.elementType = elementType
-        self.material = MaterialBlock(materialType, self)
+        self.material = MaterialBlock(materialType)
 
 class MaterialBlock:
-    def __init__(self, materialType: MaterialType, castleElement: CastleElement) -> None:
+    def __init__(self, materialType: MaterialType) -> None:
         self.materialType = materialType
+        self.blocking = True
         self.resetParameters()
-        self.castleElement = castleElement
 
     def resetParameters(self):
         if self.materialType == MaterialType.WOOD:
             self.health = 100
             self.damageThreshold = 1
+            return
+        if self.materialType == MaterialType.GRANITE:
+            self.health = 500
+            self.damageThreshold = 12
+            return
+        if self.materialType == MaterialType.STONE:
+            self.health = 300
+            self.damageThreshold = 9
+            return
+        if self.materialType == MaterialType.SANDSTONE:
+            self.health = 200
+            self.damageThreshold = 9
+            return
+        if self.materialType == MaterialType.PAVEMENT:
+            self.health = 0
+            self.damageThreshold = 0
+            self.blocking = False
+            return
+    
+        self.health = 0
+        self.damageThreshold = 0
 
     #I was tired when I made this
     def destroy(self):
