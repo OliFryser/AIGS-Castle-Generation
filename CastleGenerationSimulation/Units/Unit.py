@@ -6,6 +6,7 @@ from Utils.PathFinding import aStar
 from Utils.Node import Node, Edge, Graph
 from CastleElement import MaterialType
 
+
 class Unit:
     def __init__(
         self,
@@ -30,13 +31,13 @@ class Unit:
         )
         self.path: list[Node] = []
         self.target = None
-        self.goal = None
+        self.goal: None | Vector3 = None
         self.count = 0
         self.initFSM()
         self.nodesToSkip = []
 
     def step(self):
-        #print(self)
+        # print(self)
         self.fsm.updateState()
         state = self.fsm.getState()
         if state in self.stateMap:
@@ -51,10 +52,18 @@ class Unit:
         fsm = FSM(State.WAIT)
 
         fsm.addTransition(
-            State.MOVETO, State.WAIT, self.notHasPlan, self.planPath, fsm.onExitPrint,
+            State.MOVETO,
+            State.WAIT,
+            self.notHasPlan,
+            self.planPath,
+            fsm.onExitPrint,
         )
         fsm.addTransition(
-            State.MOVETO, State.STOP, self.closeEnough, fsm.onEnterPrint, fsm.onExitPrint,
+            State.MOVETO,
+            State.STOP,
+            self.closeEnough,
+            fsm.onEnterPrint,
+            fsm.onExitPrint,
         )
         fsm.addTransition(
             State.WAIT,
@@ -63,18 +72,15 @@ class Unit:
             lambda: setattr(self, "count", 4),
             lambda: setattr(self, "count", 0),
         )
-        fsm.addTransition(
-            State.STOP, State.WAIT,
-            self.outOfReach
-        )
+        fsm.addTransition(State.STOP, State.WAIT, self.outOfReach)
 
         self.fsm = fsm
         self.stateMap = {
             State.MOVETO: self.goToTarget,
             State.STOP: self.wait,
-            State.PLANPATH : self.planPath,
-            State.WAIT : self.wait
-            }
+            State.PLANPATH: self.planPath,
+            State.WAIT: self.wait,
+        }
 
     ######################
     # Transition bools
@@ -82,25 +88,24 @@ class Unit:
     def closeEnough(self):
         return (
             self.target is not None
-            and self.position.distance_to(self.target) < self.size *3
+            and self.position.distance_to(self.target) < self.size * 3
         )
 
     def outOfReach(self):
         return (
             self.target is not None
-            and self.position.distance_to(self.target) > self.size *3
+            and self.position.distance_to(self.target) > self.size * 3
         )
-    
+
     def hasPlan(self):
-        return (
-            not self.path == []
-        )
+        return not self.path == []
+
     def notHasPlan(self):
         return not self.hasPlan()
-    
+
     def hasCounted(self):
         return self.count < 1
-    
+
     ##########################
     # on enter / exit
     #####################################
@@ -113,7 +118,7 @@ class Unit:
 
     def wait(self):
         self.count -= 1
-        #print(self.count)
+        # print(self.count)
         pass
 
     def planPath(self):
@@ -133,10 +138,10 @@ class Unit:
 
         #for avoiding units
         for node in self.path[:5]:
-            if node.unit is not None and node.unit is not self: 
+            if node.unit is not None and node.unit is not self:
                 self.planPath()
                 break
-                #return
+                # return
         self.move(self.path[0].position - self.position)
         if self.position.distance_to(self.path[0].position) <= self.size:
             self.path.pop(0)
@@ -161,7 +166,7 @@ class Unit:
             if tnode.unit is not None and tnode.unit is not self:
                 other = tnode.unit
                 if newPosition.distance_to(other.position) < self.size + other.size:
-                # compute push away from other
+                    # compute push away from other
                     push = (self.position - other.position).normalize()
                     # combine with intended direction
                     newDirection = (direction + push).normalize()
@@ -194,18 +199,16 @@ class Unit:
                 self.nodeGraph.nodes[(x,y+dy)],
                 ]           
         elif dx == 0:
-
             nodes = nodes + [
                 self.nodeGraph.nodes[(x+1, y+dy)],
                 self.nodeGraph.nodes[(x-1, y+dy)],
             ]
         elif dy == 0:
-
             nodes = nodes + [
                 self.nodeGraph.nodes[(x+dx, y+1)],
                 self.nodeGraph.nodes[(x+dx, y-1)],
             ]
-            
+
         return nodes
 
   
@@ -215,16 +218,18 @@ class Unit:
         cost = edge.cost
         cost += self.blockCost(edge.node)
         cost += self.unitCost(node)
-        
-        #if perpendicular take corners into account
-        perp = abs(node.position.x - edge.node.position.x) + abs(node.position.z - edge.node.position.z)
+
+        # if perpendicular take corners into account
+        perp = abs(node.position.x - edge.node.position.x) + abs(
+            node.position.z - edge.node.position.z
+        )
         if perp >= 2:
             node1 = self.nodeGraph.nodes[(edge.node.position.x, node.position.z)]
             node2 = self.nodeGraph.nodes[(node.position.x, edge.node.position.z)]
             cost += max(self.blockCost(node1), self.blockCost(node2)) + max(self.unitCost(node1) , self.unitCost(node2))
         
         return cost
-    
+
     def blockCost(self, node):
         if node.materialBlock is not None and node.materialBlock.blocking:
             materialBlock: MaterialType = node.materialBlock
@@ -235,6 +240,6 @@ class Unit:
 
     def unitCost(self, node):
         if node.unit is not None and node.unit is not self:
-            #print(f"big cost {node.position}, {edge.node.position}")
+            # print(f"big cost {node.position}, {edge.node.position}")
             return 400
         return 0
