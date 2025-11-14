@@ -16,9 +16,9 @@ class Simulation:
         self.units = []
         self.updateNodeGraph()
         # these are test things
-        unit = AxeMan(self.ng, self.level, Vector2(20, 80))
-        unit0 = AxeMan(self.ng, self.level, Vector2(10, 50))
-        unit1 = AxeMan(self.ng, self.level, Vector2(30, 10))
+        unit = AxeMan(self.nodeGraph,self.level, Vector2(20, 80))
+        unit0 = AxeMan(self.nodeGraph,self.level, Vector2(10, 50))
+        unit1 = AxeMan(self.nodeGraph,self.level, Vector2(30, 10))
         self.target = Target(
             self.level, Vector2(self.level.width / 2 + 2.5, self.level.height / 2 - 1.0)
         )
@@ -51,6 +51,6 @@ class Simulation:
             Graph(self.level),
             # createHexNodeGrap(self.level),
         ]
-        self.ng = graphs[0]
+        self.nodeGraph = graphs[0]
         for unit in self.units:
-            unit.ng = self.ng
+            unit.nodeGraph = self.nodeGraph

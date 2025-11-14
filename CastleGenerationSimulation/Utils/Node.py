@@ -1,6 +1,6 @@
 from pygame import Vector2,Vector3
 from Level import Level
-from CastleElement import MaterialBlock
+from CastleElement import MaterialType
 import numpy as np
 
 class Edge:
@@ -16,7 +16,7 @@ class Node:
         self.materialBlock = None
         self.unit = None
 
-    def setMaterialBlock(self, materialBlock: MaterialBlock):
+    def setMaterialBlock(self, materialBlock: MaterialType):
         self.materialBlock = materialBlock
 
     ##

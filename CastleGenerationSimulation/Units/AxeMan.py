@@ -7,14 +7,15 @@ from Utils.Node import Node, Graph
 class AxeMan(Unit):
     def __init__(self, graph: Graph, level: Level, position: Vector2, health: int = 100, speed: float = 0.1, size=0.3):
         super().__init__(graph, level, position, health, speed, size)
-        self.attackDamage = 10
-        self.attackRange = 0.8
+        self.blockAttackDamage = 10
+        self.blockAttackRange = 0.8
         self.count = 0
         self.targetBlock = None
         self.attackCoolDown = False
+        self.attackCoolDownTime = 50
+        self.initFSM()
 
     def initFSM(self):
-        
         ######################################################
         #Demolishion FSM
         ######################################################
@@ -24,7 +25,7 @@ class AxeMan(Unit):
             State.MOVETO, State.DEMOLISH, self.closeEnoughToBlock
         )
         demolishFsm.addTransition(
-            State.DEMOLISH, State.WAIT, self.onAttackCoolDown, onEnter= (self.setTimer,(15,),{})
+            State.DEMOLISH, State.WAIT, self.onAttackCoolDown, onEnter= (self.setTimer,(self.attackCoolDownTime,),{})
         )
         demolishFsm.addTransition(
             State.WAIT, State.DEMOLISH, self.hasCounted, onExit= (self.setAttackCooldown, (False,), {})
@@ -43,7 +44,7 @@ class AxeMan(Unit):
             State.MOVETO, State.STOP, self.closeEnough
         )
         fsm.addTransition(
-            State.MOVETO, State.WAIT, self.notHasPlan,(self.setTimer,(15,),{})
+            State.MOVETO, State.WAIT, self.notHasPlan,(self.setTimer,(1,),{})
         )
         fsm.addTransition(
             State.WAIT, State.MOVETO, self.hasCounted,
@@ -71,13 +72,13 @@ class AxeMan(Unit):
         if self.path == []:
             return False
         return (
-            self.path[0].materialBlock is not None
+            self.path[0].materialBlock is not None and self.path[0].materialBlock.blocking
         )
     
     def closeEnoughToBlock(self):
         return (
             self.target is not None
-            and self.position.distance_to(self.target) < self.size + self.attackRange
+            and self.position.distance_to(self.target) < self.size + self.blockAttackRange
         )
 
     def nodeTargetDestroyed(self):
@@ -113,21 +114,18 @@ class AxeMan(Unit):
 
     #Action!
     def strikeWall(self):
-        
-        #self.fsm.printState()
-        
         block = self.targetBlock
-        if block is not None and self.position.distance_to(block.position) < self.size + self.attackRange +0.6:
-            mBlock = block.materialBlock
-            if mBlock is not None:
-                mBlock.health -= self.attackDamage - mBlock.damageThreshold
-                #print(f"attacking block {block.position}, {self.position} {mBlock.health} health left")
+        if block is not None and self.position.distance_to(block.position) < self.size + self.blockAttackRange +0.6:
+            materialBlock = block.materialBlock
+            if materialBlock is not None:
+                materialBlock.health -= self.blockAttackDamage - materialBlock.damageThreshold
                 self.attackCoolDown = True
-                if mBlock.health < 0:   
+                if materialBlock.health < 0:   
                     self.destroyCastleElement(block)
                     self.targetBlock = None
     
-    #this should probably be somewhere else and handled on a different level
+    #this should maybe be somewhere else and handled on a different level
+    # it removes the material block from the node, and removes the block from the 
     def destroyCastleElement(self, node: Node):
         node.materialBlock = None
         self.level.castleMap[int(node.position.z - 0.5)][int(node.position.x - 0.5)] = None
