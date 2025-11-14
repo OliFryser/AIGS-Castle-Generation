@@ -6,6 +6,7 @@ from Utils.PathFinding import aStar
 from Utils.Node import Node, Edge, Graph
 from CastleElement import MaterialBlock
 
+
 class Unit:
     def __init__(
         self,
@@ -26,13 +27,13 @@ class Unit:
         )
         self.path: list[Node] = []
         self.target = None
-        self.goal = None
+        self.goal: None | Vector3 = None
         self.count = 0
         self.initFSM()
         self.nodesToSkip = []
 
     def step(self):
-        #print(self)
+        # print(self)
         self.fsm.updateState()
         state = self.fsm.getState()
         if state in self.stateMap:
@@ -47,10 +48,18 @@ class Unit:
         fsm = FSM(State.WAIT)
 
         fsm.addTransition(
-            State.MOVETO, State.WAIT, self.notHasPlan, self.planPath, fsm.onExitPrint,
+            State.MOVETO,
+            State.WAIT,
+            self.notHasPlan,
+            self.planPath,
+            fsm.onExitPrint,
         )
         fsm.addTransition(
-            State.MOVETO, State.STOP, self.closeEnough, fsm.onEnterPrint, fsm.onExitPrint,
+            State.MOVETO,
+            State.STOP,
+            self.closeEnough,
+            fsm.onEnterPrint,
+            fsm.onExitPrint,
         )
         fsm.addTransition(
             State.WAIT,
@@ -59,18 +68,15 @@ class Unit:
             lambda: setattr(self, "count", 4),
             lambda: setattr(self, "count", 0),
         )
-        fsm.addTransition(
-            State.STOP, State.WAIT,
-            self.outOfReach
-        )
+        fsm.addTransition(State.STOP, State.WAIT, self.outOfReach)
 
         self.fsm = fsm
         self.stateMap = {
             State.MOVETO: self.goToTarget,
             State.STOP: self.wait,
-            State.PLANPATH : self.planPath,
-            State.WAIT : self.wait
-            }
+            State.PLANPATH: self.planPath,
+            State.WAIT: self.wait,
+        }
 
     ######################
     # Transition bools
@@ -78,25 +84,24 @@ class Unit:
     def closeEnough(self):
         return (
             self.target is not None
-            and self.position.distance_to(self.target) < self.size *3
+            and self.position.distance_to(self.target) < self.size * 3
         )
 
     def outOfReach(self):
         return (
             self.target is not None
-            and self.position.distance_to(self.target) > self.size *3
+            and self.position.distance_to(self.target) > self.size * 3
         )
-    
+
     def hasPlan(self):
-        return (
-            not self.path == []
-        )
+        return not self.path == []
+
     def notHasPlan(self):
         return not self.hasPlan()
-    
+
     def hasCounted(self):
         return self.count < 1
-    
+
     ##########################
     # on enter / exit
     #####################################
@@ -109,34 +114,37 @@ class Unit:
 
     def wait(self):
         self.count -= 1
-        #print(self.count)
+        # print(self.count)
         pass
 
     def planPath(self):
         if self.target is None:
             return
         self.path = aStar(
-                self.position, self.target, self.ng, unit= self,
-                costAdjustFunc= self.moveCostAdjust, ignoreNodes=self.nodesToSkip
-            )
+            self.position,
+            self.target,
+            self.ng,
+            unit=self,
+            costAdjustFunc=self.moveCostAdjust,
+            ignoreNodes=self.nodesToSkip,
+        )
         print(len(self.path))
-        #self.fsm.printState()
-
+        # self.fsm.printState()
 
     def goToTarget(self):
         if self.notHasPlan():
             return
 
         for node in self.path[:5]:
-            if node.unit is not None and node.unit is not self: 
+            if node.unit is not None and node.unit is not self:
                 self.planPath()
                 break
-                #return
+                # return
         self.move(self.path[0].position - self.position)
         if self.position.distance_to(self.path[0].position) <= self.size:
             self.path.pop(0)
 
-    def move(self, direction: Vector3, n =0):
+    def move(self, direction: Vector3, n=0):
         if n > 8:
             return
         direction.normalize()
@@ -144,15 +152,16 @@ class Unit:
         # "hit detection"
         node0 = self.ng.getNodeFromPosition(self.position)
         node1 = self.ng.getNodeFromPosition(newPosition)
-        #node is none shield
+        # node is none shield
 
         frontNodes = self.getFrontNodes(direction)
         for tnode in frontNodes:
             if tnode.materialBlock is not None:
-                
-                hit = self.sweepingCircleRect(direction,(tnode.position.x,tnode.position.z,1,1))
-                #print(hit)
-                
+                hit = self.sweepingCircleRect(
+                    direction, (tnode.position.x, tnode.position.z, 1, 1)
+                )
+                # print(hit)
+
                 pass
                 """
                 closestPoint = np.clip(circle_center, rect_min, rect_max)
@@ -167,32 +176,39 @@ class Unit:
             if tnode.unit is not None and tnode.unit is not self:
                 other = tnode.unit
                 if newPosition.distance_to(other.position) < self.size + other.size:
-                # compute push away from other
+                    # compute push away from other
                     push = (self.position - other.position).normalize()
                     # combine with intended direction
                     new_direction = (direction + push).normalize()
-                    self.move(new_direction, n+1)
-                    
+                    self.move(new_direction, n + 1)
 
         ###
         # this stuff needs to be exchanged for the most bare bones but workable hit detection ever
         ###
-        
+
         if node0 is not None and node1 is not None:
             if node0 is not node1:
                 node0.unit = None
                 node1.unit = self
-        
-        for x,y in self.level.getImmediateNeighbors(newPosition.x -0.5,self.position.z-0.5):
-            #if walking into a castle bit nudge a bit away
+
+        for x, y in self.level.getImmediateNeighbors(
+            newPosition.x - 0.5, self.position.z - 0.5
+        ):
+            # if walking into a castle bit nudge a bit away
             if self.level.castleMap[y][x] is not None:
-                tilePosition = Vector3(x+0.5,self.level.getCell(x,y),y+0.5)
+                tilePosition = Vector3(x + 0.5, self.level.getCell(x, y), y + 0.5)
                 node = self.ng.getNodeFromPosition(newPosition)
                 if node is not None:
                     pass
-                    #print(node.materialBlock)
-                if newPosition.distance_to(tilePosition) < self.size *2:
-                    newPosition = self.position + (direction + (self.position - tilePosition).normalize() * 2).normalize() * self.speed
+                    # print(node.materialBlock)
+                if newPosition.distance_to(tilePosition) < self.size * 2:
+                    newPosition = (
+                        self.position
+                        + (
+                            direction + (self.position - tilePosition).normalize() * 2
+                        ).normalize()
+                        * self.speed
+                    )
 
         self.position = newPosition
         """
@@ -244,26 +260,23 @@ class Unit:
 
         dx = int(round(direction.x))
         dy = int(round(direction.z))
-        nodes = [self.ng.nodes[(x+dx,y+dy)]]
-        if abs(dx) + abs(dy) >=2:
-            
+        nodes = [self.ng.nodes[(x + dx, y + dy)]]
+        if abs(dx) + abs(dy) >= 2:
             nodes = nodes + [
-                self.ng.nodes[(x+dx,y)],
-                self.ng.nodes[(x,y+dy)],
-                ]           
+                self.ng.nodes[(x + dx, y)],
+                self.ng.nodes[(x, y + dy)],
+            ]
         elif dx == 0:
-
             nodes = nodes + [
-                self.ng.nodes[(x+1, y+dy)],
-                self.ng.nodes[(x-1, y+dy)],
+                self.ng.nodes[(x + 1, y + dy)],
+                self.ng.nodes[(x - 1, y + dy)],
             ]
         elif dy == 0:
-
             nodes = nodes + [
-                self.ng.nodes[(x+dx, y+1)],
-                self.ng.nodes[(x+dx, y-1)],
+                self.ng.nodes[(x + dx, y + 1)],
+                self.ng.nodes[(x + dx, y - 1)],
             ]
-            
+
         return nodes
 
     """
@@ -277,36 +290,41 @@ class Unit:
         #self.move(newDirection)
 
     """
+
     # Heuristic for a-star calculation, this is here because of relevance to individual units movement
     # and how they account for wall pieces, this can be used to accomodate different kinds of behaviour
     def moveCostAdjust(self, node: Node, edge: Edge):
         cost = edge.cost
         cost += self.blockCost(edge.node)
         cost += self.unitCost(node)
-        
-        #if perpendicular take corners into account
-        perp = abs(node.position.x - edge.node.position.x) + abs(node.position.z - edge.node.position.z)
+
+        # if perpendicular take corners into account
+        perp = abs(node.position.x - edge.node.position.x) + abs(
+            node.position.z - edge.node.position.z
+        )
         if perp >= 2:
             node1 = self.ng.nodes[(edge.node.position.x, node.position.z)]
             node2 = self.ng.nodes[(node.position.x, edge.node.position.z)]
-            cost += max(self.blockCost(node1), self.blockCost(node2)) + max(self.unitCost(node1) , self.unitCost(node2))
-        
+            cost += max(self.blockCost(node1), self.blockCost(node2)) + max(
+                self.unitCost(node1), self.unitCost(node2)
+            )
+
         return cost
-    
+
     def blockCost(self, node):
         if node.materialBlock is not None:
             mBlock: MaterialBlock = node.materialBlock
             return mBlock.health
-        return 0.
+        return 0.0
 
     def unitCost(self, node):
         if node.unit is not None and node.unit is not self:
-            #print(f"big cost {node.position}, {edge.node.position}")
+            # print(f"big cost {node.position}, {edge.node.position}")
             return 400
-        return 0.
-    
-    #this should probably get adjusted
-    #I am not proud of this
+        return 0.0
+
+    # this should probably get adjusted
+    # I am not proud of this
     def sweepingCircleRect(self, direction, rect):
         r = self.size
         p0 = self.position
@@ -318,8 +336,8 @@ class Unit:
         h += 2 * r
 
         # Ray parameters
-        inv_dir_x = 1.0 / direction.x if direction.x != 0 else float('inf')
-        inv_dir_z = 1.0 / direction.z if direction.z != 0 else float('inf')
+        inv_dir_x = 1.0 / direction.x if direction.x != 0 else float("inf")
+        inv_dir_z = 1.0 / direction.z if direction.z != 0 else float("inf")
 
         t1 = (x - p0.x) * inv_dir_x
         t2 = (x + w - p0.x) * inv_dir_x
