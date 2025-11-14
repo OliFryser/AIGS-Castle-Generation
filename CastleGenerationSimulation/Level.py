@@ -1,10 +1,19 @@
 import numpy as np
+from pygame import Vector3
 
 from CastleGenerator import CastleGenerator
+from Utils.Node import Graph
+from Utils.PathFinding import aStar
 from Utils.Timer import Timer
 
+
 class Level:
-    def __init__(self, levelFilepath: str, castleGenerationFilepath: str, castleTilesFilePath: str):
+    def __init__(
+        self,
+        levelFilepath: str,
+        castleGenerationFilepath: str,
+        castleTilesFilePath: str,
+    ):
         self.createTerrainMap(levelFilepath)
 
         timer = Timer("Castle generator")
@@ -18,14 +27,29 @@ class Level:
 
     def createTerrainMap(self, levelFilepath: str):
         with open(levelFilepath, "r") as f:
-            self.width, self.height, self.max_height = [
+            self.width, self.height, self.maxHeight = [
                 int(x) for x in f.readline().rstrip().split()
+            ]
+            self.pathAgentX, self.pathAgentZ = [
+                float(x) for x in f.readline().rstrip().split()
             ]
             self.terrainMap = np.zeros((self.height, self.width))
             for y in range(self.height):
                 line = [float(num) for num in f.readline().rstrip().split()]
                 for x in range(self.width):
                     self.terrainMap[y][x] = line[x]
+
+    def generatePathOnTerrainMap(self, nodeGraph: Graph, target):
+        timer = Timer("Generate Path")
+        timer.start()
+        startPosition = Vector3(
+            self.pathAgentX,
+            self.getBilinearHeight(self.pathAgentX, self.pathAgentZ),
+            self.pathAgentZ,
+        )
+        self.path = aStar(startPosition, target.position, nodeGraph)
+        print(self.path)
+        timer.stop()
 
     def getLevel(self):
         return self.terrainMap

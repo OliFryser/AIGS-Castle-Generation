@@ -42,14 +42,14 @@ class Renderer:
         for y in range(level.height):
             for x in range(level.width):
                 castleElement = level.castleMap[y][x]
-                
+
                 if castleElement is not None:
                     color = self.elementTypeToColor[castleElement.elementType]
                     rect = pygame.Rect(x * cellSize, y * cellSize, cellSize, cellSize)
                     pygame.draw.rect(self.screen, color, rect)
-                node = self.simulation.ng.nodes[(x+0.5,y+0.5)]
+                node = self.simulation.nodeGraph.nodes[(x + 0.5, y + 0.5)]
                 if node.unit is not None:
-                    color = (255,0,0)
+                    color = (255, 0, 0)
                     rect = pygame.Rect(x * cellSize, y * cellSize, cellSize, cellSize)
                     pygame.draw.rect(self.screen, color, rect)
 
@@ -60,7 +60,7 @@ class Renderer:
         for r in range(level.height):
             for c in range(level.width):
                 height = level.getCell(c, r)
-                color = (34, round((height / level.max_height) * 255), 34)
+                color = (34, round((height / level.maxHeight) * 255), 34)
                 rect = pygame.Rect(c * cellSize, r * cellSize, cellSize, cellSize)
                 pygame.draw.rect(screen, color, rect)
 
@@ -69,20 +69,20 @@ class Renderer:
             self.screen,
             (0, 0, 0),
             self.modelToViewSpace(unit.position),
-            #5,
-             unit.size
-             * self.resolution
-             * (1 + (unit.position[1] / self.simulation.level.max_height)),
+            # 5,
+            unit.size
+            * self.resolution
+            * (1 + (unit.position[1] / self.simulation.level.maxHeight)),
         )
         pygame.draw.circle(
             self.screen,
             (0, 0, 255),
             self.modelToViewSpace(unit.position),
-             unit.size
-             * self.resolution
-             * (1 + (unit.position[1] / self.simulation.level.max_height))
-             +1
-            #7,
+            unit.size
+            * self.resolution
+            * (1 + (unit.position[1] / self.simulation.level.maxHeight))
+            + 1,
+            # 7,
         )
         if len(unit.path) > 1:
             pygame.draw.lines(
