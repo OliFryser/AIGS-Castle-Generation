@@ -41,7 +41,6 @@ class CastleElement:
     
     def getMaterialBlockGlobal(self, x, y):
         key = (x - self.row, y - self.column)
-        print(key)
         if key not in self.materialBlocks:
             return None
         return self.materialBlocks[key]
@@ -110,5 +109,4 @@ class MaterialBlock:
             self.castleElement.removeMaterialBlock(self)
         if self.node is not None:
             self.node.materialBlock = None
-        print(f"destroy {self}")
         pass

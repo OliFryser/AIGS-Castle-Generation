@@ -114,7 +114,6 @@ class Level:
                 if castleCell is not None:
                     material = castleCell.getMaterialBlockGlobal(x,y)
                     node.setMaterialBlock(material)
-                    print(castleCell, material)
         for node in nodes.values():
                 edges = []
                 east = (node.position.x +1, node.position.z)
