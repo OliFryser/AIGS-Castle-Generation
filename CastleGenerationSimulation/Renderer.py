@@ -20,6 +20,7 @@ class Renderer:
             MaterialType.PAVEMENT: (80, 80, 80),
             MaterialType.GRANITE: (160, 160, 160),
             MaterialType.WOOD: (102, 58, 1),
+            MaterialType.DOOR: (98, 50, 1),
         }
 
     def render(self, currentTool: str):
@@ -43,13 +44,19 @@ class Renderer:
         level = self.simulation.level
         for y in range(level.height):
             for x in range(level.width):
+                """
                 castleElement = level.castleMap[y][x]
-                
                 if castleElement is not None:
                     color = self.materialTypeToColor[castleElement.material.materialType]
                     rect = pygame.Rect(x * cellSize, y * cellSize, cellSize, cellSize)
                     pygame.draw.rect(self.screen, color, rect)
-                node = self.simulation.nodeGraph.nodes[(x+0.5,y+0.5)]
+                """
+                node = level.nodeGraph.nodes[(x+0.5,y+0.5)]
+                if node.materialBlock is not None:
+                    color = self.materialTypeToColor[node.materialBlock.materialType]
+                    rect = pygame.Rect(x * cellSize, y * cellSize, cellSize, cellSize)
+                    pygame.draw.rect(self.screen, color, rect)
+
                 if node.unit is not None:
                     color = (255,0,0)
                     rect = pygame.Rect(x * cellSize, y * cellSize, cellSize, cellSize)

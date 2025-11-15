@@ -1,5 +1,5 @@
 0 0 0 0 0
 R 0 0 0 R
-G W W W G
+D D D D D
 R 0 0 0 R
 0 0 0 0 0

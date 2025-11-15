@@ -1,7 +1,9 @@
 import numpy as np
+from pygame import Vector3
 
 from CastleGenerator import CastleGenerator
 from Utils.Timer import Timer
+from Utils.Node import Graph,Node,Edge
 
 class Level:
     def __init__(self, levelFilepath: str, castleGenerationFilepath: str, castleTilesFilePath: str):
@@ -15,6 +17,11 @@ class Level:
         timer.stop()
 
         self.castleMap = castleGenerator.getCastleMapInTerrainScale()
+        
+        timer = Timer("Node Graph")
+        timer.start()
+        self.nodeGraph = self.makeGraph()
+        timer.stop()
 
     def createTerrainMap(self, levelFilepath: str):
         with open(levelFilepath, "r") as f:
@@ -86,3 +93,43 @@ class Level:
             + h01 * (1 - tx) * ty
             + h11 * tx * ty
         )
+    
+    def makeGraph(self):
+        nodeGraph = Graph()
+        print(nodeGraph)
+        nodeGraph.graph, nodeGraph.nodes = self.createNodeGraph()
+        print(nodeGraph)
+        return nodeGraph
+
+    #  in an alternate universe you can look up by a tuple of x,z coordinates-> dict[tuple[float,float], dict[Node,list[Edge]]]
+    #  but the graph class was better in the end instead of a super nested dict T_T
+    def createNodeGraph(self):
+        nodes = {}
+        graph = {}
+        for y in range(self.height):
+            for x in range(self.width):
+                node = Node(Vector3(x+ .5,self.getCell(x,y),y+.5))
+                nodes[node.position2] = node
+                castleCell = self.castleMap[y][x]
+                if castleCell is not None:
+                    material = castleCell.getMaterialBlockGlobal(x,y)
+                    node.setMaterialBlock(material)
+                    print(castleCell, material)
+        for node in nodes.values():
+                edges = []
+                east = (node.position.x +1, node.position.z)
+                west = (node.position.x -1, node.position.z)
+                south = (node.position.x, node.position.z +1)
+                north = (node.position.x,node.position.z -1)
+                northEast = (east[0], north[1])
+                northWest = (west[0], north[1])
+                southEast = (east[0], south[1])
+                southWest = (west[0], south[1])
+                for v2 in [east,west,south,north,northEast,northWest,southEast,southWest]:
+                    if v2 in nodes:
+                        tmpNode = nodes[v2]
+                        tmpEdge = Edge(tmpNode, node.position.distance_to(tmpNode.position))
+                        edges.append(tmpEdge)
+                graph[node] = edges
+        print(f"Initiating node graph; level : {len(self.getLevel())} * {len(self.getLevel()[0])}, graph nodes: {len(graph.keys())}")
+        return graph, nodes

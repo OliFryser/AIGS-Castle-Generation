@@ -14,11 +14,10 @@ class Simulation:
             initParams.castleTilesFilepath.getFilepath(),
         )
         self.units = []
-        self.updateNodeGraph()
         # these are test things
-        unit = AxeMan(self.nodeGraph,self.level, Vector2(20, 80))
-        unit0 = AxeMan(self.nodeGraph,self.level, Vector2(10, 50))
-        unit1 = AxeMan(self.nodeGraph,self.level, Vector2(30, 10))
+        unit = AxeMan(self.level, Vector2(20, 80))
+        unit0 = AxeMan(self.level, Vector2(10, 50))
+        unit1 = AxeMan(self.level, Vector2(30, 10))
         self.target = Target(
             self.level, Vector2(self.level.width / 2 + 2.5, self.level.height / 2 - 1.0)
         )
@@ -46,11 +45,3 @@ class Simulation:
     def runSimulation(self):
         pass
 
-    def updateNodeGraph(self):
-        graphs = [
-            Graph(self.level),
-            # createHexNodeGrap(self.level),
-        ]
-        self.nodeGraph = graphs[0]
-        for unit in self.units:
-            unit.nodeGraph = self.nodeGraph

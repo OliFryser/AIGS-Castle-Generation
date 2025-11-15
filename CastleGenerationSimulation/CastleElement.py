@@ -1,5 +1,5 @@
 from enum import Enum
-
+from Utils.Node import Node
 
 class ElementType(Enum):
     KEEP = "keep"
@@ -9,6 +9,7 @@ class ElementType(Enum):
 
 class MaterialType(Enum):
     WOOD = "W"
+    DOOR = "D"
     GRANITE = "G"
     STONE = "R"
     SANDSTONE = "S"
@@ -16,18 +17,55 @@ class MaterialType(Enum):
     EMPTY = "empty"
 
 class CastleElement:
-    def __init__(self, elementType: ElementType, materialType: MaterialType = MaterialType.WOOD):
+    def __init__(self, elementType: ElementType, column: int = 0, row:  int = 0):
         self.elementType = elementType
-        self.material = MaterialBlock(materialType)
+        self.column = column
+        self.row = row
+        self.materialBlocks: dict[tuple[int,int],MaterialBlock] = {}
+        self.linked = []
+
+    def setMaterialBlock(self, x, y, materialType):
+        key = (x,y)
+        materialBlock = MaterialBlock(materialType)
+        self.materialBlocks[key] = materialBlock
+        if materialType is not MaterialType.DOOR:
+            return
+        self.linked.append(materialBlock)
+        materialBlock.linked = self.linked
+
+    def getMaterialBlockLocal(self, x, y):
+        key = (x, y)
+        if key not in self.materialBlocks:
+            return None
+        return self.materialBlocks[key]
+    
+    def getMaterialBlockGlobal(self, x, y):
+        key = (x - self.row, y - self.column)
+        print(key)
+        if key not in self.materialBlocks:
+            return None
+        return self.materialBlocks[key]
+    
+    def removeMaterialBlock(self, materialBlock):
+        for k,v in self.materialBlocks:
+            if v == materialBlock:
+                del(self.materialBlocks[k])
 
 class MaterialBlock:
-    def __init__(self, materialType: MaterialType) -> None:
+    def __init__(self, materialType: MaterialType, castleElement: CastleElement |None = None) -> None:
         self.materialType = materialType
+        self.castleElement = castleElement
+        self.node: Node | None = None
         self.blocking = True
+        self.linked = []
         self.resetParameters()
 
     def resetParameters(self):
         if self.materialType == MaterialType.WOOD:
+            self.health = 100
+            self.damageThreshold = 1
+            return
+        if self.materialType == MaterialType.DOOR:
             self.health = 100
             self.damageThreshold = 1
             return
@@ -52,7 +90,25 @@ class MaterialBlock:
         self.health = 0
         self.damageThreshold = 0
 
-    #I was tired when I made this
+    def takeDamage(self, damage):
+        self.health -= damage
+        if self.health <= 0:
+            self.destroy()
+        
+    def hit(self, incommingDamage):
+        damage = incommingDamage - self.damageThreshold
+        if damage <= 0:
+            return
+        if len(self.linked) == 0:
+            self.takeDamage(damage)
+            return
+        for link in self.linked:
+            link.takeDamage(damage/len(self.linked))
+
     def destroy(self):
-        self.castleElement = None
-        self = None
+        if self.castleElement is not None:
+            self.castleElement.removeMaterialBlock(self)
+        if self.node is not None:
+            self.node.materialBlock = None
+        print(f"destroy {self}")
+        pass

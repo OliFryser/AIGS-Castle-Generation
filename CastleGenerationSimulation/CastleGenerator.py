@@ -212,16 +212,18 @@ class CastleGenerator:
                                     grid[int(toBeGate.y)][int(toBeGate.x)] = CastleElement(ElementType.GATE)
 
     #this assumes square tiles
-    def fillTile(self,castleElement, grid, x, y):
-        blockMap = self.tileMap[castleElement]
+    def fillTile(self,castleElementType, grid, x, y):
+        blockMap = self.tileMap[castleElementType]
         neighbors = self.castleElementNeighbors(x,y)
         tile = self.morphATile(blockMap, neighbors)
+        castleElement = CastleElement(castleElementType, x *self.scale, y *self.scale)
 
         for column in range(len(tile)):
             for row in range(len(tile[column])):
                 materialType  = tile[column][row]
                 if any (materialType == e.value for e in MaterialType):
-                    grid[x * self.scale+ column][y*self.scale + row] = CastleElement(castleElement, MaterialType(materialType))
+                    grid[x * self.scale+ column][y*self.scale + row] = castleElement
+                    castleElement.setMaterialBlock(row,column, MaterialType(materialType))
 
     def morphATile(self, blocks, neighbors):
         if len(neighbors) == 1 and len(blocks) >= 5:

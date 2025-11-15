@@ -10,7 +10,6 @@ from CastleElement import MaterialType
 class Unit:
     def __init__(
         self,
-        graph: Graph,
         level: Level,
         position: Vector2,
         health: int = 100,
@@ -25,7 +24,7 @@ class Unit:
         self.attackCoolDownTime = 1000
 
         self.level = level
-        self.nodeGraph = graph
+        self.nodeGraph = level.nodeGraph
         self.position: Vector3 = Vector3(
             position.x, level.getBilinearHeight(position.x, position.y), position.y
         )
