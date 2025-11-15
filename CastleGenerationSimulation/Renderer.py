@@ -11,8 +11,6 @@ class Renderer:
         self.simulation = simulation
         self.screen = screen
         self.resolution = resolution
-        print(MaterialType.__module__)
-        print(type(MaterialType))
         self.font = pygame.font.Font(None, 48)
         self.materialTypeToColor = {
             MaterialType.SANDSTONE: (163, 145, 117),

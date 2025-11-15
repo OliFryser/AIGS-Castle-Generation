@@ -59,7 +59,7 @@ class CastleGenerationAgent:
         self.cursor = (self.cursor[0] + offset[0] * range, self.cursor[1] + offset[1] * range)
 
 class CastleGenerator:
-    def __init__(self, filepath, tilePath, width: int, height: int):
+    def __init__(self, filepath, tilePath, width: int, height: int, targetPositionx, targetPositiony):
         self.letterToElementType = {
             "K": ElementType.KEEP,
             "W": ElementType.WALL,
@@ -75,7 +75,8 @@ class CastleGenerator:
         }
         
         self.tileMap = self.loadTileMap(tilePath)
-        self.scale = len(list(self.tileMap.values())[0][0])
+        self.scale = len(list(self.tileMap.values())[2][0])
+
 
         self.width = width
         self.height = height
@@ -84,8 +85,8 @@ class CastleGenerator:
             [None for _ in range(self.width // self.scale)] for _ in range(self.height // self.scale)
         ]
 
-        # Place keep in center
-        self.center = ((self.width // self.scale) // 2, (self.height // self.scale) // 2 - 1)
+        # Place keep just above target
+        self.center = (int(targetPositionx // self.scale), int(targetPositiony // self.scale) - 2)
         self.grid[self.center[1]][self.center[0]] = CastleElement(ElementType.KEEP)
 
         self.generate(filepath)
@@ -169,14 +170,17 @@ class CastleGenerator:
             self.instructionTree[parentStack[-1]].put(instruction)
             lastInstruction = instruction
 
-    def getCastleMapInTerrainScale(self):    
+    def getCastleMapInTerrainScale(self, path):    
         grid = self.grid.copy()
-        self.addGates(grid)
+        #self.addGates(grid, path)
         gridToScale = np.full((self.height, self.width), None)
         for row in range(len(grid)):
             for column in range(len(grid[0])):
                 if grid[row][column] is not None:
-                    self.fillTile(grid[row][column].elementType, gridToScale, row, column)
+                    if (column,row) in path:
+                        self.fillTile(ElementType.GATE,gridToScale,row, column)
+                    else:
+                        self.fillTile(grid[row][column].elementType, gridToScale, row, column)
 
 
         return gridToScale
@@ -191,39 +195,40 @@ class CastleGenerator:
                         if (Direction.LEFT in neighbors and Direction.RIGHT in neighbors) or (Direction.DOWN in neighbors and Direction.UP in neighbors):
                             print(neighbors)
                             grid[row][column] = CastleElement(ElementType.GATE)
-
-    def addGates(self, grid):
+    
+    #this needs protection from out of bounds
+    def addGates(self, grid, gates):
         for row in range(len(grid)):
             for column in range(len(self.grid[0])):
                 if grid[row][column] is not None and grid[row][column].elementType is not ElementType.GATE:
                     neighbors = self.castleElementNeighbors(row, column)
                     if len(neighbors) == 1:                      
-                        #print(f"{column, row} stands alone")
                         for emptyNeighbor in [e for e in Direction if e is not neighbors[0]]:
-                            #print(Vector2(self.directionToOffset[emptyNeighbor]) * 2)
                             nextOverPos = Vector2(column, row) + Vector2(self.directionToOffset[emptyNeighbor]) * 2
                             nextOver = grid[int(nextOverPos.y)][int(nextOverPos.x)]
-                            #print(f" next over: {nextOverPos.x, nextOverPos.y} is {nextOver}")
                             if nextOver is not None and nextOver.elementType is not ElementType.GATE:
                                 toBeGate = Vector2(column, row) + Vector2(self.directionToOffset[emptyNeighbor])
                                 toBeGateNeighbors = self.castleElementNeighbors(int(toBeGate.y),int(toBeGate.x))
                                 if len(toBeGateNeighbors) == 2:
-                                    #print(f"make a gate at {toBeGate}")
                                     grid[int(toBeGate.y)][int(toBeGate.x)] = CastleElement(ElementType.GATE)
 
     #this assumes square tiles
     def fillTile(self,castleElementType, grid, x, y):
         blockMap = self.tileMap[castleElementType]
-        neighbors = self.castleElementNeighbors(x,y)
+        if castleElementType == ElementType.GATE:
+            neighbors = self.castleElementNeighbors(x,y, [ElementType.GATE])
+        else:
+            neighbors = self.castleElementNeighbors(x,y)
         tile = self.morphATile(blockMap, neighbors)
         castleElement = CastleElement(castleElementType, x *self.scale, y *self.scale)
 
         for column in range(len(tile)):
             for row in range(len(tile[column])):
-                materialType  = tile[column][row]
+                materialType = tile[column][row]
                 if any (materialType == e.value for e in MaterialType):
-                    grid[x * self.scale+ column][y*self.scale + row] = castleElement
-                    castleElement.setMaterialBlock(row,column, MaterialType(materialType))
+                    if grid[x * self.scale + column][y*self.scale + row] == None:
+                        grid[x * self.scale + column][y*self.scale + row] = castleElement
+                        castleElement.setMaterialBlock(row,column, MaterialType(materialType))
 
     def morphATile(self, blocks, neighbors):
         if len(neighbors) == 1 and len(blocks) >= 5:
@@ -265,7 +270,7 @@ class CastleGenerator:
         return blocks[0]
 
 
-    def castleElementNeighbors(self, y, x):
+    def castleElementNeighbors(self, y, x, ignore: list[ElementType] = []):
         height = len(self.grid)
         width = len(self.grid[0])
         neighbors = []
@@ -273,7 +278,7 @@ class CastleGenerator:
         for direction, (dx, dy) in self.directionToOffset.items():
             nx, ny = x + dx, y + dy
             if 0 <= ny < height and 0 <= nx < width:
-                if self.grid[ny][nx] is not None:
+                if self.grid[ny][nx] is not None and self.grid[ny][nx] not in ignore:
                     neighbors.append(direction)
 
         return neighbors

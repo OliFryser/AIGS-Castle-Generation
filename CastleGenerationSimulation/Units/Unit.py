@@ -124,7 +124,7 @@ class Unit:
         if self.target is None:
             return
         self.path = aStar(
-                self.position, self.target, self.nodeGraph, unit= self,
+                self.position, self.target, self.nodeGraph,
                 costAdjustFunc= self.moveCostAdjust, ignoreNodes=self.nodesToSkip
             )
         #print(len(self.path))
@@ -192,21 +192,24 @@ class Unit:
         dy = int(round(direction.z))
         nodes = [self.nodeGraph.nodes[(x+dx,y+dy)]]
         if abs(dx) + abs(dy) >=2:
-            
-            nodes = nodes + [
-                self.nodeGraph.nodes[(x+dx,y)],
-                self.nodeGraph.nodes[(x,y+dy)],
-                ]           
+            if x+dx >=0 and x+dx <= self.level.width:
+                nodes.append(self.nodeGraph.nodes[(x+dx,y)])
+            if y+dy >= 0 and y+dy <= self.level.height:
+                nodes.append(self.nodeGraph.nodes[(x,y+dy)])
+                
         elif dx == 0:
-            nodes = nodes + [
-                self.nodeGraph.nodes[(x+1, y+dy)],
-                self.nodeGraph.nodes[(x-1, y+dy)],
-            ]
+            if y+dy >= 0 and y+dy <= self.level.height:
+                if x+1 <= self.level.width:
+                    nodes.append(self.nodeGraph.nodes[(x+1, y+dy)])
+                if x-1 >= 0:
+                    nodes.append(self.nodeGraph.nodes[(x-1, y+dy)])
+        
         elif dy == 0:
-            nodes = nodes + [
-                self.nodeGraph.nodes[(x+dx, y+1)],
-                self.nodeGraph.nodes[(x+dx, y-1)],
-            ]
+            if x+dx >=0 and x+dx <= self.level.width:
+                if y +1 < self.level.height:
+                    nodes.append(self.nodeGraph.nodes[(x+dx, y+1)])
+                if y -1 >= 0:
+                    nodes.append(self.nodeGraph.nodes[(x+dx, y-1)])
 
         return nodes
 
