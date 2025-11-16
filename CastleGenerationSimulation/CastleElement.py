@@ -26,7 +26,7 @@ class CastleElement:
 
     def setMaterialBlock(self, x, y, materialType):
         key = (x,y)
-        materialBlock = MaterialBlock(materialType)
+        materialBlock = MaterialBlock(materialType, self)
         self.materialBlocks[key] = materialBlock
         if materialType is not MaterialType.DOOR:
             return

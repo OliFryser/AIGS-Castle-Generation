@@ -85,7 +85,7 @@ class CastleGenerator:
         ]
 
         # Place keep just above target
-        self.center = (int(targetPositionx // self.scale), int(targetPositiony // self.scale) - 1)
+        self.center = (int(targetPositionx // self.scale +1), int(targetPositiony // self.scale) - 1)
         self.grid[self.center[1]][self.center[0]] = CastleElement(ElementType.KEEP)
 
         self.generate(filepath)
@@ -107,7 +107,8 @@ class CastleGenerator:
             self.instructions = [line.rstrip() for line in f]
             # Make sure we use real tabs
             self.convert4SpacesToTab()
-
+        # evaluate the instructions, before they all get popped
+        self.evaluateInstructions()
         # instruction dict. Each instruction maps to a list of its children
         self.generateInstructionTree(self.instructions)
 
@@ -118,6 +119,24 @@ class CastleGenerator:
 
         while len(agents) > 0:
             self.step(agents)
+
+    def evaluateInstructions(self):
+        costMap = {
+            "K": 5,
+            "W": 1,
+            "G": 3,
+            "T": 5,
+        }
+        cost = 0
+        for instruction in self.instructions:
+            splitInstructions = instruction
+            for splitInstruction in splitInstructions.split():
+                if splitInstruction in costMap:
+                    cost += costMap[splitInstruction]
+        self.instructionCost = cost
+
+    def getGateAmount(self, path):
+        return self.gateCount
 
     def step(self, agents: list[CastleGenerationAgent]):
         for agent in agents:
@@ -181,14 +200,17 @@ class CastleGenerator:
         return gridToScale
 
     def addGates(self, grid, path):
+        self.gateCount = 0
         for row in range(len(grid)):
             for column in range(len(grid[0])):
                 if (column,row) in path:
                     if grid[row][column] is not None:
-                        if len(self.castleElementNeighbors(row,column)) > 2:
+                        neighbours = self.castleElementNeighbors(row,column)
+                        if len(neighbours) > 2 or not (len(neighbours) == 2 and set(neighbours) == set([Direction.DOWN,Direction.UP]) or set(neighbours) == set([Direction.LEFT,Direction.RIGHT])):
                             grid[row][column] = None    
                             continue
                         grid[row][column] = CastleElement(ElementType.GATE)
+                        self.gateCount += 1
 
     #this assumes square tiles
     def fillTile(self,castleElementType, grid, x, y):
@@ -209,6 +231,7 @@ class CastleGenerator:
                         castleElement.setMaterialBlock(row,column, MaterialType(materialType))
 
     def morphATile(self, blocks, neighbors):
+        #end bits
         if len(neighbors) == 1 and len(blocks) >= 5:
             if neighbors[0] == Direction.UP:
                 return np.transpose(blocks[4])

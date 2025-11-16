@@ -136,7 +136,7 @@ class Unit:
             return
 
         #for avoiding units
-        for node in self.path[:5]:
+        for node in self.path[:1]:
             if node.unit is not None and node.unit is not self:
                 self.planPath()
                 break

@@ -5,6 +5,7 @@ from CastleGenerator import CastleGenerator
 from Utils.Timer import Timer
 from Utils.Node import Graph,Node,Edge
 from Utils.PathFinding import aStar
+from CastleElement import ElementType, MaterialType
 
 class Level:
     def __init__(self, levelFilepath: str, castleGenerationFilepath: str, castleTilesFilePath: str, targetPosition: Vector3|None = None):
@@ -23,13 +24,17 @@ class Level:
         timer.stop()
 
         positionPath = self.generatePath(castleGenerator)
-
         self.castleMap = castleGenerator.getCastleMapInTerrainScale(positionPath)
         
         timer = Timer("Node Graph")
         timer.start()
         self.nodeGraph = self.makeGraph(self.nodeToNodeDistance)
         timer.stop()
+
+        # gather data
+        self.instructionCost = castleGenerator.instructionCost
+        self.gates = castleGenerator.getGateAmount(positionPath)
+        print(self.getCastleCost(),self.getProtectedArea())
 
     def createTerrainMap(self, levelFilepath: str):
         with open(levelFilepath, "r") as f:
@@ -102,6 +107,10 @@ class Level:
             + h11 * tx * ty
         )
     
+    #####################################################
+    # Node Graph and castle path generation
+    #####################################################
+
     def makeGraph(self, edgeCostFunc, scale: int = 1):
         nodeGraph = Graph()
         nodeGraph.graph, nodeGraph.nodes = self.createNodeGraph( edgeCostFunc, scale)
@@ -131,9 +140,9 @@ class Level:
                 northWest = (west[0], north[1])
                 southEast = (east[0], south[1])
                 southWest = (west[0], south[1])
-                for v2 in [east,west,south,north,northEast,northWest,southEast,southWest]:
-                    if v2 in nodes:
-                        tmpNode = nodes[v2]
+                for cardinalNode in [east,west,north,northEast,northWest,southEast,southWest,south]:
+                    if cardinalNode in nodes:
+                        tmpNode = nodes[cardinalNode]
                         tmpEdge = Edge(tmpNode, edgeCostFunc(node, tmpNode))
                         edges.append(tmpEdge)
                 graph[node] = edges
@@ -155,5 +164,47 @@ class Level:
             Vector3(self.targetPosition.x//scale,self.targetPosition.y,self.targetPosition.z//scale),
             pathGraph)
         
-        return [(int(node.position.x), int(node.position.z)) for node in nodePath]        
+        return [(int(node.position.x), int(node.position.z)) for node in nodePath]
+    
+    ##############################################################
+    # Behaviour
+    ##############################################################
+
+    def getProtectedArea(self):
+        enclosed = []
+        checkedGates = []
+        gates = [self.targetPosition]
+        while gates != []:
+            gate = gates.pop()
+            if gate not in checkedGates:
+                checkedGates.append(gate)
+                enclosed, gates = self.getEnclosedNodes(gate, enclosed, gates)
+
+
+        return len(enclosed)
+
+    def getCastleCost(self):
+        return self.instructionCost + self.gates * 3
+        
+    def getEnclosedNodes(self, startPosition, enclosedNodes, gates):
+        currentNode = self.nodeGraph.getNodeFromPosition(startPosition)
+
+        tempEnclosedNodes = [currentNode]
+        openNodes = [currentNode]
+        tmpGates = []
+
+        while openNodes != []:
+            currentNode = openNodes.pop()
+            for edge in self.nodeGraph.graph[currentNode]:
+                if (edge.node.materialBlock is None or (edge.node.materialBlock is not None and not edge.node.materialBlock.blocking)) and edge.node not in tempEnclosedNodes and edge.node not in enclosedNodes:
+                    tempEnclosedNodes.append(edge.node)
+                    openNodes.append(edge.node)
+                    edge.node.unit = 1
+                #if touching an edge, don't count erea as being enclosed
+                if edge.node.position.x < 1 or edge.node.position.x > self.width-1 or edge.node.position.z < 1 or edge.node.position.z > self.height -1:
+                    return enclosedNodes, gates
+                if edge.node not in tmpGates and edge.node.materialBlock is not None and edge.node.materialBlock.materialType == MaterialType.DOOR and edge.node.materialBlock.castleElement is not None and edge.node.materialBlock.castleElement.elementType is ElementType.GATE:
+                    tmpGates.append(edge.node.position)
+        
+        return tempEnclosedNodes + enclosedNodes, tmpGates + gates
         
