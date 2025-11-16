@@ -75,8 +75,7 @@ class CastleGenerator:
         }
         
         self.tileMap = self.loadTileMap(tilePath)
-        self.scale = len(list(self.tileMap.values())[2][0])
-
+        self.scale = len(list(self.tileMap.values())[0][0])
 
         self.width = width
         self.height = height
@@ -86,7 +85,7 @@ class CastleGenerator:
         ]
 
         # Place keep just above target
-        self.center = (int(targetPositionx // self.scale), int(targetPositiony // self.scale) - 2)
+        self.center = (int(targetPositionx // self.scale), int(targetPositiony // self.scale) - 1)
         self.grid[self.center[1]][self.center[0]] = CastleElement(ElementType.KEEP)
 
         self.generate(filepath)
@@ -247,7 +246,6 @@ class CastleGenerator:
             return np.transpose(blocks[0])
         # Default
         return blocks[0]
-
 
     def castleElementNeighbors(self, y, x, ignore: list[ElementType] = []):
         height = len(self.grid)

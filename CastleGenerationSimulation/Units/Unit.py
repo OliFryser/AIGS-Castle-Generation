@@ -24,7 +24,7 @@ class Unit:
         self.attackCoolDownTime = 1000
 
         self.level = level
-        self.nodeGraph = level.nodeGraph
+        self.nodeGraph: Graph = level.nodeGraph
         self.position: Vector3 = Vector3(
             position.x, level.getBilinearHeight(position.x, position.y), position.y
         )

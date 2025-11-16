@@ -10,7 +10,7 @@ class Level:
     def __init__(self, levelFilepath: str, castleGenerationFilepath: str, castleTilesFilePath: str, targetPosition: Vector3|None = None):
         self.createTerrainMap(levelFilepath)
         self.castleMap = None
-        if targetPosition == None:
+        if targetPosition is None:
             self.targetPosition = Vector3(self.width/2, self.getBilinearHeight(self.width/2,self.height/2) ,self.height/2)
         else:
             self.targetPosition = targetPosition
@@ -22,25 +22,14 @@ class Level:
         )
         timer.stop()
 
-        scale = castleGenerator.scale
-        pathGraph = self.makeGraph(scale)
-        nodePath = aStar(
-            Vector3(self.width//scale/2, self.getBilinearHeight(self.width//scale/2,self.height//scale), self.height//scale), 
-            Vector3(self.targetPosition.x//scale,self.targetPosition.y,self.targetPosition.z//scale),
-            pathGraph, costAdjustFunc= self.pathCostAdjustFunc)
-        
-        positionPath = [(int(node.position.x), int(node.position.z)) for node in nodePath]        
-        
+        positionPath = self.generatePath(castleGenerator)
+
         self.castleMap = castleGenerator.getCastleMapInTerrainScale(positionPath)
         
         timer = Timer("Node Graph")
         timer.start()
-        self.nodeGraph = self.makeGraph()
+        self.nodeGraph = self.makeGraph(self.nodeToNodeDistance)
         timer.stop()
-
-    def pathCostAdjustFunc(self, node: Node, edge: Edge):
-        diff = abs(node.position.y - edge.node.position.y) * 10
-        return edge.cost + diff
 
     def createTerrainMap(self, levelFilepath: str):
         with open(levelFilepath, "r") as f:
@@ -113,14 +102,14 @@ class Level:
             + h11 * tx * ty
         )
     
-    def makeGraph(self, scale: int = 1):
+    def makeGraph(self, edgeCostFunc, scale: int = 1):
         nodeGraph = Graph()
-        nodeGraph.graph, nodeGraph.nodes = self.createNodeGraph(scale)
+        nodeGraph.graph, nodeGraph.nodes = self.createNodeGraph( edgeCostFunc, scale)
         return nodeGraph
 
     #  in an alternate universe you can look up by a tuple of x,z coordinates-> dict[tuple[float,float], dict[Node,list[Edge]]]
     #  but the graph class was better in the end instead of a super nested dict T_T
-    def createNodeGraph(self, scale: int):
+    def createNodeGraph(self, edgeCostFunc, scale: int):
         nodes = {}
         graph = {}
         for y in range(self.height//scale):
@@ -145,11 +134,26 @@ class Level:
                 for v2 in [east,west,south,north,northEast,northWest,southEast,southWest]:
                     if v2 in nodes:
                         tmpNode = nodes[v2]
-                        tmpEdge = Edge(tmpNode, self.nodeToNodeCost(node, tmpNode))
+                        tmpEdge = Edge(tmpNode, edgeCostFunc(node, tmpNode))
                         edges.append(tmpEdge)
                 graph[node] = edges
         print(f"Initiating node graph; level : {len(self.getLevel())} * {len(self.getLevel()[0])}, graph nodes: {len(graph.keys())}")
         return graph, nodes
     
-    def nodeToNodeCost(self, node0, node1):
+    def nodeToNodeDistance(self, node0, node1):
         return node0.position.distance_to(node1.position)
+        
+    def pathCostAdjustFunc(self, node0: Node, node1: Node):
+        diff = abs(node0.position.y - node1.position.y) * 10
+        return node0.position.distance_to(node1.position) + diff
+    
+    def generatePath(self, castleGenerator: CastleGenerator):
+        scale = castleGenerator.scale
+        pathGraph = self.makeGraph(self.pathCostAdjustFunc, scale)
+        nodePath = aStar(
+            Vector3(self.width//scale/2, self.getBilinearHeight(self.width//scale/2,self.height//scale), self.height//scale), 
+            Vector3(self.targetPosition.x//scale,self.targetPosition.y,self.targetPosition.z//scale),
+            pathGraph)
+        
+        return [(int(node.position.x), int(node.position.z)) for node in nodePath]        
+        
