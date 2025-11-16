@@ -1,8 +1,10 @@
-from collections import defaultdict
 from enum import IntEnum
-import queue
-from CastleElement import CastleElement, ElementType
 import numpy as np
+
+from CastleElement import CastleElement, ElementType
+from CastleInstructions.InstructionToken import InstructionToken
+from CastleInstructions.InstructionTree import parseInstructionTree
+from CastleInstructions.InstructionLine import InstructionLine
 
 
 class Direction(IntEnum):
@@ -17,11 +19,10 @@ class CastleGenerationAgent:
         self,
         cursor: tuple[int, int],
         initialDirection: Direction,
-        instructions: str,
+        instructionLine: InstructionLine,
         grid: list[list[None | CastleElement]],
     ):
-        # store the original instructions as each agent id. TODO: Wastes memory, could just be a number
-        self.id = instructions
+        self.instructionLine = instructionLine
 
         self.directionToOffset = {
             Direction.UP: (0, -1),
@@ -32,15 +33,12 @@ class CastleGenerationAgent:
 
         self.cursor = cursor
         self.grid = grid
-        self.instructions = instructions.split()
-        # reverse to be able to pop in constant time. Converting from a stack to a queue
-        self.instructions.reverse()
         self.direction = initialDirection
 
-    def getNextInstruction(self) -> str | None:
-        if len(self.instructions) <= 0:
+    def getNextInstruction(self) -> InstructionToken | None:
+        if self.instructionLine.isEmpty():
             return None
-        return self.instructions.pop()
+        return self.instructionLine.getNextInstruction()
 
     def placeNextElement(self, tile, elemap):
         self.moveCursorInDirection(len(tile[0]))
@@ -48,36 +46,38 @@ class CastleGenerationAgent:
             tile = np.transpose(tile)
         for n in range(len(tile)):
             for i in range(len(tile[n])):
-                    
-                t  = tile[n][i]
+                t = tile[n][i]
                 if t in elemap:
-                    self.grid[self.cursor[1]+ n][self.cursor[0] + i] = CastleElement(elemap[t])
+                    self.grid[self.cursor[1] + n][self.cursor[0] + i] = CastleElement(
+                        elemap[t]
+                    )
 
     def turnClockwise(self):
-        # Add 1 modulo 4
         self.direction = Direction((self.direction + 1) % 4)
 
     def turnCounterClockwise(self):
-        # Subtract 1 modulo 4
         self.direction = Direction((self.direction - 1) % 4)
 
-    def moveCursorInDirection(self, range = 1):
+    def moveCursorInDirection(self, range=1):
         offset = self.directionToOffset[self.direction]
-        self.cursor = (self.cursor[0] + offset[0] * range, self.cursor[1] + offset[1] * range)
+        self.cursor = (
+            self.cursor[0] + offset[0] * range,
+            self.cursor[1] + offset[1] * range,
+        )
 
 
 class CastleGenerator:
     def __init__(self, filepath, tilePath, width: int, height: int):
-        self.letterToElementType = {
-            "K": ElementType.KEEP,
-            "W": ElementType.WALL,
-            "G": ElementType.GATE,
-            "T": ElementType.TOWER,
+        self.tokenToElementType: dict[InstructionToken, ElementType] = {
+            InstructionToken.KEEP: ElementType.KEEP,
+            InstructionToken.WALL: ElementType.WALL,
+            InstructionToken.GATE: ElementType.GATE,
+            InstructionToken.TOWER: ElementType.TOWER,
         }
         self.tileMap = self.loadTileMap(tilePath)
 
-        self.width = width #// 3
-        self.height = height #// 3
+        self.width = width  # // 3
+        self.height = height  # // 3
 
         self.grid: list[list[None | CastleElement]] = [
             [None for _ in range(self.width)] for _ in range(self.height)
@@ -85,12 +85,11 @@ class CastleGenerator:
 
         # Place keep in center
         self.center = (self.width // 2, self.height // 2)
-        #self.grid[self.center[1]][self.center[0]] = CastleElement(ElementType.KEEP)
+        # self.grid[self.center[1]][self.center[0]] = CastleElement(ElementType.KEEP)
 
         self.generate(filepath)
 
     def loadTileMap(self, filepath: str):
-        
         tileMap = {}
         for element in ElementType:
             with open(filepath + element.value + ".txt", "r") as f:
@@ -99,17 +98,13 @@ class CastleGenerator:
         return tileMap
 
     def generate(self, filepath: str):
-        with open(filepath, "r") as f:
-            self.instructions = [line.rstrip() for line in f]
-            # Make sure we use real tabs
-            self.convert4SpacesToTab()
-
-        # instruction dict. Each instruction maps to a list of its children
-        self.generateInstructionTree(self.instructions)
+        self.instructionTree = parseInstructionTree(filepath)
 
         agents: list[CastleGenerationAgent] = []
         agents.append(
-            CastleGenerationAgent(self.center, Direction.UP, self.root, self.grid)
+            CastleGenerationAgent(
+                self.center, Direction.UP, self.instructionTree.root, self.grid
+            )
         )
 
         while len(agents) > 0:
@@ -122,48 +117,24 @@ class CastleGenerator:
                 agents.remove(agent)
                 continue
 
-            if instruction == "LEFT":
+            if instruction == InstructionToken.LEFT:
                 agent.turnCounterClockwise()
-            elif instruction == "RIGHT":
+            elif instruction == InstructionToken.RIGHT:
                 agent.turnClockwise()
-            elif instruction == "BRANCH":
+            elif instruction == InstructionToken.BRANCH:
                 agents.append(
                     CastleGenerationAgent(
                         agent.cursor,
                         agent.direction,
-                        self.instructionTree[agent.id].get(),
+                        self.instructionTree.getNextChild(agent.instructionLine),
                         self.grid,
                     )
                 )
             else:
-                elementType = self.letterToElementType[instruction]
-                agent.placeNextElement(self.tileMap[elementType], self.letterToElementType)
-
-    def generateInstructionTree(self, instructions: list[str]):
-        self.instructionTree: defaultdict[str, queue.Queue[str]] = defaultdict(
-            queue.Queue[str]
-        )
-        self.root = instructions[0]
-        instructions.remove(self.root)
-
-        parentStack = []
-        lastInstruction = self.root
-        level = 0
-        for instruction in instructions:
-            currentLevel = instruction.count("\t")
-            # remove tabs here
-            instruction = instruction.lstrip()
-            if currentLevel > level:
-                # go a level deeper
-                level += 1
-                parentStack.append(lastInstruction)
-            if currentLevel < level:
-                # go a level back
-                level -= 1
-                parentStack.pop()
-
-            self.instructionTree[parentStack[-1]].put(instruction)
-            lastInstruction = instruction
+                elementType = self.tokenToElementType[instruction]
+                agent.placeNextElement(
+                    self.tileMap[elementType], self.tokenToElementType
+                )
 
     def getCastleMapInTerrainScale(self):
         scale = 1
@@ -172,7 +143,3 @@ class CastleGenerator:
             for row in self.grid
             for _ in range(scale)
         ]
-
-    def convert4SpacesToTab(self):
-        for i, instruction in enumerate(self.instructions):
-            self.instructions[i] = instruction.replace(" " * 4, "\t")
