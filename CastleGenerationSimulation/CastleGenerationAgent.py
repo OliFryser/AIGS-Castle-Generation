@@ -1,6 +1,7 @@
 from CastleElement import CastleElement
 from CastleInstructions.InstructionLine import InstructionLine
 from CastleInstructions.InstructionToken import InstructionToken
+from CastleInstructions.InstructionTree import TreeNode
 from Utils.Direction import Direction
 
 
@@ -9,10 +10,10 @@ class CastleGenerationAgent:
         self,
         cursor: tuple[int, int],
         initialDirection: Direction,
-        instructionLine: InstructionLine,
+        treeNode: TreeNode,
         grid: list[list[None | CastleElement]],
     ):
-        self.instructionLine = instructionLine
+        self.treeNode = treeNode
 
         self.directionToOffset = {
             Direction.UP: (0, -1),
@@ -26,9 +27,9 @@ class CastleGenerationAgent:
         self.direction = initialDirection
 
     def getNextInstruction(self) -> InstructionToken | None:
-        if self.instructionLine.isEmpty():
+        if self.treeNode.line.isEmpty():
             return None
-        return self.instructionLine.getNextInstruction()
+        return self.treeNode.line.getNextInstruction()
 
     def placeNextElement(self, castleElement):
         self.moveCursorInDirection()

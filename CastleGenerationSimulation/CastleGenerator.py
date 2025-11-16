@@ -4,7 +4,7 @@ import numpy as np
 from CastleElement import CastleElement, ElementType, MaterialType
 from CastleGenerationAgent import CastleGenerationAgent
 from CastleInstructions.InstructionToken import InstructionToken
-from CastleInstructions.InstructionTree import parseInstructionTree
+from CastleInstructions.InstructionTreeParser import InstructionTreeParser
 from Utils.Direction import Direction
 
 
@@ -59,7 +59,7 @@ class CastleGenerator:
         return tileMap
 
     def generate(self, filepath: str):
-        self.instructionTree = parseInstructionTree(filepath)
+        self.instructionTree = InstructionTreeParser().parseInstructionTree(filepath)
 
         agents: list[CastleGenerationAgent] = []
         agents.append(
@@ -83,14 +83,18 @@ class CastleGenerator:
             elif instruction == InstructionToken.RIGHT:
                 agent.turnClockwise()
             elif instruction == InstructionToken.BRANCH:
-                agents.append(
-                    CastleGenerationAgent(
-                        agent.cursor,
-                        agent.direction,
-                        self.instructionTree.getNextChild(agent.instructionLine),
-                        self.grid,
+                newBranch = self.instructionTree.getNextChild(agent.treeNode)
+                if newBranch is None:
+                    print("Wrongly formatted branching")
+                else:
+                    agents.append(
+                        CastleGenerationAgent(
+                            agent.cursor,
+                            agent.direction,
+                            newBranch,
+                            self.grid,
+                        )
                     )
-                )
             else:
                 elementType = self.tokenToElementType[instruction]
                 agent.placeNextElement(elementType)
