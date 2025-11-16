@@ -17,7 +17,7 @@ class InstructionLine:
         return self.id
 
     def isEmpty(self):
-        return len(self.instructions) > 0
+        return len(self.instructions) <= 0
 
     def __hash__(self):
         return self.id.__hash__()

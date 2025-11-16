@@ -65,5 +65,4 @@ def parseInstructionTree(filepath: str):
         parsedInstruction = InstructionLine(instructionTree.getNextId(), instruction)
         instructionTree.addChild(parentStack[-1], parsedInstruction)
         lastInstruction = parsedInstruction
-    print(f"Parsed tree:\n{instructionTree}")
     return instructionTree

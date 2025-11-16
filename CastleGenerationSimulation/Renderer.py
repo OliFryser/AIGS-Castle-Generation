@@ -1,5 +1,5 @@
 import pygame
-from CastleElement import ElementType
+from CastleElement import MaterialType
 from Simulation import Simulation
 from Units.Unit import Unit
 from Target import Target
@@ -11,13 +11,15 @@ class Renderer:
         self.simulation = simulation
         self.screen = screen
         self.resolution = resolution
-
+        print(MaterialType.__module__)
+        print(type(MaterialType))
         self.font = pygame.font.Font(None, 48)
-        self.elementTypeToColor = {
-            ElementType.KEEP: (163, 145, 117),
-            ElementType.WALL: (91, 91, 91),
-            ElementType.TOWER: (160, 160, 160),
-            ElementType.GATE: (102, 58, 1),
+        self.materialTypeToColor = {
+            MaterialType.SANDSTONE: (163, 145, 117),
+            MaterialType.STONE: (91, 91, 91),
+            MaterialType.PAVEMENT: (80, 80, 80),
+            MaterialType.GRANITE: (160, 160, 160),
+            MaterialType.WOOD: (102, 58, 1),
         }
 
     def render(self, currentTool: str):
@@ -44,10 +46,10 @@ class Renderer:
                 castleElement = level.castleMap[y][x]
                 
                 if castleElement is not None:
-                    color = self.elementTypeToColor[castleElement.elementType]
+                    color = self.materialTypeToColor[castleElement.material.materialType]
                     rect = pygame.Rect(x * cellSize, y * cellSize, cellSize, cellSize)
                     pygame.draw.rect(self.screen, color, rect)
-                node = self.simulation.ng.nodes[(x+0.5,y+0.5)]
+                node = self.simulation.nodeGraph.nodes[(x+0.5,y+0.5)]
                 if node.unit is not None:
                     color = (255,0,0)
                     rect = pygame.Rect(x * cellSize, y * cellSize, cellSize, cellSize)
