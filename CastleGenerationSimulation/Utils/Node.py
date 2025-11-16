@@ -41,7 +41,6 @@ class Graph:
             for nedge in graph[edge.node]:
                 if nedge.node == toBeRemoved:
                     graph[edge.node].remove(nedge)
-
         del graph[toBeRemoved]
 
     def getNodeFromPosition(self, position: Vector3):

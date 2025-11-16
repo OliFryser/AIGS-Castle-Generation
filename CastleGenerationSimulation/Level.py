@@ -25,7 +25,7 @@ class Level:
         scale = castleGenerator.scale
         pathGraph = self.makeGraph(scale)
         nodePath = aStar(
-            Vector3(self.width//scale/2, self.getBilinearHeight(self.width//scale/2,self.height//scale-1), self.height//scale), 
+            Vector3(self.width//scale/2, self.getBilinearHeight(self.width//scale/2,self.height//scale), self.height//scale), 
             Vector3(self.targetPosition.x//scale,self.targetPosition.y,self.targetPosition.z//scale),
             pathGraph, costAdjustFunc= self.pathCostAdjustFunc)
         

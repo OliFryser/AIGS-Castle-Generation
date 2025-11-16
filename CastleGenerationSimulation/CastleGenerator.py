@@ -172,45 +172,24 @@ class CastleGenerator:
 
     def getCastleMapInTerrainScale(self, path):    
         grid = self.grid.copy()
-        #self.addGates(grid, path)
+        self.addGates(grid, path)
         gridToScale = np.full((self.height, self.width), None)
         for row in range(len(grid)):
             for column in range(len(grid[0])):
                 if grid[row][column] is not None:
-                    if (column,row) in path:
-                        self.fillTile(ElementType.GATE,gridToScale,row, column)
-                    else:
-                        self.fillTile(grid[row][column].elementType, gridToScale, row, column)
-
+                    self.fillTile(grid[row][column].elementType, gridToScale, row, column)
 
         return gridToScale
 
-    #this is just a simple placeholder way to do it
-    def addGates2(self, grid):
+    def addGates(self, grid, path):
         for row in range(len(grid)):
-            for column in range(len(self.grid[0])):
-                if grid[row][column] is None:
-                    neighbors = self.castleElementNeighbors(row, column)
-                    if len(neighbors) == 2:
-                        if (Direction.LEFT in neighbors and Direction.RIGHT in neighbors) or (Direction.DOWN in neighbors and Direction.UP in neighbors):
-                            print(neighbors)
-                            grid[row][column] = CastleElement(ElementType.GATE)
-    
-    #this needs protection from out of bounds
-    def addGates(self, grid, gates):
-        for row in range(len(grid)):
-            for column in range(len(self.grid[0])):
-                if grid[row][column] is not None and grid[row][column].elementType is not ElementType.GATE:
-                    neighbors = self.castleElementNeighbors(row, column)
-                    if len(neighbors) == 1:                      
-                        for emptyNeighbor in [e for e in Direction if e is not neighbors[0]]:
-                            nextOverPos = Vector2(column, row) + Vector2(self.directionToOffset[emptyNeighbor]) * 2
-                            nextOver = grid[int(nextOverPos.y)][int(nextOverPos.x)]
-                            if nextOver is not None and nextOver.elementType is not ElementType.GATE:
-                                toBeGate = Vector2(column, row) + Vector2(self.directionToOffset[emptyNeighbor])
-                                toBeGateNeighbors = self.castleElementNeighbors(int(toBeGate.y),int(toBeGate.x))
-                                if len(toBeGateNeighbors) == 2:
-                                    grid[int(toBeGate.y)][int(toBeGate.x)] = CastleElement(ElementType.GATE)
+            for column in range(len(grid[0])):
+                if (column,row) in path:
+                    if grid[row][column] is not None:
+                        if len(self.castleElementNeighbors(row,column)) > 2:
+                            grid[row][column] = None    
+                            continue
+                        grid[row][column] = CastleElement(ElementType.GATE)
 
     #this assumes square tiles
     def fillTile(self,castleElementType, grid, x, y):

@@ -73,6 +73,8 @@ def getAsNodeOnGraph(startPosition: Vector3 , graph: Graph, tmpNodes, ignoreNode
             block = graph.getNodeFromPosition(tmpNode.position).materialBlock
             if block is not None and block.blocking:
                 continue
+            if block is not None and block.unit is not None:
+                continue
             graph.graph[tmpNode].append(Edge(node, tmpNode.position.distance_to(node.position)))
             tmpEdge = Edge(tmpNode, node.position.distance_to(tmpNode.position))
             edges.append(tmpEdge)
@@ -94,8 +96,13 @@ def aStar(startPosition: Vector3, targetPosition: Vector3, nodeGraph: Graph,
     graph = nodeGraph.graph
     #pprint(graph.values())
     tmpNodes = []
+
     startNode = getAsNodeOnGraph(startPosition, nodeGraph, tmpNodes, ignoreNodes)
     targetNode = getAsNodeOnGraph(targetPosition, nodeGraph, tmpNodes, ignoreNodes)
+    """
+    startNode = nodeGraph.getNodeFromPosition(startPosition)
+    targetNode = nodeGraph.getNodeFromPosition(targetPosition)
+    """
     # distances is for storing the shortest distance to node
     distances: dict[Node, float] = {startNode: 0.0}
     open_nodes = PriorityQueue()
