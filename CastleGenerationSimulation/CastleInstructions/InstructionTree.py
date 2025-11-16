@@ -1,6 +1,4 @@
 from __future__ import annotations
-from collections import defaultdict, deque
-from itertools import chain
 import random
 
 from CastleInstructions.InstructionLine import InstructionLine
@@ -39,16 +37,22 @@ class InstructionTree:
         parent.addChild(childNode)
         return childNode
 
-    # def mutate(
-    #     self,
-    #     mutationWeights: MutationWeights,
-    #     instructionLine: InstructionLine | None = None,
-    # ):
-    #     if instructionLine is None:
-    #         instructionLine = self.sampleRandomLine()
+    def mutate(
+        self,
+        mutationWeights: MutationWeights,
+        node: TreeNode | None = None,
+    ):
+        if node is None:
+            node = self.sampleRandomNode()
 
-    #     newElement = random.choices(mutationWeights.options, mutationWeights.weights)[0]
-    #     instructionLine.mutate(newElement)
+        newElement = random.choices(mutationWeights.options, mutationWeights.weights)[0]
+        node.line.mutate(newElement)
+
+        if newElement == InstructionToken.BRANCH:
+            node.addChild(TreeNode(InstructionLine("")))
+
+    def sampleRandomNode(self):
+        return random.choice(self.nodes)
 
     def insertSubTree(self, newParent: TreeNode, subTreeRoot: TreeNode):
         newParent.addChild(subTreeRoot)

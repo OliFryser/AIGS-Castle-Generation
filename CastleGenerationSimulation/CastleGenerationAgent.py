@@ -1,5 +1,4 @@
 from CastleElement import CastleElement
-from CastleInstructions.InstructionLine import InstructionLine
 from CastleInstructions.InstructionToken import InstructionToken
 from CastleInstructions.InstructionTree import TreeNode
 from Utils.Direction import Direction

@@ -4,7 +4,7 @@ import numpy as np
 from CastleElement import CastleElement, ElementType, MaterialType
 from CastleGenerationAgent import CastleGenerationAgent
 from CastleInstructions.InstructionToken import InstructionToken
-from CastleInstructions.InstructionTreeParser import InstructionTreeParser
+from CastleInstructions.InstructionTreeParser import parseInstructionTree
 from Utils.Direction import Direction
 
 
@@ -59,7 +59,7 @@ class CastleGenerator:
         return tileMap
 
     def generate(self, filepath: str):
-        self.instructionTree = InstructionTreeParser().parseInstructionTree(filepath)
+        self.instructionTree = parseInstructionTree(filepath)
 
         agents: list[CastleGenerationAgent] = []
         agents.append(
