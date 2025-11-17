@@ -10,20 +10,20 @@ from Renderer import Renderer
 
 @mlxp.launch(config_path="./conf")
 def main(ctx: mlxp.Context) -> None:
-    # Initialize pygame
-    pygame.init()
-    # Window size
-    pygame.display.set_caption("Fortify Simulation")
     cfg = ctx.config
     initParams = InitializationParameters(cfg)
     simulation = Simulation(initParams)
 
-    resolution: int = cfg.resolution
-    viewportWidth = resolution * simulation.level.width
-    viewportHeight = resolution * simulation.level.height
-    screen = pygame.display.set_mode((viewportWidth, viewportHeight))
+    # Render specific
+    if cfg.render:
+        pygame.init()
+        pygame.display.set_caption("Fortify Simulation")
 
-    renderer = Renderer(simulation, screen, resolution)
+        resolution: int = cfg.resolution
+        viewportWidth = resolution * simulation.level.width
+        viewportHeight = resolution * simulation.level.height
+        screen = pygame.display.set_mode((viewportWidth, viewportHeight))
+        renderer = Renderer(simulation, screen, resolution)
 
     i = 0
     running = True
@@ -57,7 +57,6 @@ def main(ctx: mlxp.Context) -> None:
                     currentTool = None
                 if event.key == pygame.K_SPACE:
                     simulationStarted = True
-                    #simulation.updateNodeGraph()
 
         if mouseButtonHeld and not simulationStarted:
             drawElement(simulation, resolution, currentTool)

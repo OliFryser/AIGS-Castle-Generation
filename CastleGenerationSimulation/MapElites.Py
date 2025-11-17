@@ -18,8 +18,8 @@ class Behavior:
 @dataclass
 class ArchiveEntry:
     fitness: float
-    individual: InstructionTree
     behavior: Behavior
+    individual: InstructionTree
 
 
 class MapElites:
@@ -31,31 +31,29 @@ class MapElites:
         return InstructionTree(InstructionLine(""))
 
     def sampleRandomSolution(self):
-        return random.choice(list(self.archive.values()))
+        return random.choice(list(self.archive.values())).individual
 
-    def randomVariation(self, entry: ArchiveEntry):
-        substitute(entry.individual)
+    def randomVariation(self, individual: InstructionTree):
+        substitute(individual)
 
-    def evaluateBehavior(self, entry: ArchiveEntry):
-        pass
+    def evaluateBehavior(self, individual: InstructionTree) -> Behavior:
+        raise NotImplementedError
 
-    def evaluateFitness(self, entry: ArchiveEntry):
-        pass
+    def evaluateFitness(self, individual: InstructionTree) -> float:
+        raise NotImplementedError
 
     def run(self, iterations: int, populationSize: int):
         for i in range(iterations):
             if i < populationSize:
-                individual: ArchiveEntry = self.generateRandomSolution()
+                individual: InstructionTree = self.generateRandomSolution()
             else:
-                individual: ArchiveEntry = self.sampleRandomSolution()
+                individual: InstructionTree = self.sampleRandomSolution()
                 self.randomVariation(individual)
 
             # TODO: Simulate the individual
-            self.evaluateBehavior(individual)
-            self.evaluateFitness(individual)
+            behavior: Behavior = self.evaluateBehavior(individual)
+            fitness: float = self.evaluateFitness(individual)
 
-            if (
-                individual.behavior not in self.archive
-                or individual.fitness > self.archive[individual.behavior].fitness
-            ):
-                self.archive[individual.behavior] = individual
+            if behavior not in self.archive or fitness > self.archive[behavior].fitness:
+                entry = ArchiveEntry(fitness, behavior, individual)
+                self.archive[behavior] = entry
