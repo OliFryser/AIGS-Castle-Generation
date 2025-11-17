@@ -15,6 +15,8 @@ class Node:
         self.unit = None
 
     def setMaterialBlock(self, materialBlock):
+        if materialBlock is None:
+            return
         self.materialBlock = materialBlock
         materialBlock.node = self
 

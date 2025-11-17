@@ -14,7 +14,7 @@ class MaterialType(Enum):
     STONE = "R"
     SANDSTONE = "S"
     PAVEMENT = "P"
-    EMPTY = "empty"
+    EMPTY = "0"
 
 class CastleElement:
     def __init__(self, elementType: ElementType, column: int = 0, row:  int = 0):
@@ -23,8 +23,11 @@ class CastleElement:
         self.row = row
         self.materialBlocks: dict[tuple[int,int],MaterialBlock] = {}
         self.linked = []
+        self.directions = []
 
     def setMaterialBlock(self, x, y, materialType):
+        if materialType == MaterialType.EMPTY:
+            return
         key = (x,y)
         materialBlock = MaterialBlock(materialType, self)
         self.materialBlocks[key] = materialBlock
