@@ -3,8 +3,6 @@ from Target import Target
 from Level import Level
 from InitializationParameters import InitializationParameters
 from Units.AxeMan import AxeMan
-from Utils.Node import Graph
-
 
 class Simulation:
     def __init__(self, initParams: InitializationParameters):
@@ -18,9 +16,7 @@ class Simulation:
         unit = AxeMan(self.level, Vector2(20, 80))
         unit0 = AxeMan(self.level, Vector2(10, 50))
         unit1 = AxeMan(self.level, Vector2(30, 10))
-        self.target = Target(
-            self.level, Vector2(self.level.width / 2 + 4.5, self.level.height / 2 - 0.5)
-        )
+        self.target = Target(self.level)
 
         self.units = [unit, unit0, unit1]
         for u in self.units:

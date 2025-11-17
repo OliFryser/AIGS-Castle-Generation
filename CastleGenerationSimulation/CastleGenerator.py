@@ -85,7 +85,7 @@ class CastleGenerator:
         ]
 
         # Place keep just above target
-        self.center = (int(targetPositionx // self.scale +1), int(targetPositiony // self.scale) - 1)
+        self.center = (int(targetPositionx // self.scale), int(targetPositiony // self.scale)-1)
         self.grid[self.center[1]][self.center[0]] = CastleElement(ElementType.KEEP)
 
         self.generate(filepath)

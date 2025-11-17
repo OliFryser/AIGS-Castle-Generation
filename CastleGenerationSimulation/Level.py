@@ -12,7 +12,7 @@ class Level:
         self.createTerrainMap(levelFilepath)
         self.castleMap = None
         if targetPosition is None:
-            self.targetPosition = Vector3(self.width/2, self.getBilinearHeight(self.width/2,self.height/2) ,self.height/2)
+            self.targetPosition = Vector3(self.width/2-.5, self.getBilinearHeight(self.width/2-0.5,self.height/2-0.5) ,self.height/2)
         else:
             self.targetPosition = targetPosition
 
@@ -28,7 +28,7 @@ class Level:
         
         timer = Timer("Node Graph")
         timer.start()
-        self.nodeGraph = self.makeGraph(self.nodeToNodeDistance)
+        self.nodeGraph: Graph = self.makeGraph(self.nodeToNodeDistance)
         timer.stop()
 
         # gather data
@@ -195,11 +195,16 @@ class Level:
 
         while openNodes != []:
             currentNode = openNodes.pop()
+            if currentNode is None:
+                continue
+            
             for edge in self.nodeGraph.graph[currentNode]:
                 if (edge.node.materialBlock is None or (edge.node.materialBlock is not None and not edge.node.materialBlock.blocking)) and edge.node not in tempEnclosedNodes and edge.node not in enclosedNodes:
                     tempEnclosedNodes.append(edge.node)
                     openNodes.append(edge.node)
-                    edge.node.unit = 1
+                    #edge.node.unit = 1
+                if edge.node is None:
+                    continue
                 #if touching an edge, don't count erea as being enclosed
                 if edge.node.position.x < 1 or edge.node.position.x > self.width-1 or edge.node.position.z < 1 or edge.node.position.z > self.height -1:
                     return enclosedNodes, gates
