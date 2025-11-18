@@ -18,6 +18,7 @@ class InstructionLine:
     def getNextInstruction(self):
         element = self.instructions[self.nextIndex]
         self.nextIndex += 1
+        self.nextIndex %= len(self.instructions)
         return element
 
     def isEmpty(self):
