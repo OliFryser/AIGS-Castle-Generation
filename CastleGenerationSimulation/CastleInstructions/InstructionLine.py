@@ -15,6 +15,9 @@ class InstructionLine:
         del self.instructions[mutationIndex]
         self.instructions.insert(mutationIndex, newElement)
 
+    def mutateAdditive(self, newElement: InstructionToken):
+        self.instructions.append(newElement)
+
     def getNextInstruction(self):
         if self._nextIndex < len(self.instructions):
             child = self.instructions[self._nextIndex]

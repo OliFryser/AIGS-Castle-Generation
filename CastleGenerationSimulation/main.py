@@ -1,10 +1,13 @@
 import pygame
 import sys
 import mlxp
+import json
+from datetime import datetime
 
 from CastleElement import CastleElement, ElementType
 from CastleInstructions.InstructionTreeParser import parseInstructionTree
 from InitializationParameters import InitializationParameters
+from MapElites import MapElites
 from Simulation import Simulation
 from Renderer import Renderer
 from TerrainMap import TerrainMap
@@ -13,20 +16,38 @@ from TileMap import TileMap
 
 @mlxp.launch(config_path="./conf")
 def main(ctx: mlxp.Context) -> None:
-    cfg = ctx.config
+    cfg = getattr(ctx.config, ctx.config.mode)
     terrainMap = TerrainMap(cfg.levelFilepath)
-    tileMap = TileMap(cfg.catleTilesFilepath)
-    castleInstructionTree = parseInstructionTree(cfg.castleGenerationFilepath)
-    initParams = InitializationParameters(terrainMap, tileMap, castleInstructionTree)
-    simulation = Simulation(initParams)
+    tileMap = TileMap(cfg.castleTilesFilepath)
 
-    if cfg.render:
-        runRenderMode(simulation, cfg)
+    match ctx.config.mode:
+        case "interactive":
+            runInteractiveMode(cfg, terrainMap, tileMap)
+        case "mapElites":
+            runMapElites(cfg, terrainMap, tileMap)
 
     sys.exit()
 
 
-def runRenderMode(simulation: Simulation, cfg):
+def runMapElites(cfg, terrainMap, tileMap):
+    mapElites = MapElites(terrainMap, tileMap)
+    mapElites.run(cfg.iterations, cfg.population)
+    filepath = (
+        cfg.archiveSavepath
+        + "archive_"
+        + str(datetime.now().strftime("%Y-%m-%d-%H_%M_%S"))
+        + ".json"
+    )
+    jsonSafeArchive = {str(k): v.to_json() for k, v in mapElites.archive.items()}
+    with open(filepath, "x") as fp:
+        json.dump(jsonSafeArchive, fp, indent=2)
+
+
+def runInteractiveMode(cfg, terrainMap, tileMap):
+    castleInstructionTree = parseInstructionTree(cfg.castleGenerationFilepath)
+    initParams = InitializationParameters(terrainMap, tileMap, castleInstructionTree)
+    simulation = Simulation(initParams)
+
     pygame.init()
     pygame.display.set_caption("Fortify Simulation")
 

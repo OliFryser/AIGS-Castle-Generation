@@ -1,8 +1,16 @@
+from dataclasses import dataclass
 from pygame import Vector2
 from Target import Target
 from Level import Level
 from InitializationParameters import InitializationParameters
 from Units.AxeMan import AxeMan
+
+
+@dataclass
+class State:
+    blocks: int
+    area: int
+    stepCount: int
 
 
 class Simulation:
@@ -37,7 +45,10 @@ class Simulation:
         """
 
     def getState(self):
-        pass
+        return State(self.level.castleCost, self.level.protectedArea, self.stepCount)
 
     def runSimulation(self):
-        pass
+        self.stepCount = 0
+        while not self.target.isOccupied():
+            self.step()
+            self.stepCount += 1

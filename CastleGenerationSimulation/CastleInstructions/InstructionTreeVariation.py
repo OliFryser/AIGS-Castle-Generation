@@ -8,7 +8,8 @@ def substitute(instructionTree: InstructionTree):
 
 
 def add(instructionTree: InstructionTree):
-    pass
+    mutationWeights = MutationWeights(1.0, 1.0, 1.0, 1.0, 0.1)
+    instructionTree.mutateAdditive(mutationWeights)
 
 
 def crossover(firstTree: InstructionTree, secondTree: InstructionTree):

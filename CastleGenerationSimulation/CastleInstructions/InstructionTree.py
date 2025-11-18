@@ -49,7 +49,25 @@ class InstructionTree:
         node.line.mutate(newElement)
 
         if newElement == InstructionToken.BRANCH:
-            node.addChild(TreeNode(InstructionLine("")))
+            newBranch = TreeNode(InstructionLine(""))
+            node.addChild(newBranch)
+            self.nodes.append(newBranch)
+
+    def mutateAdditive(
+        self,
+        mutationWeights: MutationWeights,
+        node: TreeNode | None = None,
+    ):
+        if node is None:
+            node = self.sampleRandomNode()
+
+        newElement = random.choices(mutationWeights.options, mutationWeights.weights)[0]
+        node.line.mutateAdditive(newElement)
+
+        if newElement == InstructionToken.BRANCH:
+            newBranch = TreeNode(InstructionLine(""))
+            node.addChild(newBranch)
+            self.nodes.append(newBranch)
 
     def sampleRandomNode(self):
         return random.choice(self.nodes)
@@ -59,6 +77,9 @@ class InstructionTree:
 
     def getNextChild(self, parent: TreeNode):
         return parent.getNextChild()
+
+    def to_json(self):
+        return str(self)
 
     def __str__(self):
         def recurse(node: TreeNode, depth: int) -> str:

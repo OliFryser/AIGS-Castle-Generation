@@ -1,9 +1,11 @@
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 import random
 
 from CastleInstructions.InstructionLine import InstructionLine
 from CastleInstructions.InstructionTree import InstructionTree
-from CastleInstructions.InstructionTreeVariation import substitute
+from CastleInstructions.InstructionTreeVariation import substitute, add, crossover
+from InitializationParameters import InitializationParameters
+from Simulation import Simulation
 
 
 @dataclass
@@ -11,36 +13,54 @@ class Behavior:
     blocks: int
     area: int
 
-    def __hash__(self):
-        return self.blocks.__hash__() + self.area.__hash__()
+    def to_json(self):
+        return asdict(self)
 
 
 @dataclass
 class ArchiveEntry:
-    fitness: float
+    fitness: int
     behavior: Behavior
     individual: InstructionTree
 
+    def __str__(self):
+        return f"Fitness: {self.fitness}\nBehavior: Blocks {self.behavior.blocks}, area {self.behavior.area}\n{self.individual}"
+
+    def to_json(self):
+        return {
+            "fitness": self.fitness,
+            "behavior": self.behavior.to_json(),
+            "individual": self.individual.to_json(),
+        }
+
 
 class MapElites:
-    def __init__(self):
-        self.archive: dict[Behavior, ArchiveEntry] = {}
+    def __init__(self, terrainMap, tileMap):
+        self.archive: dict[tuple[int, int], ArchiveEntry] = {}
+        self.terrainMap = terrainMap
+        self.tileMap = tileMap
 
     def generateRandomSolution(self):
         # TODO: Better random solution
-        return InstructionTree(InstructionLine(""))
+        individual = InstructionTree(InstructionLine(""))
+        for i in range(20):
+            add(individual)
+        return individual
 
     def sampleRandomSolution(self):
         return random.choice(list(self.archive.values())).individual
 
     def randomVariation(self, individual: InstructionTree):
-        substitute(individual)
+        add(individual)
 
-    def evaluateBehavior(self, individual: InstructionTree) -> Behavior:
-        raise NotImplementedError
+    def evaluateBehavior(self, simulation: Simulation) -> Behavior:
+        return Behavior(simulation.getState().blocks, simulation.getState().area)
 
-    def evaluateFitness(self, individual: InstructionTree) -> float:
-        raise NotImplementedError
+    def evaluateFitness(self, simulation: Simulation) -> int:
+        return simulation.getState().stepCount
+
+    def getKey(self, behavior: Behavior):
+        return (behavior.area // 10, behavior.blocks // 5)
 
     def run(self, iterations: int, populationSize: int):
         for i in range(iterations):
@@ -51,9 +71,15 @@ class MapElites:
                 self.randomVariation(individual)
 
             # TODO: Simulate the individual
-            behavior: Behavior = self.evaluateBehavior(individual)
-            fitness: float = self.evaluateFitness(individual)
+            initParams: InitializationParameters = InitializationParameters(
+                self.terrainMap, self.tileMap, individual
+            )
+            simulation = Simulation(initParams)
+            simulation.runSimulation()
+            behavior: Behavior = self.evaluateBehavior(simulation)
+            fitness: int = self.evaluateFitness(simulation)
+            key = self.getKey(behavior)
 
-            if behavior not in self.archive or fitness > self.archive[behavior].fitness:
+            if key not in self.archive or fitness > self.archive[key].fitness:
                 entry = ArchiveEntry(fitness, behavior, individual)
-                self.archive[behavior] = entry
+                self.archive[key] = entry

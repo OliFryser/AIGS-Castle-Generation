@@ -1,5 +1,14 @@
-render: True
-levelFilepath: "resources/terrainMaps/perlinBy3.txt"
-castleGenerationFilepath: "resources/castleGenerationInstructions/test4.txt"
-catleTilesFilepath: "resources/castleTiles/"
-resolution: 8
+mode: "mapElites" # interactive | mapElites
+
+interactive:
+    castleGenerationFilepath: "resources/castleGenerationInstructions/test4.txt"
+    resolution: 8
+    levelFilepath: "resources/terrainMaps/perlinBy3.txt"
+    castleTilesFilepath: "resources/castleTiles/"
+
+mapElites:
+    levelFilepath: "resources/terrainMaps/perlinBy3.txt"
+    castleTilesFilepath: "resources/castleTiles/"
+    archiveSavepath: "resources/archives/"
+    iterations: 100
+    population: 5

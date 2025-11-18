@@ -56,7 +56,8 @@ class Level:
         # gather data
         self.instructionCost = castleGenerator.cost
         self.gates = castleGenerator.getGateCount()
-        print(self.getCastleCost(), self.getProtectedArea())
+        self.castleCost = self.getCastleCost()
+        self.protectedArea = self.getProtectedArea()
 
     def getLevel(self):
         return self.terrainMap
