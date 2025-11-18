@@ -14,16 +14,21 @@ def main(ctx: mlxp.Context) -> None:
     initParams = InitializationParameters(cfg)
     simulation = Simulation(initParams)
 
-    # Render specific
     if cfg.render:
-        pygame.init()
-        pygame.display.set_caption("Fortify Simulation")
+        runRenderMode(simulation, cfg)
 
-        resolution: int = cfg.resolution
-        viewportWidth = resolution * simulation.level.width
-        viewportHeight = resolution * simulation.level.height
-        screen = pygame.display.set_mode((viewportWidth, viewportHeight))
-        renderer = Renderer(simulation, screen, resolution)
+    sys.exit()
+
+
+def runRenderMode(simulation: Simulation, cfg):
+    pygame.init()
+    pygame.display.set_caption("Fortify Simulation")
+
+    resolution: int = cfg.resolution
+    viewportWidth = resolution * simulation.level.width
+    viewportHeight = resolution * simulation.level.height
+    screen = pygame.display.set_mode((viewportWidth, viewportHeight))
+    renderer = Renderer(simulation, screen, resolution)
 
     i = 0
     running = True
@@ -65,16 +70,12 @@ def main(ctx: mlxp.Context) -> None:
             i += 1
             simulation.step()
 
-        if cfg.render:
-            currentToolName: str = (
-                currentTool.name if currentTool is not None else "Eraser"
-            )
-            renderer.render(currentToolName)
+        currentToolName: str = currentTool.name if currentTool is not None else "Eraser"
+        renderer.render(currentToolName)
 
     print(i)
     # Quit pygame cleanly
     pygame.quit()
-    sys.exit()
 
 
 def drawElement(
