@@ -7,13 +7,15 @@ from InitializationParameters import InitializationParameters
 from Simulation import Simulation
 from Renderer import Renderer
 from TerrainMap import TerrainMap
+from TileMap import TileMap
 
 
 @mlxp.launch(config_path="./conf")
 def main(ctx: mlxp.Context) -> None:
     cfg = ctx.config
     terrainMap = TerrainMap(cfg.levelFilepath)
-    initParams = InitializationParameters(cfg, terrainMap)
+    tileMap = TileMap(cfg.catleTilesFilepath)
+    initParams = InitializationParameters(cfg, terrainMap, tileMap)
     simulation = Simulation(initParams)
 
     if cfg.render:

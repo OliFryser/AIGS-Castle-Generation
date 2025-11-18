@@ -3,6 +3,7 @@ from pygame import Vector3
 
 from CastleGenerator import CastleGenerator
 from TerrainMap import TerrainMap
+from TileMap import TileMap
 from Utils.Timer import Timer
 from Utils.Node import Graph, Node, Edge
 from Utils.PathFinding import aStar
@@ -14,7 +15,7 @@ class Level:
         self,
         terrainMap: TerrainMap,
         castleGenerationFilepath: str,
-        castleTilesFilePath: str,
+        tileMap: TileMap,
         targetPosition: Vector3 | None = None,
     ):
         self.terrainMap = terrainMap.map
@@ -35,7 +36,7 @@ class Level:
         timer.start()
         castleGenerator = CastleGenerator(
             castleGenerationFilepath,
-            castleTilesFilePath,
+            tileMap,
             self.width,
             self.height,
             self.targetPosition.x,

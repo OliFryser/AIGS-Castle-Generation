@@ -5,6 +5,7 @@ from CastleGenerationAgent import CastleGenerationAgent
 from CastleInstructions.InstructionToken import InstructionToken
 from CastleInstructions.InstructionTree import InstructionTree
 from CastleInstructions.InstructionTreeParser import parseInstructionTree
+from TileMap import TileMap
 from Utils.Direction import Direction
 
 
@@ -12,7 +13,7 @@ class CastleGenerator:
     def __init__(
         self,
         filepath,
-        tilePath,
+        tileMap: TileMap,  # noqa: F821
         width: int,
         height: int,
         targetPositionx,
@@ -32,7 +33,7 @@ class CastleGenerator:
             Direction.RIGHT: (1, 0),
         }
 
-        self.tileMap = self.loadTileMap(tilePath)
+        self.tileMap = tileMap.tileMap
         self.scale = len(list(self.tileMap.values())[0][0])
 
         self.width = width
@@ -51,20 +52,6 @@ class CastleGenerator:
         self.grid[self.center[1]][self.center[0]] = CastleElement(ElementType.KEEP)
 
         self.generate(filepath)
-
-    def loadTileMap(self, filepath: str):
-        tileMap = {}
-        for element in ElementType:
-            with open(filepath + element.value + ".txt", "r") as f:
-                content = f.read().strip()
-                tiles = [
-                    [line.split() for line in block.splitlines()]
-                    for block in content.split("\n\n")
-                ]
-                tileMap[element] = tiles
-                # print(tiles)
-            f.close()
-        return tileMap
 
     def generate(self, filepath: str):
         self.instructionTree: InstructionTree = parseInstructionTree(filepath)

@@ -10,7 +10,7 @@ class Simulation:
         self.level = Level(
             initParams.terrainMap,
             initParams.castleGenerationFilepath.getFilepath(),
-            initParams.castleTilesFilepath.getFilepath(),
+            initParams.tileMap,
         )
         self.units = []
         # these are test things
