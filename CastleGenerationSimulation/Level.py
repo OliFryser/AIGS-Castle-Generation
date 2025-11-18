@@ -2,6 +2,7 @@ import numpy as np
 from pygame import Vector3
 
 from CastleGenerator import CastleGenerator
+from CastleInstructions.InstructionTree import InstructionTree
 from TerrainMap import TerrainMap
 from TileMap import TileMap
 from Utils.Timer import Timer
@@ -14,7 +15,7 @@ class Level:
     def __init__(
         self,
         terrainMap: TerrainMap,
-        castleGenerationFilepath: str,
+        castleInstructionTree: InstructionTree,
         tileMap: TileMap,
         targetPosition: Vector3 | None = None,
     ):
@@ -35,7 +36,7 @@ class Level:
         timer = Timer("Castle generator")
         timer.start()
         castleGenerator = CastleGenerator(
-            castleGenerationFilepath,
+            castleInstructionTree,
             tileMap,
             self.width,
             self.height,

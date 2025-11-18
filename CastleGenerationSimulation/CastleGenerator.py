@@ -1,37 +1,24 @@
 import numpy as np
 
-from CastleElement import CastleElement, ElementType, MaterialType
+from CastleElement import CastleElement, ElementType, MaterialType, tokenToElementType
 from CastleGenerationAgent import CastleGenerationAgent
 from CastleInstructions.InstructionToken import InstructionToken
 from CastleInstructions.InstructionTree import InstructionTree
-from CastleInstructions.InstructionTreeParser import parseInstructionTree
 from TileMap import TileMap
-from Utils.Direction import Direction
+from Utils.Direction import Direction, directionToOffset
 
 
 class CastleGenerator:
     def __init__(
         self,
-        filepath,
+        castleInstructionTree: InstructionTree,
         tileMap: TileMap,  # noqa: F821
         width: int,
         height: int,
         targetPositionx,
         targetPositiony,
     ):
-        self.tokenToElementType: dict[InstructionToken, ElementType] = {
-            InstructionToken.KEEP: ElementType.KEEP,
-            InstructionToken.WALL: ElementType.WALL,
-            InstructionToken.GATE: ElementType.GATE,
-            InstructionToken.TOWER: ElementType.TOWER,
-        }
-
-        self.directionToOffset = {
-            Direction.UP: (0, -1),
-            Direction.DOWN: (0, 1),
-            Direction.LEFT: (-1, 0),
-            Direction.RIGHT: (1, 0),
-        }
+        self.instructionTree: InstructionTree = castleInstructionTree
 
         self.tileMap = tileMap.tileMap
         self.scale = len(list(self.tileMap.values())[0][0])
@@ -51,11 +38,8 @@ class CastleGenerator:
         )
         self.grid[self.center[1]][self.center[0]] = CastleElement(ElementType.KEEP)
 
-        self.generate(filepath)
-
-    def generate(self, filepath: str):
-        self.instructionTree: InstructionTree = parseInstructionTree(filepath)
         self.evaluateInstructionCost()
+
         agents: list[CastleGenerationAgent] = []
         agents.append(
             CastleGenerationAgent(
@@ -101,7 +85,7 @@ class CastleGenerator:
                         )
                     )
             else:
-                elementType = self.tokenToElementType[instruction]
+                elementType = tokenToElementType[instruction]
                 agent.placeNextElement(elementType)
 
     def getCastleMapInTerrainScale(self, path):
@@ -128,7 +112,7 @@ class CastleGenerator:
             directionFrom = []
             newX = (step[0] - previousPos[0], 0)
             newY = (0, step[1] - previousPos[1])
-            for direction, offset in self.directionToOffset.items():
+            for direction, offset in directionToOffset.items():
                 if newX == offset or newY == offset:
                     directionFrom.append(direction)
             previousPos = step
@@ -150,9 +134,9 @@ class CastleGenerator:
                 for direction in cellElement.directions:
                     position = (
                         step[0] * self.scale
-                        + self.directionToOffset[Direction(direction)][0] * 3,
+                        + directionToOffset[Direction(direction)][0] * 3,
                         step[1] * self.scale
-                        + self.directionToOffset[Direction(direction)][1] * 2,
+                        + directionToOffset[Direction(direction)][1] * 2,
                     )
                     castleElement = CastleElement(
                         ElementType.GATE, position[1], position[0]

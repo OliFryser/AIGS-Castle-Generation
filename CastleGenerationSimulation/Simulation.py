@@ -9,7 +9,7 @@ class Simulation:
     def __init__(self, initParams: InitializationParameters):
         self.level = Level(
             initParams.terrainMap,
-            initParams.castleGenerationFilepath.getFilepath(),
+            initParams.castleInstructionTree,
             initParams.tileMap,
         )
         self.units = []

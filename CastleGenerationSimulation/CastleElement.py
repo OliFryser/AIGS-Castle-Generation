@@ -1,4 +1,5 @@
 from enum import Enum
+from CastleInstructions.InstructionToken import InstructionToken
 from Utils.Node import Node
 
 
@@ -17,6 +18,14 @@ class MaterialType(Enum):
     SANDSTONE = "S"
     PAVEMENT = "P"
     EMPTY = "0"
+
+
+tokenToElementType: dict[InstructionToken, ElementType] = {
+    InstructionToken.KEEP: ElementType.KEEP,
+    InstructionToken.WALL: ElementType.WALL,
+    InstructionToken.GATE: ElementType.GATE,
+    InstructionToken.TOWER: ElementType.TOWER,
+}
 
 
 class CastleElement:

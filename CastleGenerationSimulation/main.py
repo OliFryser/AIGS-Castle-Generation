@@ -3,6 +3,7 @@ import sys
 import mlxp
 
 from CastleElement import CastleElement, ElementType
+from CastleInstructions.InstructionTreeParser import parseInstructionTree
 from InitializationParameters import InitializationParameters
 from Simulation import Simulation
 from Renderer import Renderer
@@ -15,7 +16,8 @@ def main(ctx: mlxp.Context) -> None:
     cfg = ctx.config
     terrainMap = TerrainMap(cfg.levelFilepath)
     tileMap = TileMap(cfg.catleTilesFilepath)
-    initParams = InitializationParameters(cfg, terrainMap, tileMap)
+    castleInstructionTree = parseInstructionTree(cfg.castleGenerationFilepath)
+    initParams = InitializationParameters(terrainMap, tileMap, castleInstructionTree)
     simulation = Simulation(initParams)
 
     if cfg.render:
