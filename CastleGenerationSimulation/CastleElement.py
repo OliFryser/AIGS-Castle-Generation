@@ -51,11 +51,6 @@ class CastleElement:
             return None
         return self.materialBlocks[key]
 
-    def removeMaterialBlock(self, materialBlock):
-        for k, v in self.materialBlocks.items():
-            if v == materialBlock:
-                del self.materialBlocks[k]
-
 
 class MaterialBlock:
     def __init__(
@@ -114,8 +109,5 @@ class MaterialBlock:
             link.takeDamage(damage / len(self.linked))
 
     def destroy(self):
-        if self.castleElement is not None:
-            self.castleElement.removeMaterialBlock(self)
         if self.node is not None:
             self.node.materialBlock = None
-        pass
