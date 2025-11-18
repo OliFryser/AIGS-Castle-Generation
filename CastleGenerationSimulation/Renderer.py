@@ -3,7 +3,6 @@ from CastleElement import MaterialType
 from Simulation import Simulation
 from Units.Unit import Unit
 from Target import Target
-from Utils.Node import Graph
 
 
 class Renderer:
@@ -49,14 +48,14 @@ class Renderer:
                     rect = pygame.Rect(x * cellSize, y * cellSize, cellSize, cellSize)
                     pygame.draw.rect(self.screen, color, rect)
                 """
-                node = level.nodeGraph.nodes[(x+0.5,y+0.5)]
+                node = level.nodeGraph.nodes[(x + 0.5, y + 0.5)]
                 if node.materialBlock is not None:
                     color = self.materialTypeToColor[node.materialBlock.materialType]
                     rect = pygame.Rect(x * cellSize, y * cellSize, cellSize, cellSize)
                     pygame.draw.rect(self.screen, color, rect)
 
                 if node.unit is not None:
-                    color = (255,0,0)
+                    color = (255, 0, 0)
                     rect = pygame.Rect(x * cellSize, y * cellSize, cellSize, cellSize)
                     pygame.draw.rect(self.screen, color, rect)
 
@@ -76,20 +75,20 @@ class Renderer:
             self.screen,
             (0, 0, 0),
             self.modelToViewSpace(unit.position),
-            #5,
-             unit.size
-             * self.resolution
-             * (1 + (unit.position[1] / self.simulation.level.max_height)),
+            # 5,
+            unit.size
+            * self.resolution
+            * (1 + (unit.position[1] / self.simulation.level.max_height)),
         )
         pygame.draw.circle(
             self.screen,
             (0, 0, 255),
             self.modelToViewSpace(unit.position),
-             unit.size
-             * self.resolution
-             * (1 + (unit.position[1] / self.simulation.level.max_height))
-             +1
-            #7,
+            unit.size
+            * self.resolution
+            * (1 + (unit.position[1] / self.simulation.level.max_height))
+            + 1,
+            # 7,
         )
         if len(unit.path) > 1:
             pygame.draw.lines(

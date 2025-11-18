@@ -1,11 +1,13 @@
 from enum import Enum
 from Utils.Node import Node
 
+
 class ElementType(Enum):
     KEEP = "keep"
     WALL = "wall"
     TOWER = "tower"
     GATE = "gate"
+
 
 class MaterialType(Enum):
     WOOD = "W"
@@ -16,19 +18,20 @@ class MaterialType(Enum):
     PAVEMENT = "P"
     EMPTY = "0"
 
+
 class CastleElement:
-    def __init__(self, elementType: ElementType, column: int = 0, row:  int = 0):
+    def __init__(self, elementType: ElementType, column: int = 0, row: int = 0):
         self.elementType = elementType
         self.column = column
         self.row = row
-        self.materialBlocks: dict[tuple[int,int],MaterialBlock] = {}
+        self.materialBlocks: dict[tuple[int, int], MaterialBlock] = {}
         self.linked = []
         self.directions = []
 
     def setMaterialBlock(self, x, y, materialType):
         if materialType == MaterialType.EMPTY:
             return
-        key = (x,y)
+        key = (x, y)
         materialBlock = MaterialBlock(materialType, self)
         self.materialBlocks[key] = materialBlock
         if materialType is not MaterialType.DOOR:
@@ -41,20 +44,23 @@ class CastleElement:
         if key not in self.materialBlocks:
             return None
         return self.materialBlocks[key]
-    
+
     def getMaterialBlockGlobal(self, x, y):
         key = (x - self.row, y - self.column)
         if key not in self.materialBlocks:
             return None
         return self.materialBlocks[key]
-    
+
     def removeMaterialBlock(self, materialBlock):
-        for k,v in self.materialBlocks:
+        for k, v in self.materialBlocks.items():
             if v == materialBlock:
-                del(self.materialBlocks[k])
+                del self.materialBlocks[k]
+
 
 class MaterialBlock:
-    def __init__(self, materialType: MaterialType, castleElement: CastleElement |None = None) -> None:
+    def __init__(
+        self, materialType: MaterialType, castleElement: CastleElement | None = None
+    ) -> None:
         self.materialType = materialType
         self.castleElement = castleElement
         self.node: Node | None = None
@@ -88,7 +94,7 @@ class MaterialBlock:
             self.damageThreshold = 0
             self.blocking = False
             return
-    
+
         self.health = 0
         self.damageThreshold = 0
 
@@ -96,7 +102,7 @@ class MaterialBlock:
         self.health -= damage
         if self.health <= 0:
             self.destroy()
-        
+
     def hit(self, incommingDamage):
         damage = incommingDamage - self.damageThreshold
         if damage <= 0:
@@ -105,7 +111,7 @@ class MaterialBlock:
             self.takeDamage(damage)
             return
         for link in self.linked:
-            link.takeDamage(damage/len(self.linked))
+            link.takeDamage(damage / len(self.linked))
 
     def destroy(self):
         if self.castleElement is not None:

@@ -10,19 +10,24 @@ from Renderer import Renderer
 
 @mlxp.launch(config_path="./conf")
 def main(ctx: mlxp.Context) -> None:
-    # Initialize pygame
-    pygame.init()
-    # Window size
-    pygame.display.set_caption("Fortify Simulation")
     cfg = ctx.config
     initParams = InitializationParameters(cfg)
     simulation = Simulation(initParams)
+
+    if cfg.render:
+        runRenderMode(simulation, cfg)
+
+    sys.exit()
+
+
+def runRenderMode(simulation: Simulation, cfg):
+    pygame.init()
+    pygame.display.set_caption("Fortify Simulation")
 
     resolution: int = cfg.resolution
     viewportWidth = resolution * simulation.level.width
     viewportHeight = resolution * simulation.level.height
     screen = pygame.display.set_mode((viewportWidth, viewportHeight))
-
     renderer = Renderer(simulation, screen, resolution)
 
     i = 0
@@ -57,7 +62,6 @@ def main(ctx: mlxp.Context) -> None:
                     currentTool = None
                 if event.key == pygame.K_SPACE:
                     simulationStarted = True
-                    #simulation.updateNodeGraph()
 
         if mouseButtonHeld and not simulationStarted:
             drawElement(simulation, resolution, currentTool)
@@ -66,16 +70,12 @@ def main(ctx: mlxp.Context) -> None:
             i += 1
             simulation.step()
 
-        if cfg.render:
-            currentToolName: str = (
-                currentTool.name if currentTool is not None else "Eraser"
-            )
-            renderer.render(currentToolName)
+        currentToolName: str = currentTool.name if currentTool is not None else "Eraser"
+        renderer.render(currentToolName)
 
     print(i)
     # Quit pygame cleanly
     pygame.quit()
-    sys.exit()
 
 
 def drawElement(
@@ -94,15 +94,16 @@ def drawElement(
 
     level = simulation.level
     # Check bounds before accessing
-    for dy in range(-brushSize, brushSize + 1):
-        for dx in range(-brushSize, brushSize + 1):
-            x = cellX + dx
-            y = cellY + dy
+    if level.castleMap is not None:
+        for dy in range(-brushSize, brushSize + 1):
+            for dx in range(-brushSize, brushSize + 1):
+                x = cellX + dx
+                y = cellY + dy
 
-            if withinLevelBounds(simulation, x, y):
-                level.castleMap[y][x] = (
-                    CastleElement(currentTool) if currentTool is not None else None
-                )
+                if withinLevelBounds(simulation, x, y):
+                    level.castleMap[y][x] = (
+                        CastleElement(currentTool) if currentTool is not None else None
+                    )
 
 
 def withinLevelBounds(simulation, cell_x, cell_y):
