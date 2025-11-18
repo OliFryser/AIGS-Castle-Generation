@@ -8,7 +8,7 @@ class InstructionLine:
         self.instructions = list(
             [InstructionToken(token) for token in instructions.lstrip().split()]
         )
-        self.nextIndex = 0
+        self._nextIndex = 0
 
     def mutate(self, newElement: InstructionToken):
         mutationIndex = random.randrange(len(self.instructions))
@@ -16,10 +16,11 @@ class InstructionLine:
         self.instructions.insert(mutationIndex, newElement)
 
     def getNextInstruction(self):
-        element = self.instructions[self.nextIndex]
-        self.nextIndex += 1
-        self.nextIndex %= len(self.instructions)
-        return element
+        if self._nextIndex < len(self.instructions):
+            child = self.instructions[self._nextIndex]
+            self._nextIndex += 1
+            return child
+        return None
 
     def isEmpty(self):
         return len(self.instructions) <= 0

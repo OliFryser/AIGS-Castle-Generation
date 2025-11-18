@@ -33,4 +33,5 @@ def parseInstructionTree(filepath: str):
         parsedInstruction = InstructionLine(instruction)
         newChild = instructionTree.addChild(parentStack[-1], parsedInstruction)
         lastInstruction = newChild
+
     return instructionTree
