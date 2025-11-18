@@ -66,7 +66,7 @@ class Renderer:
         for r in range(level.height):
             for c in range(level.width):
                 height = level.getCell(c, r)
-                color = (34, round((height / level.max_height) * 255), 34)
+                color = (34, round((height / level.maxHeight) * 255), 34)
                 rect = pygame.Rect(c * cellSize, r * cellSize, cellSize, cellSize)
                 pygame.draw.rect(screen, color, rect)
 
@@ -78,7 +78,7 @@ class Renderer:
             # 5,
             unit.size
             * self.resolution
-            * (1 + (unit.position[1] / self.simulation.level.max_height)),
+            * (1 + (unit.position[1] / self.simulation.level.maxHeight)),
         )
         pygame.draw.circle(
             self.screen,
@@ -86,7 +86,7 @@ class Renderer:
             self.modelToViewSpace(unit.position),
             unit.size
             * self.resolution
-            * (1 + (unit.position[1] / self.simulation.level.max_height))
+            * (1 + (unit.position[1] / self.simulation.level.maxHeight))
             + 1,
             # 7,
         )

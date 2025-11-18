@@ -2,6 +2,7 @@ import numpy as np
 from pygame import Vector3
 
 from CastleGenerator import CastleGenerator
+from TerrainMap import TerrainMap
 from Utils.Timer import Timer
 from Utils.Node import Graph, Node, Edge
 from Utils.PathFinding import aStar
@@ -11,13 +12,16 @@ from CastleElement import ElementType, MaterialType
 class Level:
     def __init__(
         self,
-        levelFilepath: str,
+        terrainMap: TerrainMap,
         castleGenerationFilepath: str,
         castleTilesFilePath: str,
         targetPosition: Vector3 | None = None,
     ):
+        self.terrainMap = terrainMap.map
+        self.width = terrainMap.width
+        self.height = terrainMap.height
+        self.maxHeight = terrainMap.maxHeight
         self.castleMap = None
-        self.createTerrainMap(levelFilepath)
         if targetPosition is None:
             self.targetPosition = Vector3(
                 self.width / 2 - 0.5,
@@ -51,17 +55,6 @@ class Level:
         self.instructionCost = castleGenerator.cost
         self.gates = castleGenerator.getGateCount()
         print(self.getCastleCost(), self.getProtectedArea())
-
-    def createTerrainMap(self, levelFilepath: str):
-        with open(levelFilepath, "r") as f:
-            self.width, self.height, self.max_height = [
-                int(x) for x in f.readline().rstrip().split()
-            ]
-            self.terrainMap = np.zeros((self.height, self.width))
-            for y in range(self.height):
-                line = [float(num) for num in f.readline().rstrip().split()]
-                for x in range(self.width):
-                    self.terrainMap[y][x] = line[x]
 
     def getLevel(self):
         return self.terrainMap

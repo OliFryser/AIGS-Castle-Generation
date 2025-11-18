@@ -4,10 +4,11 @@ from Level import Level
 from InitializationParameters import InitializationParameters
 from Units.AxeMan import AxeMan
 
+
 class Simulation:
     def __init__(self, initParams: InitializationParameters):
         self.level = Level(
-            initParams.levelFilepath.getFilepath(),
+            initParams.terrainMap,
             initParams.castleGenerationFilepath.getFilepath(),
             initParams.castleTilesFilepath.getFilepath(),
         )
@@ -40,4 +41,3 @@ class Simulation:
 
     def runSimulation(self):
         pass
-
