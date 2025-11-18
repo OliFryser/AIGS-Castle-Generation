@@ -13,3 +13,9 @@ We use conda for managing the python environment. We have provided the configura
 1. Build pathfinding graph on start and share between units. They will have the costs precalculated.
 2. Seperate castle map and terrain map
 3. Sever access in pathfinding graph where there is castle buildings
+
+
+## Ask supervisor
+
+- How do we manage castle growth - limiting how far it can grow? Do not place outside range?
+- Starting point - Keep block or predefined?
