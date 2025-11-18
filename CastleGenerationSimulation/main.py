@@ -94,15 +94,16 @@ def drawElement(
 
     level = simulation.level
     # Check bounds before accessing
-    for dy in range(-brushSize, brushSize + 1):
-        for dx in range(-brushSize, brushSize + 1):
-            x = cellX + dx
-            y = cellY + dy
+    if level.castleMap is not None:
+        for dy in range(-brushSize, brushSize + 1):
+            for dx in range(-brushSize, brushSize + 1):
+                x = cellX + dx
+                y = cellY + dy
 
-            if withinLevelBounds(simulation, x, y):
-                level.castleMap[y][x] = (
-                    CastleElement(currentTool) if currentTool is not None else None
-                )
+                if withinLevelBounds(simulation, x, y):
+                    level.castleMap[y][x] = (
+                        CastleElement(currentTool) if currentTool is not None else None
+                    )
 
 
 def withinLevelBounds(simulation, cell_x, cell_y):

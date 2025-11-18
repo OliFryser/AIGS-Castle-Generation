@@ -11,6 +11,8 @@ class CastleGenerationAgent:
         initialDirection: Direction,
         treeNode: TreeNode,
         grid: list[list[None | CastleElement]],
+        fromDirection: Direction | None = None,
+        lastElement: CastleElement | None = None,
     ):
         self.treeNode = treeNode
 
@@ -25,6 +27,12 @@ class CastleGenerationAgent:
         self.grid = grid
         self.direction = initialDirection
 
+        # a collection of directions from whence it came
+        if fromDirection is None:
+            fromDirection = Direction((self.direction + 2) % 4)
+        self.fromDirection = fromDirection
+        self.lastElement = lastElement
+
     def getNextInstruction(self) -> InstructionToken | None:
         if self.treeNode.line.isEmpty():
             return None
@@ -32,13 +40,30 @@ class CastleGenerationAgent:
 
     def placeNextElement(self, castleElement):
         self.moveCursorInDirection()
-        self.grid[self.cursor[1]][self.cursor[0]] = CastleElement(castleElement)
+        if self.lastElement is not None:
+            if self.direction not in self.lastElement.directions:
+                self.lastElement.directions.append(self.direction)
+
+        cell = self.grid[self.cursor[1]][self.cursor[0]]
+        if cell is None:
+            cell = CastleElement(castleElement)
+            self.grid[self.cursor[1]][self.cursor[0]] = cell
+
+        if self.fromDirection is not None and self.fromDirection not in cell.directions:
+            cell.directions.append(self.fromDirection)
+
+        self.fromDirection = Direction((self.direction + 2) % 4)
+        self.lastElement = cell
 
     def turnClockwise(self):
+        # Add 1 modulo 4
         self.direction = Direction((self.direction + 1) % 4)
+        self.fromDirection = Direction((self.fromDirection + 1) % 4)
 
     def turnCounterClockwise(self):
+        # Subtract 1 modulo 4
         self.direction = Direction((self.direction - 1) % 4)
+        self.fromDirection = Direction((self.fromDirection - 1) % 4)
 
     def moveCursorInDirection(self, range=1):
         offset = self.directionToOffset[self.direction]

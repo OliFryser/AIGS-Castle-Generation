@@ -21,5 +21,20 @@ class InstructionLine:
     def isEmpty(self):
         return len(self.instructions) <= 0
 
+    def getCost(self):
+        costMap = {
+            InstructionToken.KEEP: 5,
+            InstructionToken.WALL: 1,
+            InstructionToken.GATE: 3,
+            InstructionToken.TOWER: 5,
+        }
+        cost = 0
+        for instruction in self.instructions:
+            if instruction not in costMap:
+                continue
+            cost += costMap[instruction]
+
+        return cost
+
     def __str__(self):
         return f"{' '.join(str(instruction) for instruction in self.instructions)}"

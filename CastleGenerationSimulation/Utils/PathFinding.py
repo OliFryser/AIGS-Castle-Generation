@@ -3,6 +3,7 @@ from pygame import Vector3
 from queue import PriorityQueue
 from Utils.Node import Node, Edge, Graph
 import numpy as np
+from pprint import pprint
 
 def smoothPath(startPosition, path, angleTolerance=15):
     return path
@@ -46,9 +47,9 @@ def getAsNodeOnGraph2(startPosition: Vector3 , graph: dict[Node, list[Edge]], tm
     return node
 
 #get as node on graph gets the four closest nodes directly from the graph
-def getAsNodeOnGraph(startPosition: Vector3 , graph: dict[Node, list[Edge]], tmpNodes, ignoreNodes):
+def getAsNodeOnGraph(startPosition: Vector3 , graph: Graph, tmpNodes, ignoreNodes):
     node = Node(startPosition)
-    if node in graph:
+    if node in graph.graph:
         return node
     
     x, y, z = startPosition.x, startPosition.y, startPosition.z
@@ -68,12 +69,17 @@ def getAsNodeOnGraph(startPosition: Vector3 , graph: dict[Node, list[Edge]], tmp
     edges = []
     for pos in positions:
         tmpNode = Node(pos)
-        if tmpNode not in ignoreNodes and tmpNode in graph:
-            graph[tmpNode].append(Edge(node, tmpNode.position.distance_to(node.position)))
+        if tmpNode not in ignoreNodes and tmpNode in graph.graph:
+            block = graph.getNodeFromPosition(tmpNode.position).materialBlock
+            if block is not None and block.blocking:
+                continue
+            if block is not None and block.unit is not None:
+                continue
+            graph.graph[tmpNode].append(Edge(node, tmpNode.position.distance_to(node.position)))
             tmpEdge = Edge(tmpNode, node.position.distance_to(tmpNode.position))
             edges.append(tmpEdge)
 
-    graph[node] = edges
+    graph.graph[node] = edges
     tmpNodes.append(node)
     return node
 
@@ -84,14 +90,19 @@ def euclidianDistance(node0: Node, node1: Node):
     return node0.position.distance_to(node1.position)
 
 def aStar(startPosition: Vector3, targetPosition: Vector3, nodeGraph: Graph,
-          unit,
           heuristic = euclidianDistance, costAdjustFunc = distanceCost, budget = 1000, 
           ignoreNodes: list[Node] = []
           ):
     graph = nodeGraph.graph
+    #pprint(graph.values())
     tmpNodes = []
-    startNode = getAsNodeOnGraph(startPosition, graph, tmpNodes, ignoreNodes)
-    targetNode = getAsNodeOnGraph(targetPosition, graph, tmpNodes, ignoreNodes)
+
+    startNode = getAsNodeOnGraph(startPosition, nodeGraph, tmpNodes, ignoreNodes)
+    targetNode = getAsNodeOnGraph(targetPosition, nodeGraph, tmpNodes, ignoreNodes)
+    """
+    startNode = nodeGraph.getNodeFromPosition(startPosition)
+    targetNode = nodeGraph.getNodeFromPosition(targetPosition)
+    """
     # distances is for storing the shortest distance to node
     distances: dict[Node, float] = {startNode: 0.0}
     open_nodes = PriorityQueue()
@@ -110,7 +121,7 @@ def aStar(startPosition: Vector3, targetPosition: Vector3, nodeGraph: Graph,
     while open_nodes.not_empty:
         # we only really need the next node
         _, r, currentNode = open_nodes.get()
-        
+        #print(currentNode.position,graph[currentNode])
         """
         if (currentNode.unit is not None and currentNode.unit is not unit):
             print(f" unit {currentNode.unit}, {unit}")

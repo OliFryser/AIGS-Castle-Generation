@@ -1,0 +1,39 @@
+0 0 0 0 0 0 0
+0 0 0 0 0 0 0
+S S S S S S S
+P P P P P P P
+S S S S S S S
+0 0 0 0 0 0 0
+0 0 0 0 0 0 0
+
+0 0 0 0 0 0 0
+0 0 0 0 0 0 0
+S S S S S 0 0
+P P P P S 0 0
+S S S P S 0 0
+0 0 S P S 0 0
+0 0 S P S 0 0
+
+
+0 0 0 0 0 0 0
+S S S S S S S
+P P P P P P P
+S S S P S S S
+0 0 S P S 0 0
+0 0 S P S 0 0
+
+0 0 S P S 0 0
+0 0 S P S 0 0
+S S S P S S 0
+P P P P P P P
+S S S P S S S
+0 0 S P S 0 0
+0 0 S P S 0 0
+
+0 0 0 0 0 0 0
+0 0 0 0 0 0 0
+S S S S S 0 0
+P P P P S 0 0
+S S S S S 0 0
+0 0 0 0 0 0 0
+0 0 0 0 0 0 0

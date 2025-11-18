@@ -5,12 +5,12 @@ from Utils.FSM import FSM,State
 from Utils.Node import Node, Graph
 
 class AxeMan(Unit):
-    def __init__(self, graph: Graph, level: Level, position: Vector2, health: int = 100, speed: float = 0.1, size=0.3):
-        super().__init__(graph, level, position, health, speed, size)
+    def __init__(self, level: Level, position: Vector2, health: int = 100, speed: float = 0.1, size=0.3):
+        super().__init__(level, position, health, speed, size)
         self.blockAttackDamage = 10
         self.blockAttackRange = 0.8
         self.count = 0
-        self.targetBlock = None
+        self.noedTarget = None
         self.attackCoolDown = False
         self.attackCoolDownTime = 50
         self.initFSM()
@@ -55,7 +55,7 @@ class AxeMan(Unit):
             self.outOfReach
         )
         fsm.addTransition(
-            demolishFsm, State.WAIT, self.nodeTargetDestroyed, (self.setTimer, (4,),{})
+            demolishFsm, State.WAIT, self.targetBlockDemolished, (self.setTimer, (4,),{})
         )
 
         self.fsm = fsm
@@ -81,8 +81,8 @@ class AxeMan(Unit):
             and self.position.distance_to(self.target) < self.size + self.blockAttackRange
         )
 
-    def nodeTargetDestroyed(self):
-        return self.targetBlock is None
+    def targetBlockDemolished(self):
+        return self.noedTarget.materialBlock is None
     
     def onAttackCoolDown(self):
         return self.attackCoolDown
@@ -96,12 +96,12 @@ class AxeMan(Unit):
     
     def setNodeTargetAndPath(self):
         node = self.path[0]
-        self.targetBlock = node
+        self.noedTarget = node
         self.target = node.position
         self.path = [node]
 
     def setTargetBlock(self, node):
-        self.targetBlock = node
+        self.noedTarget = node
     
     def setPath(self, path):
         self.path = path
@@ -114,19 +114,16 @@ class AxeMan(Unit):
 
     #Action!
     def strikeWall(self):
-        block = self.targetBlock
+        block = self.noedTarget
         if block is not None and self.position.distance_to(block.position) < self.size + self.blockAttackRange +0.6:
             materialBlock = block.materialBlock
             if materialBlock is not None:
-                materialBlock.health -= self.blockAttackDamage - materialBlock.damageThreshold
+                materialBlock.hit(self.blockAttackDamage)
                 self.attackCoolDown = True
-                if materialBlock.health < 0:   
-                    self.destroyCastleElement(block)
-                    self.targetBlock = None
     
     #this should maybe be somewhere else and handled on a different level
     # it removes the material block from the node, and removes the block from the 
     def destroyCastleElement(self, node: Node):
         node.materialBlock = None
         self.level.castleMap[int(node.position.z - 0.5)][int(node.position.x - 0.5)] = None
-        self.targetBlock = None
+        self.noedTarget = None

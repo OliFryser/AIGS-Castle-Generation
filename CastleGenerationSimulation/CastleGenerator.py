@@ -1,15 +1,23 @@
-from pygame import Vector2
 import numpy as np
 
 from CastleElement import CastleElement, ElementType, MaterialType
 from CastleGenerationAgent import CastleGenerationAgent
 from CastleInstructions.InstructionToken import InstructionToken
+from CastleInstructions.InstructionTree import InstructionTree
 from CastleInstructions.InstructionTreeParser import parseInstructionTree
 from Utils.Direction import Direction
 
 
 class CastleGenerator:
-    def __init__(self, filepath, tilePath, width: int, height: int):
+    def __init__(
+        self,
+        filepath,
+        tilePath,
+        width: int,
+        height: int,
+        targetPositionx,
+        targetPositiony,
+    ):
         self.tokenToElementType: dict[InstructionToken, ElementType] = {
             InstructionToken.KEEP: ElementType.KEEP,
             InstructionToken.WALL: ElementType.WALL,
@@ -35,10 +43,10 @@ class CastleGenerator:
             for _ in range(self.height // self.scale)
         ]
 
-        # Place keep in center
+        # Place keep just above target
         self.center = (
-            (self.width // self.scale) // 2,
-            (self.height // self.scale) // 2 - 1,
+            int((targetPositionx - self.scale / 2) // self.scale),
+            int((targetPositiony - self.scale / 2) // self.scale),
         )
         self.grid[self.center[1]][self.center[0]] = CastleElement(ElementType.KEEP)
 
@@ -59,8 +67,8 @@ class CastleGenerator:
         return tileMap
 
     def generate(self, filepath: str):
-        self.instructionTree = parseInstructionTree(filepath)
-
+        self.instructionTree: InstructionTree = parseInstructionTree(filepath)
+        self.evaluateInstructionCost()
         agents: list[CastleGenerationAgent] = []
         agents.append(
             CastleGenerationAgent(
@@ -70,6 +78,14 @@ class CastleGenerator:
 
         while len(agents) > 0:
             self.step(agents)
+
+    def evaluateInstructionCost(self):
+        self.cost = 0
+        for instructionNode in self.instructionTree.nodes:
+            self.cost += instructionNode.line.getCost()
+
+    def getGateCount(self):
+        return self.gateCount
 
     def step(self, agents: list[CastleGenerationAgent]):
         for agent in agents:
@@ -93,94 +109,93 @@ class CastleGenerator:
                             agent.direction,
                             newBranch,
                             self.grid,
+                            agent.fromDirection,
+                            agent.lastElement,
                         )
                     )
             else:
                 elementType = self.tokenToElementType[instruction]
                 agent.placeNextElement(elementType)
 
-    def getCastleMapInTerrainScale(self):
+    def getCastleMapInTerrainScale(self, path):
         grid = self.grid.copy()
-        self.addGates(grid)
         gridToScale = np.full((self.height, self.width), None)
         for row in range(len(grid)):
             for column in range(len(grid[0])):
                 if grid[row][column] is not None:
                     self.fillTile(
-                        grid[row][column].elementType,  # type: ignore
+                        grid[row][column],  # type: ignore
                         gridToScale,
-                        row,
-                        column,
+                        row * self.scale,
+                        column * self.scale,
                     )
 
+        self.addGates(gridToScale, path)
         return gridToScale
 
-    # this is just a simple placeholder way to do it
-    def addGates2(self, grid):
-        for row in range(len(grid)):
-            for column in range(len(self.grid[0])):
-                if grid[row][column] is None:
-                    neighbors = self.castleElementNeighbors(row, column)
-                    if len(neighbors) == 2:
-                        if (
-                            Direction.LEFT in neighbors and Direction.RIGHT in neighbors
-                        ) or (
-                            Direction.DOWN in neighbors and Direction.UP in neighbors
-                        ):
-                            print(neighbors)
-                            grid[row][column] = CastleElement(ElementType.GATE)
+    def addGates(self, gridToScale, path):
+        self.gateCount = 0
+        directionFrom = []
+        previousPos = (0, 0)
+        for step in path:
+            directionFrom = []
+            newX = (step[0] - previousPos[0], 0)
+            newY = (0, step[1] - previousPos[1])
+            for direction, offset in self.directionToOffset.items():
+                if newX == offset or newY == offset:
+                    directionFrom.append(direction)
+            previousPos = step
 
-    def addGates(self, grid):
-        for row in range(len(grid)):
-            for column in range(len(self.grid[0])):
-                if (
-                    grid[row][column] is not None
-                    and grid[row][column].elementType is not ElementType.GATE
-                ):
-                    neighbors = self.castleElementNeighbors(row, column)
-                    if len(neighbors) == 1:
-                        # print(f"{column, row} stands alone")
-                        for emptyNeighbor in [
-                            e for e in Direction if e is not neighbors[0]
-                        ]:
-                            # print(Vector2(self.directionToOffset[emptyNeighbor]) * 2)
-                            nextOverPos = (
-                                Vector2(column, row)
-                                + Vector2(self.directionToOffset[emptyNeighbor]) * 2
-                            )
-                            nextOver = grid[int(nextOverPos.y)][int(nextOverPos.x)]
-                            # print(f" next over: {nextOverPos.x, nextOverPos.y} is {nextOver}")
-                            if (
-                                nextOver is not None
-                                and nextOver.elementType is not ElementType.GATE
-                            ):
-                                toBeGate = Vector2(column, row) + Vector2(
-                                    self.directionToOffset[emptyNeighbor]
-                                )
-                                toBeGateNeighbors = self.castleElementNeighbors(
-                                    int(toBeGate.y), int(toBeGate.x)
-                                )
-                                if len(toBeGateNeighbors) == 2:
-                                    # print(f"make a gate at {toBeGate}")
-                                    grid[int(toBeGate.y)][int(toBeGate.x)] = (
-                                        CastleElement(ElementType.GATE)
-                                    )
+            cellElement = self.grid[step[1]][step[0]]
+            if cellElement is not None:
+                # if there is excactly two neighbours
+                if len(cellElement.directions) == 2:
+                    """
+                    #setup new gate element
+                    castleElement = CastleElement(ElementType.GATE, cellElement.column, cellElement.row)
+                    castleElement.directions = cellElement.directions
+                    #if the neighbours are perpendicular
+                    #if (cellElement.directions[0] +2 )% 4 == cellElement.directions[1]:
+                    print(castleElement.directions)
+                    self.fillTile(castleElement, gridToScale, castleElement.column,castleElement.row)
+                
+                """
+                for direction in cellElement.directions:
+                    position = (
+                        step[0] * self.scale
+                        + self.directionToOffset[Direction(direction)][0] * 3,
+                        step[1] * self.scale
+                        + self.directionToOffset[Direction(direction)][1] * 2,
+                    )
+                    castleElement = CastleElement(
+                        ElementType.GATE, position[1], position[0]
+                    )
+                    castleElement.directions = [direction, (direction + 2) % 4]
+                    self.fillTile(castleElement, gridToScale, position[1], position[0])
+        pass
 
     # this assumes square tiles
-    def fillTile(self, castleElement, grid, x, y):
-        blockMap = self.tileMap[castleElement]
-        neighbors = self.castleElementNeighbors(x, y)
+    def fillTile(self, castleElement: CastleElement, grid, x, y):
+        elementType = castleElement.elementType
+        blockMap = self.tileMap[elementType]
+
+        neighbors = castleElement.directions
         tile = self.morphATile(blockMap, neighbors)
+        castleElement.column = x
+        castleElement.row = y
 
         for column in range(len(tile)):
             for row in range(len(tile[column])):
                 materialType = tile[column][row]
                 if any(materialType == e.value for e in MaterialType):
-                    grid[x * self.scale + column][y * self.scale + row] = CastleElement(
-                        castleElement, MaterialType(materialType)
+                    # TODO adjust for printing empties regarding Gates
+                    grid[x + column][y + row] = castleElement
+                    castleElement.setMaterialBlock(
+                        row, column, MaterialType(materialType)
                     )
 
     def morphATile(self, blocks, neighbors):
+        # end bits
         if len(neighbors) == 1 and len(blocks) >= 5:
             if neighbors[0] == Direction.UP:
                 return np.transpose(blocks[4])
@@ -218,16 +233,3 @@ class CastleGenerator:
             return np.transpose(blocks[0])
         # Default
         return blocks[0]
-
-    def castleElementNeighbors(self, y, x):
-        height = len(self.grid)
-        width = len(self.grid[0])
-        neighbors = []
-
-        for direction, (dx, dy) in self.directionToOffset.items():
-            nx, ny = x + dx, y + dy
-            if 0 <= ny < height and 0 <= nx < width:
-                if self.grid[ny][nx] is not None:
-                    neighbors.append(direction)
-
-        return neighbors
