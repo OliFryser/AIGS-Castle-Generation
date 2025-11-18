@@ -1,14 +1,14 @@
 import random
-from collections import deque
 
 from CastleInstructions.InstructionToken import InstructionToken
 
 
 class InstructionLine:
     def __init__(self, instructions: str):
-        self.instructions = deque(
+        self.instructions = list(
             [InstructionToken(token) for token in instructions.lstrip().split()]
         )
+        self.nextIndex = 0
 
     def mutate(self, newElement: InstructionToken):
         mutationIndex = random.randrange(len(self.instructions))
@@ -16,7 +16,9 @@ class InstructionLine:
         self.instructions.insert(mutationIndex, newElement)
 
     def getNextInstruction(self):
-        return self.instructions.popleft()
+        element = self.instructions[self.nextIndex]
+        self.nextIndex += 1
+        return element
 
     def isEmpty(self):
         return len(self.instructions) <= 0
