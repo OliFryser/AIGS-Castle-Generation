@@ -175,7 +175,9 @@ class CastleGenerator:
                     if cellElement is not None:
                         #if there is only one connection, it can be sidestepped
                         if len(cellElement.directions) <= 1:
-                            #print("move around")
+                            """
+                            print("move around")
+                            """
                             continue
                         #otherwise the wall in that direction will need a door
                         if side in cellElement.directions:
@@ -223,7 +225,9 @@ class CastleGenerator:
                             """                
                 #eventually
                 onSide = switchSide(moveDirection, onSide)
-                #print(f"switching side from {moveDirection.name} {onSide}")
+                """
+                print(f"switching side from {moveDirection.name} {onSide}")
+                """
 
     # this assumes square tiles
     def fillTile(self, castleElement: CastleElement, grid, x, y, block = None):

@@ -53,12 +53,13 @@ class Level:
         self.nodeGraph: Graph = self.makeGraph(self.nodeToNodeDistance)
         timer.stop()
 
+        #Debug print for path
         """
         for pos in positionPath:
             v3 = Vector3(pos[0]*castleGenerator.scale+castleGenerator.scale/2,0,pos[1]*castleGenerator.scale+castleGenerator.scale/2)
             n = self.nodeGraph.getNodeFromPosition(v3)
             if n is not None:
-                n.unit=1
+                n.unit=1 #type: ignore
         """
 
         # gather data
