@@ -125,7 +125,8 @@ class Unit:
             return
         self.path = aStar(
                 self.position, self.target, self.nodeGraph,
-                costAdjustFunc= self.moveCostAdjust, ignoreNodes=self.nodesToSkip
+                costAdjustFunc= self.moveCostAdjust, ignoreNodes=self.nodesToSkip,
+                unit=self,
             )
         #print(len(self.path))
         #self.fsm.printState()
@@ -141,6 +142,8 @@ class Unit:
                 self.planPath()
                 break
                 # return
+        if self.path == []:
+            return
         self.move(self.path[0].position - self.position)
         if self.position.distance_to(self.path[0].position) <= self.size:
             self.path.pop(0)
@@ -243,5 +246,5 @@ class Unit:
     def unitCost(self, node):
         if node.unit is not None and node.unit is not self:
             # print(f"big cost {node.position}, {edge.node.position}")
-            return 400
+            return 1400
         return 0

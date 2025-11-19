@@ -1,6 +1,6 @@
-width: 90
-height: 90
+width: 200
+height: 200
 maxHeight: 10
-outputFile: "resources/terrainMaps/perlinBy3.txt"
+outputFile: "resources/terrainMaps/perlinBy4.txt"
 generator: "perlin" # Possible generators - random, perlin
 perlinScale: 20.0

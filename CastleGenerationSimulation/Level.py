@@ -53,6 +53,14 @@ class Level:
         self.nodeGraph: Graph = self.makeGraph(self.nodeToNodeDistance)
         timer.stop()
 
+        """
+        for pos in positionPath:
+            v3 = Vector3(pos[0]*castleGenerator.scale+castleGenerator.scale/2,0,pos[1]*castleGenerator.scale+castleGenerator.scale/2)
+            n = self.nodeGraph.getNodeFromPosition(v3)
+            if n is not None:
+                n.unit=1
+        """
+
         # gather data
         self.instructionCost = castleGenerator.cost
         self.gates = castleGenerator.getGateCount()
@@ -184,7 +192,7 @@ class Level:
         pathGraph = self.makeGraph(self.pathCostAdjustFunc, scale)
         nodePath = aStar(
             Vector3(
-                self.width // scale / 2,
+                self.width // scale /2+1,
                 self.getBilinearHeight(self.width // scale / 2, self.height // scale),
                 self.height // scale,
             ),
@@ -196,7 +204,7 @@ class Level:
             pathGraph,
         )
 
-        return [(int(node.position.x), int(node.position.z)) for node in nodePath]
+        return [(int(np.floor(node.position.x)), int(np.floor(node.position.z))) for node in nodePath]
 
     ##############################################################
     # Behaviour

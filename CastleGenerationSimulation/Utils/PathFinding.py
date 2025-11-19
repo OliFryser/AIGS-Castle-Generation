@@ -47,7 +47,7 @@ def getAsNodeOnGraph2(startPosition: Vector3 , graph: dict[Node, list[Edge]], tm
     return node
 
 #get as node on graph gets the four closest nodes directly from the graph
-def getAsNodeOnGraph(startPosition: Vector3 , graph: Graph, tmpNodes, ignoreNodes):
+def getAsNodeOnGraph(startPosition: Vector3 , graph: Graph, tmpNodes, unit, ignoreNodes):
     node = Node(startPosition)
     if node in graph.graph:
         return node
@@ -70,10 +70,11 @@ def getAsNodeOnGraph(startPosition: Vector3 , graph: Graph, tmpNodes, ignoreNode
     for pos in positions:
         tmpNode = Node(pos)
         if tmpNode not in ignoreNodes and tmpNode in graph.graph:
-            block = graph.getNodeFromPosition(tmpNode.position).materialBlock
+            blockNode = graph.getNodeFromPosition(tmpNode.position)
+            block = blockNode.materialBlock
             if block is not None and block.blocking:
                 continue
-            if block is not None and block.unit is not None:
+            if blockNode is not None and blockNode.unit is not None and unit is not None and blockNode.unit != unit:
                 continue
             graph.graph[tmpNode].append(Edge(node, tmpNode.position.distance_to(node.position)))
             tmpEdge = Edge(tmpNode, node.position.distance_to(tmpNode.position))
@@ -91,14 +92,15 @@ def euclidianDistance(node0: Node, node1: Node):
 
 def aStar(startPosition: Vector3, targetPosition: Vector3, nodeGraph: Graph,
           heuristic = euclidianDistance, costAdjustFunc = distanceCost, budget = 1000, 
-          ignoreNodes: list[Node] = []
+          ignoreNodes: list[Node] = [],
+          unit = None
           ):
     graph = nodeGraph.graph
     #pprint(graph.values())
     tmpNodes = []
 
-    startNode = getAsNodeOnGraph(startPosition, nodeGraph, tmpNodes, ignoreNodes)
-    targetNode = getAsNodeOnGraph(targetPosition, nodeGraph, tmpNodes, ignoreNodes)
+    startNode = getAsNodeOnGraph(startPosition, nodeGraph, tmpNodes, unit, ignoreNodes)
+    targetNode = getAsNodeOnGraph(targetPosition, nodeGraph, tmpNodes, unit, ignoreNodes)
     """
     startNode = nodeGraph.getNodeFromPosition(startPosition)
     targetNode = nodeGraph.getNodeFromPosition(targetPosition)

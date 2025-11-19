@@ -40,7 +40,7 @@ class CastleElement:
     def setMaterialBlock(self, x, y, materialType):
         if materialType == MaterialType.EMPTY:
             return
-        key = (x, y)
+        key = (x + self.row, y+self.column)
         materialBlock = MaterialBlock(materialType, self)
         self.materialBlocks[key] = materialBlock
         if materialType is not MaterialType.DOOR:
@@ -49,13 +49,13 @@ class CastleElement:
         materialBlock.linked = self.linked
 
     def getMaterialBlockLocal(self, x, y):
-        key = (x, y)
+        key = (x - self.row, y- self.column)
         if key not in self.materialBlocks:
             return None
         return self.materialBlocks[key]
 
     def getMaterialBlockGlobal(self, x, y):
-        key = (x - self.row, y - self.column)
+        key = (x, y )
         if key not in self.materialBlocks:
             return None
         return self.materialBlocks[key]
