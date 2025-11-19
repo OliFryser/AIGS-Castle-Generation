@@ -113,8 +113,6 @@ class CastleGenerator:
         previousPos = (0, 0)
         onSide: tuple[Direction,Direction] = (Direction.DOWN,Direction.RIGHT)
         #purge path
-        """
-        """
         for p in path:
 
             if path.count(p) > 1:
@@ -156,9 +154,11 @@ class CastleGenerator:
 
             for d in directionFrom:
                 onSide = switchSide(d, onSide)
-
+            
+            """
             print()
             print(f"{step} move towards {directionTo}, on side{onSide}")
+            """
 
             #going towards a direction should check if that movement is blocked
             for moveDirection in directionTo:
@@ -175,8 +175,7 @@ class CastleGenerator:
                     if cellElement is not None:
                         #if there is only one connection, it can be sidestepped
                         if len(cellElement.directions) <= 1:
-                            #switchSide(direction)
-                            print("move around")
+                            #print("move around")
                             continue
                         #otherwise the wall in that direction will need a door
                         if side in cellElement.directions:
@@ -217,15 +216,14 @@ class CastleGenerator:
                                 castleElement.directions = [Direction((connections[0] +2 ) % 4)]
                                 self.fillTile(castleElement, gridToScale, position2[1], position2[0], np.fliplr(block))
                             
-                            
+                            """                            
                             for k,mb in castleElement.materialBlocks.items():    
                                 print(k,mb.materialType)
                             print(f"built gate {side.name}")
+                            """                
                 #eventually
-                #moveDirection = Direction(moveDirection)
-                print(f"switching side from {moveDirection.name} {onSide}")
                 onSide = switchSide(moveDirection, onSide)
-                print(f"switching side to {onSide}")
+                #print(f"switching side from {moveDirection.name} {onSide}")
 
     # this assumes square tiles
     def fillTile(self, castleElement: CastleElement, grid, x, y, block = None):
