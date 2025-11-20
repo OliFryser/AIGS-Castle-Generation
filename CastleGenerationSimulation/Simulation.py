@@ -25,7 +25,7 @@ class Simulation:
         self.target = Target(self.level)
         self.defender = Team(self.level,Vector2(self.target.position.x,self.target.position.z))
 
-        for n in range(10):
+        for n in range(2):
             self.attacker.addAxeman()
         
         self.attacker.updateGoal(self.target.position)
