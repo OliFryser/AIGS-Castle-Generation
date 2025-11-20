@@ -25,10 +25,12 @@ class Level:
         self.maxHeight = terrainMap.maxHeight
         self.castleMap = None
         if targetPosition is None:
+            x = int(self.width / 2)
+            z = int(self.height / 3)
             self.targetPosition = Vector3(
-                self.width / 2 - 0.5,
+                x,
                 self.getBilinearHeight(self.width / 2 - 0.5, self.height / 2 - 0.5),
-                self.height / 2 -0.5,
+                z,
             )
         else:
             self.targetPosition = targetPosition
@@ -53,25 +55,34 @@ class Level:
         self.nodeGraph: Graph = self.makeGraph(self.nodeToNodeDistance)
         timer.stop()
 
-        #Debug print for path
-        """
-        for pos in positionPath:
-            v3 = Vector3(
-                pos[0]*castleGenerator.scale+castleGenerator.scale/2, 
-                0, 
-                pos[1]*castleGenerator.scale+castleGenerator.scale/2
-            )
-            print(v3)
-            n = self.nodeGraph.getNodeFromPosition(v3)
-            if n is not None:
-                n.unit=1 #type: ignore
-        """
-
         # gather data
         self.instructionCost = castleGenerator.cost
         self.gates = castleGenerator.getGateCount()
         self.castleCost = self.getCastleCost()
         self.protectedArea = self.getProtectedArea()
+
+        #Debug print for path
+        """
+        for pos in positionPath:
+            v3 = Vector3(
+                pos[0]*castleGenerator.scale+castleGenerator.scale/2 - int(castleGenerator.scale/2), 
+                0, 
+                pos[1]*castleGenerator.scale+castleGenerator.scale/2  - int(castleGenerator.scale/2)
+            )
+            n = self.nodeGraph.getNodeFromPosition(v3)
+            if n is not None:
+                n.unit=1 #type: ignore
+            else:
+                v3 = Vector3(
+                    pos[0],
+                    0, 
+                    pos[1]
+                )
+                n = self.nodeGraph.getNodeFromPosition(v3)
+                if n is not None:
+                    n.unit=1 #type: ignore
+            
+        """
 
     def getLevel(self):
         return self.terrainMap

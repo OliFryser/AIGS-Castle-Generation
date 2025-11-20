@@ -15,6 +15,7 @@ class Unit:
         health: int = 100,
         speed: float = 0.2,
         size=0.1,
+        goal= None
     ):
         self.health = health
         self.speed = speed
@@ -30,7 +31,7 @@ class Unit:
         )
         self.path: list[Node] = []
         self.target = None
-        self.goal: None | Vector3 = None
+        self.goal: None | Vector3 = goal
         self.count = 0
         self.initFSM()
         self.nodesToSkip = []

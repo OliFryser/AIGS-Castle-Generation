@@ -32,16 +32,20 @@ class CastleGenerator:
         ]
 
         self.center = (
-            int((targetPositionx - self.scale / 2) // self.scale),
-            int((targetPositiony - self.scale / 2) // self.scale),
+            int((targetPositionx) // self.scale),
+            int((targetPositiony) // self.scale),
+        )
+        self.centerOffset = (
+            self.center[0] * self.scale - (targetPositionx - self.scale/2),
+            self.center[1] * self.scale - (targetPositiony - self.scale/2)
         )
 
-        # Place keep just above target
+        # Place on top of Target
+        """
+        """
         keep = CastleElement(ElementType.KEEP)
         keep.directions = [Direction.LEFT, Direction.RIGHT]
         self.grid[self.center[1]][self.center[0]] = keep
-        """
-        """
 
         self.evaluateInstructionCost()
 
@@ -95,6 +99,7 @@ class CastleGenerator:
 
     def getCastleMapInTerrainScale(self, path):
         grid = self.grid.copy()
+        self.clearCourtyard(grid)
         gridToScale = np.full((self.height, self.width), None)
         for row in range(len(grid)):
             for column in range(len(grid[0])):
@@ -135,7 +140,7 @@ class CastleGenerator:
         directionFrom = []
         directionTo = []
         previousPos = (0, 0)
-        onSide: tuple[Direction,Direction] = (Direction.UP,Direction.LEFT)
+        onSide: tuple[Direction,Direction] = (Direction.DOWN,Direction.RIGHT)
         #purge path
         for p in path:
             if path.count(p) > 1:
@@ -143,8 +148,7 @@ class CastleGenerator:
         
         for n in range(len(path)-1):
             step = path[n]
-            if step == previousPos:
-                break
+            
             def travelDirections(pos0, pos1, inverse = False):
                 tdirections = []
                 newX = (np.sign(pos1[0] - pos0[0]), 0)
@@ -163,7 +167,7 @@ class CastleGenerator:
             if n < len(path) -2:
                 directionTo = travelDirections(step, path[n+1])
             else:
-                directionTo = travelDirections((step[0]*self.scale,step[1]*self.scale), path[n+1])
+                directionTo = travelDirections((step[0]*self.scale,step[1]*self.scale), path[n+1])#(path[n+1][0] - int(self.scale/2), path[n+1][1]- int(self.scale/2) ))
 
             directionFrom = travelDirections(previousPos, step, True)
             previousPos = step
@@ -211,7 +215,7 @@ class CastleGenerator:
                             continue
                         #otherwise the wall in that direction will need a door
                         if side in cellElement.directions:
-                            
+                            self.gateCount +=1
                             #if it is a straight wall then it should be trivial
                             position = (step[0] * self.scale, step[1] * self.scale)
                             if set(cellElement.directions) == set([Direction.UP, Direction.DOWN]) or set(cellElement.directions) == set([Direction.LEFT, Direction.RIGHT]):
@@ -260,6 +264,22 @@ class CastleGenerator:
                 print(directionTo)
                 """
 
+    def clearCourtyard(self, grid):
+        courtyard = (self.center[0],self.center[1]+1)
+        cell = grid[courtyard[1]][ courtyard[0]]
+        print(courtyard)
+        if cell is None:
+            return
+        for direction in cell.directions:
+            tmpPosition = (
+                courtyard[0] + directionToOffset[direction][0],
+                courtyard[1] + directionToOffset[direction][1],
+            )
+            tmpCell = grid[tmpPosition[1]][tmpPosition[0]]
+            tmpCell.directions.remove(Direction((direction + 2) %4))
+        grid[courtyard[1]][ courtyard[0]] = None
+
+
     # this assumes square tiles
     def fillTile(self, castleElement: CastleElement, grid, x, y, block = None):
         elementType = castleElement.elementType
@@ -270,15 +290,14 @@ class CastleGenerator:
 
         neighbors = castleElement.directions
         tile = self.morphATile(blockMap, neighbors)
-        castleElement.column = x
-        castleElement.row = y
+        castleElement.column = x - int(self.scale/2)
+        castleElement.row = y - int(self.scale/2)
 
         for column in range(len(tile)):
             for row in range(len(tile[column])):
                 materialType = tile[column][row]
                 if any(materialType == e.value for e in MaterialType):
-                    # TODO adjust for printing empties regarding Gates
-                    grid[x + column][y + row] = castleElement
+                    grid[x - int(self.scale/2) + column][y  - int(self.scale/2)+ row] = castleElement
                     castleElement.setMaterialBlock(
                         row, column, MaterialType(materialType)
                     )

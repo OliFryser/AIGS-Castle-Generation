@@ -5,31 +5,6 @@ from Utils.Node import Node, Edge, Graph
 import numpy as np
 from pprint import pprint
 
-def smoothPath(startPosition, path, angleTolerance=15):
-    return path
-    if not path:
-        return []
-
-    smoothed = [path[0]]
-    bundleStart = startPosition
-    n = 0
-    for i in range(len(path) - 1):
-        # vector from bundle start to current and next points
-        vec0 = path[i] - bundleStart
-        vec1 = path[i + 1] - path[i]
-
-        angle = vec0.angle_to(vec1)
-        n +=1
-        # when we deviate too far from the current direction, finalize path bundle
-        if abs(angle) > angleTolerance:
-            smoothed.append(path[i])
-            break
-            bundleStart = path[i]
-            n=0
-    
-    #smoothed.append(path[-1])
-    return smoothed
-
 #get as node on Graph 2 gets the 3 closest nodes by distance
 def getAsNodeOnGraph2(startPosition: Vector3 , graph: dict[Node, list[Edge]], tmpNodes, ignoreNodes):
     node = Node(startPosition)
@@ -135,7 +110,8 @@ def aStar(startPosition: Vector3, targetPosition: Vector3, nodeGraph: Graph,
 
         # if the next node is the target node the path has been set
         if distances[currentNode] > budget:
-            print(f"could not find path within budget {distances[currentNode]}")
+            print(f"could not find path within budget {distances[currentNode], len(distances.keys())}")
+            #print(currentNode.unit, currentNode.materialBlock.materialType)
             break
 
         if currentNode == targetNode:
@@ -153,7 +129,7 @@ def aStar(startPosition: Vector3, targetPosition: Vector3, nodeGraph: Graph,
             
             for node in tmpNodes:
                 nodeGraph.removeNode(node)
-            return smoothPath(startPosition,path)
+            return path
         random.shuffle((graph[currentNode]))
         for edge in graph[currentNode]:
             #cost is calculated here
