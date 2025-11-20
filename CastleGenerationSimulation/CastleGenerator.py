@@ -31,14 +31,17 @@ class CastleGenerator:
             for _ in range(self.height // self.scale)
         ]
 
-        # Place keep just above target
         self.center = (
             int((targetPositionx - self.scale / 2) // self.scale),
             int((targetPositiony - self.scale / 2) // self.scale),
         )
+
+        # Place keep just above target
         keep = CastleElement(ElementType.KEEP)
         keep.directions = [Direction.LEFT, Direction.RIGHT]
         self.grid[self.center[1]][self.center[0]] = keep
+        """
+        """
 
         self.evaluateInstructionCost()
 
@@ -96,6 +99,8 @@ class CastleGenerator:
         for row in range(len(grid)):
             for column in range(len(grid[0])):
                 if grid[row][column] is not None:
+                    if self.isBox(grid[row][column].elementType):
+                        self.boxAdjust(grid[row][column], row, column)
                     self.fillTile(
                         grid[row][column],  # type: ignore
                         gridToScale,
@@ -106,37 +111,59 @@ class CastleGenerator:
         self.addGates(gridToScale, path)
         return gridToScale
 
+    def boxAdjust(self, castleElement: CastleElement, row, column):
+        for direction, offset in directionToOffset.items():
+            if direction in castleElement.directions:
+                continue
+            neighbour = self.grid[row + offset[1]][column + offset[0]]
+            if neighbour is None:
+                continue
+            if self.isBox(neighbour.elementType):
+                castleElement.directions.append(direction)
+
+    def isBox(self, elementType: ElementType):
+        match elementType:
+            case ElementType.TOWER:
+                return True
+            case ElementType.KEEP:
+                return True
+        return False
+
     def addGates(self, gridToScale, path):
+        #path, pos = pathAndPos
         self.gateCount = 0
         directionFrom = []
         directionTo = []
         previousPos = (0, 0)
-        onSide: tuple[Direction,Direction] = (Direction.DOWN,Direction.RIGHT)
+        onSide: tuple[Direction,Direction] = (Direction.UP,Direction.LEFT)
         #purge path
         for p in path:
-
             if path.count(p) > 1:
                 path.remove(p)
         
-        for n in range(len(path)):
+        for n in range(len(path)-1):
             step = path[n]
             if step == previousPos:
                 break
             def travelDirections(pos0, pos1, inverse = False):
                 tdirections = []
-                newX = (pos1[0] - pos0[0], 0)
-                newY = (0, pos1[1] - pos0[1])
+                newX = (np.sign(pos1[0] - pos0[0]), 0)
+                newY = (0, np.sign(pos1[1] - pos0[1]))
                 for direction, offset in directionToOffset.items():
                     if newX == offset or newY == offset:
                         if inverse:
                             direction = Direction((direction + 2) % 4)
                         tdirections.append(direction)
                 if tdirections == []:
-                    print(pos0,pos1)
+                    #print(pos0,pos1)
+                    #return directionTo
+                    pass
                 return tdirections
             
-            if n < len(path) -1:
+            if n < len(path) -2:
                 directionTo = travelDirections(step, path[n+1])
+            else:
+                directionTo = travelDirections((step[0]*self.scale,step[1]*self.scale), path[n+1])
 
             directionFrom = travelDirections(previousPos, step, True)
             previousPos = step
@@ -170,8 +197,11 @@ class CastleGenerator:
                     else:
                         side = onSide[0]
                     
-                    #if a castleElement is present
+                    # if the path moves out of bounds, break
+                    if step[1] >= len(self.grid) or step[0] >= len(self.grid[0]):
+                        break
                     cellElement = self.grid[step[1]][step[0]]
+                    #if a castleElement is present
                     if cellElement is not None:
                         #if there is only one connection, it can be sidestepped
                         if len(cellElement.directions) <= 1:
@@ -227,6 +257,7 @@ class CastleGenerator:
                 onSide = switchSide(moveDirection, onSide)
                 """
                 print(f"switching side from {moveDirection.name} {onSide}")
+                print(directionTo)
                 """
 
     # this assumes square tiles
