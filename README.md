@@ -8,14 +8,26 @@ We use conda for managing the python environment. We have provided the configura
 2. Run ``conda env create -f environment.yml`` or ``conda env update -f environment.yml``, if you have already created the environment.
 3. Run ``conda activate fortify``.
 
-## TODO
-
-1. Build pathfinding graph on start and share between units. They will have the costs precalculated.
-2. Seperate castle map and terrain map
-3. Sever access in pathfinding graph where there is castle buildings
-
-
 ## Ask supervisor
 
 - How do we manage castle growth - limiting how far it can grow? Do not place outside range?
 - Starting point - Keep block or predefined?
+
+
+## TODO for map elite
+
+- Implement Crossover
+- Implement removing from end of branch
+- Implement random variation between Substitute, add and crossover
+- Better initial sampling
+- Loading from archive
+- Saving during MapElites run
+- Visualize Archive
+
+
+- MaxFitness
+- Coverage
+- QD-score - Average fitness of everything in archive
+
+- 10x10 archive - can visualize
+- 1000 iterations
