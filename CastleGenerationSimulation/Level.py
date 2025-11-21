@@ -25,10 +25,12 @@ class Level:
         self.maxHeight = terrainMap.maxHeight
         self.castleMap = None
         if targetPosition is None:
+            x = int(self.width / 2)
+            z = int(self.height / 3)
             self.targetPosition = Vector3(
-                self.width / 2 - 0.5,
+                x,
                 self.getBilinearHeight(self.width / 2 - 0.5, self.height / 2 - 0.5),
-                self.height / 2,
+                z,
             )
         else:
             self.targetPosition = targetPosition
@@ -58,6 +60,29 @@ class Level:
         self.gates = castleGenerator.getGateCount()
         self.castleCost = self.getCastleCost()
         self.protectedArea = self.getProtectedArea()
+
+        #Debug print for path
+        """
+        for pos in positionPath:
+            v3 = Vector3(
+                pos[0]*castleGenerator.scale+castleGenerator.scale/2 - int(castleGenerator.scale/2), 
+                0, 
+                pos[1]*castleGenerator.scale+castleGenerator.scale/2  - int(castleGenerator.scale/2)
+            )
+            n = self.nodeGraph.getNodeFromPosition(v3)
+            if n is not None:
+                n.unit=1 #type: ignore
+            else:
+                v3 = Vector3(
+                    pos[0],
+                    0, 
+                    pos[1]
+                )
+                n = self.nodeGraph.getNodeFromPosition(v3)
+                if n is not None:
+                    n.unit=1 #type: ignore
+            
+        """
 
     def getLevel(self):
         return self.terrainMap
@@ -167,9 +192,11 @@ class Level:
                     tmpEdge = Edge(tmpNode, edgeCostFunc(node, tmpNode))
                     edges.append(tmpEdge)
             graph[node] = edges
+        """
         print(
             f"Initiating node graph; level : {len(self.getLevel())} * {len(self.getLevel()[0])}, graph nodes: {len(graph.keys())}"
         )
+        """
         return graph, nodes
 
     def nodeToNodeDistance(self, node0, node1):
@@ -182,21 +209,24 @@ class Level:
     def generatePath(self, castleGenerator: CastleGenerator):
         scale = castleGenerator.scale
         pathGraph = self.makeGraph(self.pathCostAdjustFunc, scale)
+        home = Vector3(
+                self.targetPosition.x / scale,
+                self.targetPosition.y,
+                self.targetPosition.z / scale,
+            )
         nodePath = aStar(
             Vector3(
-                self.width // scale / 2,
-                self.getBilinearHeight(self.width // scale / 2, self.height // scale),
-                self.height // scale,
+                self.width / scale /2,
+                #0,
+                self.getBilinearHeight(self.width / scale / 2, self.height / scale),
+                self.height / scale,
+                #self.height / scale/2,
+                #0,
             ),
-            Vector3(
-                self.targetPosition.x // scale,
-                self.targetPosition.y,
-                self.targetPosition.z // scale,
-            ),
+            home,
             pathGraph,
         )
-
-        return [(int(node.position.x), int(node.position.z)) for node in nodePath]
+        return [(int(node.position.x), int(node.position.z)) for node in nodePath] + [(self.targetPosition.x,self.targetPosition.z)]
 
     ##############################################################
     # Behaviour

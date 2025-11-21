@@ -25,7 +25,7 @@ class Renderer:
 
         self.displayTerrainMap(self.screen)
         self.renderCastleMap()
-        for unit in self.simulation.units:
+        for unit in self.simulation.getUnits():
             self.chaosUnitRender(unit)
         self.renderTarget(self.simulation.target)
 
@@ -103,13 +103,13 @@ class Renderer:
             self.screen,
             (0, 0, 0),
             self.modelToViewSpace(target.position),
-            7,
+            3,
         )
         pygame.draw.circle(
             self.screen,
             (252, 188, 27),
             self.modelToViewSpace(target.position),
-            5,
+            2,
         )
 
     def modelToViewSpace(self, position: pygame.Vector3) -> pygame.Vector2:

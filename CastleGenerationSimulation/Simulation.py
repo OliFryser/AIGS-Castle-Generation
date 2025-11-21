@@ -3,8 +3,7 @@ from pygame import Vector2
 from Target import Target
 from Level import Level
 from InitializationParameters import InitializationParameters
-from Units.AxeMan import AxeMan
-
+from Team import Team
 
 @dataclass
 class State:
@@ -20,20 +19,21 @@ class Simulation:
             initParams.castleInstructionTree,
             initParams.tileMap,
         )
-        self.units = []
-        # these are test things
-        unit = AxeMan(self.level, Vector2(20, 80))
-        unit0 = AxeMan(self.level, Vector2(10, 50))
-        unit1 = AxeMan(self.level, Vector2(30, 10))
-        self.target = Target(self.level)
 
-        self.units = [unit, unit0, unit1]
-        for u in self.units:
-            u.goal = self.target.position
-            u.targetGoal()
+        
+        self.attacker = Team(self.level, Vector2(self.level.width /2, self.level.height - 6,))
+        self.target = Target(self.level)
+        self.defender = Team(self.level,Vector2(self.target.position.x,self.target.position.z))
+
+        for n in range(2):
+            self.attacker.addAxeman()
+        
+        self.attacker.updateGoal(self.target.position)
+
+        self.target.team = self.defender.units
 
     def step(self):
-        for unit in self.units:
+        for unit in self.getUnits():
             unit.step()
         """
         #Node unit sanity check
@@ -43,6 +43,9 @@ class Simulation:
                 n +=1
         print(n)
         """
+
+    def getUnits(self):
+        return self.attacker.units + self.defender.units
 
     def getState(self):
         return State(self.level.castleCost, self.level.protectedArea, self.stepCount)

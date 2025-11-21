@@ -5,12 +5,12 @@ from Utils.FSM import FSM,State
 from Utils.Node import Node, Graph
 
 class AxeMan(Unit):
-    def __init__(self, level: Level, position: Vector2, health: int = 100, speed: float = 0.1, size=0.3):
-        super().__init__(level, position, health, speed, size)
+    def __init__(self, level: Level, position: Vector2, health: int = 100, speed: float = 0.1, size=0.3, goal = None):
+        super().__init__(level, position, health, speed, size, goal= goal)
         self.blockAttackDamage = 10
         self.blockAttackRange = 0.8
         self.count = 0
-        self.noedTarget = None
+        self.nodeTarget = None
         self.attackCoolDown = False
         self.attackCoolDownTime = 50
         self.initFSM()
@@ -82,7 +82,7 @@ class AxeMan(Unit):
         )
 
     def targetBlockDemolished(self):
-        return self.noedTarget.materialBlock is None
+        return self.nodeTarget.materialBlock is None
     
     def onAttackCoolDown(self):
         return self.attackCoolDown
@@ -96,12 +96,12 @@ class AxeMan(Unit):
     
     def setNodeTargetAndPath(self):
         node = self.path[0]
-        self.noedTarget = node
+        self.nodeTarget = node
         self.target = node.position
         self.path = [node]
 
     def setTargetBlock(self, node):
-        self.noedTarget = node
+        self.nodeTarget = node
     
     def setPath(self, path):
         self.path = path
@@ -114,7 +114,7 @@ class AxeMan(Unit):
 
     #Action!
     def strikeWall(self):
-        block = self.noedTarget
+        block = self.nodeTarget
         if block is not None and self.position.distance_to(block.position) < self.size + self.blockAttackRange +0.6:
             materialBlock = block.materialBlock
             if materialBlock is not None:
@@ -126,4 +126,4 @@ class AxeMan(Unit):
     def destroyCastleElement(self, node: Node):
         node.materialBlock = None
         self.level.castleMap[int(node.position.z - 0.5)][int(node.position.x - 0.5)] = None
-        self.noedTarget = None
+        self.nodeTarget = None

@@ -15,6 +15,7 @@ class Unit:
         health: int = 100,
         speed: float = 0.2,
         size=0.1,
+        goal= None
     ):
         self.health = health
         self.speed = speed
@@ -30,7 +31,7 @@ class Unit:
         )
         self.path: list[Node] = []
         self.target = None
-        self.goal: None | Vector3 = None
+        self.goal: None | Vector3 = goal
         self.count = 0
         self.initFSM()
         self.nodesToSkip = []
@@ -77,7 +78,6 @@ class Unit:
         self.stateMap = {
             State.MOVETO: self.goToTarget,
             State.STOP: self.wait,
-            State.PLANPATH: self.planPath,
             State.WAIT: self.wait,
         }
 
@@ -120,12 +120,14 @@ class Unit:
         # print(self.count)
         pass
 
-    def planPath(self):
+    def planPath(self, toType = None):
         if self.target is None:
             return
         self.path = aStar(
                 self.position, self.target, self.nodeGraph,
-                costAdjustFunc= self.moveCostAdjust, ignoreNodes=self.nodesToSkip
+                costAdjustFunc= self.moveCostAdjust, ignoreNodes=self.nodesToSkip,
+                unit=self,
+                getFirstofType=toType
             )
         #print(len(self.path))
         #self.fsm.printState()
@@ -136,11 +138,15 @@ class Unit:
             return
 
         #for avoiding units
+        """
+        """
         for node in self.path[:1]:
             if node.unit is not None and node.unit is not self:
                 self.planPath()
                 break
                 # return
+        if self.path == []:
+            return
         self.move(self.path[0].position - self.position)
         if self.position.distance_to(self.path[0].position) <= self.size:
             self.path.pop(0)
@@ -243,5 +249,5 @@ class Unit:
     def unitCost(self, node):
         if node.unit is not None and node.unit is not self:
             # print(f"big cost {node.position}, {edge.node.position}")
-            return 400
+            return 1400
         return 0

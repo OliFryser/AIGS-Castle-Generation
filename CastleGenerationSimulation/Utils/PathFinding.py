@@ -3,32 +3,6 @@ from pygame import Vector3
 from queue import PriorityQueue
 from Utils.Node import Node, Edge, Graph
 import numpy as np
-from pprint import pprint
-
-def smoothPath(startPosition, path, angleTolerance=15):
-    return path
-    if not path:
-        return []
-
-    smoothed = [path[0]]
-    bundleStart = startPosition
-    n = 0
-    for i in range(len(path) - 1):
-        # vector from bundle start to current and next points
-        vec0 = path[i] - bundleStart
-        vec1 = path[i + 1] - path[i]
-
-        angle = vec0.angle_to(vec1)
-        n +=1
-        # when we deviate too far from the current direction, finalize path bundle
-        if abs(angle) > angleTolerance:
-            smoothed.append(path[i])
-            break
-            bundleStart = path[i]
-            n=0
-    
-    #smoothed.append(path[-1])
-    return smoothed
 
 #get as node on Graph 2 gets the 3 closest nodes by distance
 def getAsNodeOnGraph2(startPosition: Vector3 , graph: dict[Node, list[Edge]], tmpNodes, ignoreNodes):
@@ -47,7 +21,7 @@ def getAsNodeOnGraph2(startPosition: Vector3 , graph: dict[Node, list[Edge]], tm
     return node
 
 #get as node on graph gets the four closest nodes directly from the graph
-def getAsNodeOnGraph(startPosition: Vector3 , graph: Graph, tmpNodes, ignoreNodes):
+def getAsNodeOnGraph(startPosition: Vector3 , graph: Graph, tmpNodes, unit, ignoreNodes):
     node = Node(startPosition)
     if node in graph.graph:
         return node
@@ -70,10 +44,11 @@ def getAsNodeOnGraph(startPosition: Vector3 , graph: Graph, tmpNodes, ignoreNode
     for pos in positions:
         tmpNode = Node(pos)
         if tmpNode not in ignoreNodes and tmpNode in graph.graph:
-            block = graph.getNodeFromPosition(tmpNode.position).materialBlock
+            blockNode = graph.getNodeFromPosition(tmpNode.position)
+            block = blockNode.materialBlock #type: ignore
             if block is not None and block.blocking:
                 continue
-            if block is not None and block.unit is not None:
+            if blockNode is not None and blockNode.unit is not None and unit is not None and blockNode.unit != unit:
                 continue
             graph.graph[tmpNode].append(Edge(node, tmpNode.position.distance_to(node.position)))
             tmpEdge = Edge(tmpNode, node.position.distance_to(tmpNode.position))
@@ -91,14 +66,16 @@ def euclidianDistance(node0: Node, node1: Node):
 
 def aStar(startPosition: Vector3, targetPosition: Vector3, nodeGraph: Graph,
           heuristic = euclidianDistance, costAdjustFunc = distanceCost, budget = 1000, 
-          ignoreNodes: list[Node] = []
+          ignoreNodes: list[Node] = [],
+          unit = None,
+          getFirstofType = None
           ):
     graph = nodeGraph.graph
     #pprint(graph.values())
     tmpNodes = []
 
-    startNode = getAsNodeOnGraph(startPosition, nodeGraph, tmpNodes, ignoreNodes)
-    targetNode = getAsNodeOnGraph(targetPosition, nodeGraph, tmpNodes, ignoreNodes)
+    startNode = getAsNodeOnGraph(startPosition, nodeGraph, tmpNodes, unit, ignoreNodes)
+    targetNode = getAsNodeOnGraph(targetPosition, nodeGraph, tmpNodes, unit, ignoreNodes)
     """
     startNode = nodeGraph.getNodeFromPosition(startPosition)
     targetNode = nodeGraph.getNodeFromPosition(targetPosition)
@@ -133,10 +110,15 @@ def aStar(startPosition: Vector3, targetPosition: Vector3, nodeGraph: Graph,
 
         # if the next node is the target node the path has been set
         if distances[currentNode] > budget:
-            print(f"could not find path within budget {distances[currentNode]}")
+            print(f"could not find path within budget {distances[currentNode], len(distances.keys())}")
+            #print(currentNode.unit, currentNode.materialBlock.materialType)
             break
 
-        if currentNode == targetNode:
+        if currentNode == targetNode or (
+            getFirstofType is not None and 
+            currentNode.materialBlock is not None and
+            getFirstofType == currentNode.materialBlock.materialType            
+            ):
             """
             print(f"path cost {distances[currentNode]}")
             """
@@ -151,7 +133,7 @@ def aStar(startPosition: Vector3, targetPosition: Vector3, nodeGraph: Graph,
             
             for node in tmpNodes:
                 nodeGraph.removeNode(node)
-            return smoothPath(startPosition,path)
+            return path
         random.shuffle((graph[currentNode]))
         for edge in graph[currentNode]:
             #cost is calculated here
