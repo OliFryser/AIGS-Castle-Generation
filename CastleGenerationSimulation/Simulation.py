@@ -5,6 +5,7 @@ from Level import Level
 from InitializationParameters import InitializationParameters
 from Team import Team
 
+
 @dataclass
 class State:
     blocks: int
@@ -20,14 +21,21 @@ class Simulation:
             initParams.tileMap,
         )
 
-        
-        self.attacker = Team(self.level, Vector2(self.level.width /2, self.level.height - 6,))
+        self.attacker = Team(
+            self.level,
+            Vector2(
+                self.level.width / 2,
+                self.level.height - 6,
+            ),
+        )
         self.target = Target(self.level)
-        self.defender = Team(self.level,Vector2(self.target.position.x,self.target.position.z))
+        self.defender = Team(
+            self.level, Vector2(self.target.position.x, self.target.position.z)
+        )
 
         for n in range(2):
             self.attacker.addAxeman()
-        
+
         self.attacker.updateGoal(self.target.position)
 
         self.target.team = self.defender.units

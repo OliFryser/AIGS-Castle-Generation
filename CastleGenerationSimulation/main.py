@@ -30,17 +30,8 @@ def main(ctx: mlxp.Context) -> None:
 
 
 def runMapElites(cfg, terrainMap, tileMap):
-    mapElites = MapElites(terrainMap, tileMap)
+    mapElites = MapElites(terrainMap, tileMap, cfg.archiveSavepath)
     mapElites.run(cfg.iterations, cfg.population)
-    filepath = (
-        cfg.archiveSavepath
-        + "archive_"
-        + str(datetime.now().strftime("%Y-%m-%d-%H_%M_%S"))
-        + ".json"
-    )
-    jsonSafeArchive = {str(k): v.to_json() for k, v in mapElites.archive.items()}
-    with open(filepath, "x") as fp:
-        json.dump(jsonSafeArchive, fp, indent=2)
 
 
 def runInteractiveMode(cfg, terrainMap, tileMap):

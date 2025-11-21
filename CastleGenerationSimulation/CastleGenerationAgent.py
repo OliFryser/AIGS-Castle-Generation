@@ -33,12 +33,17 @@ class CastleGenerationAgent:
         self.fromDirection = fromDirection
         self.lastElement = lastElement
 
+        self.padding = 2
+
     def getNextInstruction(self) -> InstructionToken | None:
         if self.treeNode.line.isEmpty():
             return None
         return self.treeNode.line.getNextInstruction()
 
     def placeNextElement(self, castleElement):
+        if self.isMovingOutOfBounds():
+            return
+
         self.moveCursorInDirection()
         if self.lastElement is not None:
             if self.direction not in self.lastElement.directions:
@@ -70,4 +75,18 @@ class CastleGenerationAgent:
         self.cursor = (
             self.cursor[0] + offset[0] * range,
             self.cursor[1] + offset[1] * range,
+        )
+
+    def isMovingOutOfBounds(self):
+        height = len(self.grid)
+        width = len(self.grid[0])
+
+        offset = self.directionToOffset[self.direction]
+        nextPosition = self.cursor[0] + offset[0], self.cursor[1] + offset[1]
+
+        return (
+            nextPosition[0] >= self.padding
+            and nextPosition[0] < width - self.padding
+            and nextPosition[1] >= self.padding
+            and nextPosition[1] < height - self.padding
         )
