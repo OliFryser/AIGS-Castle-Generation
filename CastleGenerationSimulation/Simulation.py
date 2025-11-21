@@ -21,11 +21,11 @@ class Simulation:
         )
 
         
-        self.attacker = Team(self.level, Vector2(self.level.width /2, self.level.height - 6,))
+        self.attacker = Team("attacker",self.level, Vector2(self.level.width /2, self.level.height - 6,))
         self.target = Target(self.level)
-        self.defender = Team(self.level,Vector2(self.target.position.x,self.target.position.z))
+        self.defender = Team("defeder", self.level,Vector2(self.target.position.x,self.target.position.z))
 
-        for n in range(2):
+        for n in range(10):
             self.attacker.addAxeman()
         
         self.attacker.updateGoal(self.target.position)

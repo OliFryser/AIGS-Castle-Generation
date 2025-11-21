@@ -1,20 +1,26 @@
-from pygame import Vector2
+from pygame import Vector2, Vector3
 from Level import Level
 from Units.Unit import Unit
 from Utils.FSM import FSM,State
 from Utils.Node import Node, Graph
 
 class AxeMan(Unit):
-    def __init__(self, level: Level, position: Vector2, health: int = 100, speed: float = 0.1, size=0.3, goal = None):
-        super().__init__(level, position, health, speed, size, goal= goal)
+    """
+    def __init__(self, level: Level, position: Vector2, health: int = 100, speed: float = 0.1, size=0.3, goal = None, teamName= "blank", teamMates = []):
+        super().__init__(level, position, health, speed, size, goal= goal, teamName= teamName,teamMates=teamMates)
+    def __init__(self, level: Level, position: Vector2, health: int = 100, speed: float = 0.2, size=0.3, goal=None, teamName = "blank", teamMates=...):
+        super().__init__(level, position, health, speed, size, goal, teamName, teamMates)
+    """
+    def __init__(self, *args, health: int = 100, speed: float = 0.2, size=0.3 ,**kwargs):
+        super().__init__(*args, health, speed, size, **kwargs)
         self.blockAttackDamage = 10
         self.blockAttackRange = 0.8
         self.count = 0
         self.nodeTarget = None
         self.attackCoolDown = False
         self.attackCoolDownTime = 50
-        self.initFSM()
-
+        
+    """
     def initFSM(self):
         ######################################################
         #Demolishion FSM
@@ -30,6 +36,9 @@ class AxeMan(Unit):
         demolishFsm.addTransition(
             State.WAIT, State.DEMOLISH, self.hasCounted, onExit= (self.setAttackCooldown, (False,), {})
         )
+        #######################################################
+        #Top FSM
+        #######################################################
 
         #######################################################
         #Top FSM
@@ -62,10 +71,10 @@ class AxeMan(Unit):
         self.stateMap = {
             State.MOVETO: self.goToTarget,
             State.STOP: self.wait,
-            State.PLANPATH : self.planPath,
             State.WAIT : self.wait,
             State.DEMOLISH : self.strikeWall
             }
+    """
         
     #Transition conditions
     def foundWallWeakPoint(self):

@@ -14,8 +14,10 @@ class Unit:
         position: Vector2,
         health: int = 100,
         speed: float = 0.2,
-        size=0.1,
-        goal= None
+        size =0.1,
+        goal = Vector3(0,0,0),
+        teamName = "blank",
+        teamMates = []
     ):
         self.health = health
         self.speed = speed
@@ -33,11 +35,14 @@ class Unit:
         self.target = None
         self.goal: None | Vector3 = goal
         self.count = 0
-        self.initFSM()
         self.nodesToSkip = []
+        self.fsms: dict[str, FSM] = {}
+        self.teamName: str = teamName
+        self.teamMates = teamMates
+        self.initFSMs()
+        self.fsm: FSM = self.initFSM()
 
     def step(self):
-        # print(self)
         self.fsm.updateState()
         state = self.fsm.getState()
         if state in self.stateMap:
@@ -49,37 +54,60 @@ class Unit:
 
     # making a finite state machine. This should be overwritten by subclasses
     def initFSM(self):
-        fsm = FSM(State.WAIT)
+        topFSM = FSM("top", State.WAIT)
 
-        fsm.addTransition(
-            State.MOVETO,
-            State.WAIT,
-            self.notHasPlan,
-            self.planPath,
-            fsm.onExitPrint,
-        )
-        fsm.addTransition(
-            State.MOVETO,
-            State.STOP,
-            self.closeEnough,
-            fsm.onEnterPrint,
-            fsm.onExitPrint,
-        )
-        fsm.addTransition(
-            State.WAIT,
-            State.MOVETO,
-            self.hasCounted,
-            lambda: setattr(self, "count", 4),
-            lambda: setattr(self, "count", 0),
-        )
-        fsm.addTransition(State.STOP, State.WAIT, self.outOfReach)
+        goToGoalFSM = None
+        if "goToGoal" in self.fsms.keys():
+            goToGoalFSM = self.fsms["goToGoal"]
 
-        self.fsm = fsm
+        if goToGoalFSM is not None:
+            topFSM.addTransition(
+                state0=State.WAIT,
+                state1=goToGoalFSM,
+                transition=self.hasCounted,
+            )
+            """
+            """
+            topFSM.addTransition(
+                state0= goToGoalFSM,
+                state1= State.WAIT,
+                transition=self.closeEnough,
+                onEnter= (print, (f"reached goal team: {self.teamName} won!",), {})
+            )
+
         self.stateMap = {
             State.MOVETO: self.goToTarget,
             State.STOP: self.wait,
-            State.WAIT: self.wait,
-        }
+            State.WAIT : self.wait,
+            State.PLANPATH : self.planPath,
+            }
+
+        return topFSM
+        pass
+
+    # making general fsms to be used by subclasses
+    def initFSMs(self):
+        #############################################
+        # GoToGoal FSM
+        #############################################
+        goToGoalFSM = FSM("goToGoal", State.WAIT)
+
+        goToGoalFSM.addTransition(
+            State.WAIT, 
+            State.MOVETO,
+            self.hasCounted,
+            onEnter = (self.planPath, (self.target,), {}),
+            )
+        """
+        """
+        goToGoalFSM.addTransition(
+            state0= State.MOVETO,
+            state1= State.WAIT,
+            transition=self.closeEnough,
+            onEnter= (print, (f"reached goal team: {self.teamName} won!",), {})
+        )
+        
+        self.fsms[goToGoalFSM.name] = goToGoalFSM
 
     ######################
     # Transition bools
@@ -121,32 +149,19 @@ class Unit:
         pass
 
     def planPath(self, toType = None):
-        if self.target is None:
-            return
         self.path = aStar(
                 self.position, self.target, self.nodeGraph,
                 costAdjustFunc= self.moveCostAdjust, ignoreNodes=self.nodesToSkip,
                 unit=self,
+                budget= self.level.height*2,
                 getFirstofType=toType
             )
-        #print(len(self.path))
-        #self.fsm.printState()
 
 
     def goToTarget(self):
         if self.notHasPlan():
             return
 
-        #for avoiding units
-        """
-        """
-        for node in self.path[:1]:
-            if node.unit is not None and node.unit is not self:
-                self.planPath()
-                break
-                # return
-        if self.path == []:
-            return
         self.move(self.path[0].position - self.position)
         if self.position.distance_to(self.path[0].position) <= self.size:
             self.path.pop(0)
@@ -196,6 +211,8 @@ class Unit:
 
         dx = int(round(direction.x))
         dy = int(round(direction.z))
+        if x+dx > self.level.width or x+dx < 0 or y+dy > self.level.height or y+dy < 0:
+            return []
         nodes = [self.nodeGraph.nodes[(x+dx,y+dy)]]
         if abs(dx) + abs(dy) >=2:
             if x+dx >=0 and x+dx <= self.level.width:
@@ -243,7 +260,7 @@ class Unit:
             materialBlock: MaterialType = node.materialBlock
             if self.blockAttackDamage <=  materialBlock.damageThreshold:
                 return 10000
-            return materialBlock.health/ (self.blockAttackDamage - materialBlock.damageThreshold) * self.attackCoolDownTime/5
+            return materialBlock.health #/ (self.blockAttackDamage - materialBlock.damageThreshold) * self.attackCoolDownTime/5
         return 0
 
     def unitCost(self, node):

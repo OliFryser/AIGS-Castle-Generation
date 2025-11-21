@@ -1,18 +1,20 @@
 from pygame import Vector2,Vector3
 from Units.Unit import Unit
 from Units.AxeMan import AxeMan
+from Level import Level
 
 class Team:
-    def __init__(self, level, startPosition: Vector2) -> None:
+    def __init__(self, name, level:Level, startPosition: Vector2) -> None:
+        self.name = name
         self.startPosition = startPosition
         self.units: list[Unit] = []
-        self.goal: Vector3|None = None
         self.line = 5
         self.level = level
+        self.goal: Vector3 = Vector3(5,self.level.getBilinearHeight(5,5),5)
 
     def addAxeman(self):
         position = self.getNextPosition()
-        self.units.append(AxeMan(self.level, position, goal=self.goal))
+        self.units.append(AxeMan(self.level, position, goal=self.goal, teamName = self.name, teamMates = self.units))
     
     def getNextPosition(self):
         index = len(self.units)
