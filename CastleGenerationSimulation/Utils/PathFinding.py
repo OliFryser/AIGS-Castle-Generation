@@ -3,7 +3,6 @@ from pygame import Vector3
 from queue import PriorityQueue
 from Utils.Node import Node, Edge, Graph
 import numpy as np
-from pprint import pprint
 
 #get as node on Graph 2 gets the 3 closest nodes by distance
 def getAsNodeOnGraph2(startPosition: Vector3 , graph: dict[Node, list[Edge]], tmpNodes, ignoreNodes):
@@ -46,7 +45,7 @@ def getAsNodeOnGraph(startPosition: Vector3 , graph: Graph, tmpNodes, unit, igno
         tmpNode = Node(pos)
         if tmpNode not in ignoreNodes and tmpNode in graph.graph:
             blockNode = graph.getNodeFromPosition(tmpNode.position)
-            block = blockNode.materialBlock
+            block = blockNode.materialBlock #type: ignore
             if block is not None and block.blocking:
                 continue
             if blockNode is not None and blockNode.unit is not None and unit is not None and blockNode.unit != unit:
@@ -68,7 +67,8 @@ def euclidianDistance(node0: Node, node1: Node):
 def aStar(startPosition: Vector3, targetPosition: Vector3, nodeGraph: Graph,
           heuristic = euclidianDistance, costAdjustFunc = distanceCost, budget = 1000, 
           ignoreNodes: list[Node] = [],
-          unit = None
+          unit = None,
+          getFirstofType = None
           ):
     graph = nodeGraph.graph
     #pprint(graph.values())
@@ -114,7 +114,11 @@ def aStar(startPosition: Vector3, targetPosition: Vector3, nodeGraph: Graph,
             #print(currentNode.unit, currentNode.materialBlock.materialType)
             break
 
-        if currentNode == targetNode:
+        if currentNode == targetNode or (
+            getFirstofType is not None and 
+            currentNode.materialBlock is not None and
+            getFirstofType == currentNode.materialBlock.materialType            
+            ):
             """
             print(f"path cost {distances[currentNode]}")
             """

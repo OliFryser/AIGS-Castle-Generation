@@ -78,7 +78,6 @@ class Unit:
         self.stateMap = {
             State.MOVETO: self.goToTarget,
             State.STOP: self.wait,
-            State.PLANPATH: self.planPath,
             State.WAIT: self.wait,
         }
 
@@ -121,13 +120,14 @@ class Unit:
         # print(self.count)
         pass
 
-    def planPath(self):
+    def planPath(self, toType = None):
         if self.target is None:
             return
         self.path = aStar(
                 self.position, self.target, self.nodeGraph,
                 costAdjustFunc= self.moveCostAdjust, ignoreNodes=self.nodesToSkip,
                 unit=self,
+                getFirstofType=toType
             )
         #print(len(self.path))
         #self.fsm.printState()
@@ -138,6 +138,8 @@ class Unit:
             return
 
         #for avoiding units
+        """
+        """
         for node in self.path[:1]:
             if node.unit is not None and node.unit is not self:
                 self.planPath()
