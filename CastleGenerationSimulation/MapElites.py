@@ -5,7 +5,13 @@ import random
 
 from CastleInstructions.InstructionLine import InstructionLine
 from CastleInstructions.InstructionTree import InstructionTree
-from CastleInstructions.InstructionTreeVariation import substitute, add, crossover
+from CastleInstructions.InstructionTreeVariation import (
+    substitute,
+    add,
+    crossover,
+    remove,
+)
+from CastleInstructions.MutationWeights import MutationWeights
 from InitializationParameters import InitializationParameters
 from MapElitesPlotter import MapElitesPlotter, PlotRecord
 from Simulation import Simulation
@@ -52,18 +58,30 @@ class MapElites:
             self.plotPath + "plot_" + self.dateString + ".png"
         )
 
+        self.initializationMutationWeights = MutationWeights(0.5, 0.75, 1.0, 1.0, 1.0)
+        self.variationMutationWeights = MutationWeights(1.0, 0.75, 1.0, 1.0, 0.5)
+
     def generateRandomSolution(self):
         # TODO: Better random solution
         individual = InstructionTree(InstructionLine(""))
-        for i in range(20):
-            add(individual)
+        for i in range(50):
+            add(individual, self.initializationMutationWeights)
         return individual
 
     def sampleRandomSolution(self):
         return random.choice(list(self.archive.values())).individual
 
     def randomVariation(self, individual: InstructionTree):
-        add(individual)
+        rand = random.random()
+        if rand > 0.8:
+            add(individual, self.variationMutationWeights)
+        elif rand > 0.6:
+            substitute(individual, self.variationMutationWeights)
+        elif rand > 0.4:
+            remove(individual)
+        else:
+            other = self.sampleRandomSolution()
+            crossover(individual, other)
 
     def getBehavior(self, simulation: Simulation) -> Behavior:
         return Behavior(simulation.getState().blocks, simulation.getState().area)

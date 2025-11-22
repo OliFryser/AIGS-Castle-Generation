@@ -24,8 +24,8 @@ We use conda for managing the python environment. We have provided the configura
 
 ### TODO Oliver
 - Implement crossover and removing ✅
-- Implement random variation between variations
-- Implement better initial sampling with different mutation weights
+- Implement random variation between variations ✅
+- Implement better initial sampling with different mutation weights ✅
 - Plotting of MaxFitness, coverage and QD-score ✅
 - Plotting of archive
 - Restrict agent to "buildable area" ✅

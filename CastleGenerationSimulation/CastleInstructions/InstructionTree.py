@@ -22,6 +22,17 @@ class TreeNode:
             return child
         return None
 
+    def replaceChild(self, newChild):
+        if self.children:
+            childIndex = random.randrange(len(self.children))
+            replacedChild = self.children[childIndex]
+            del self.children[childIndex]
+            self.children[childIndex] = newChild
+            return replacedChild
+
+        self.line.instructions.append(InstructionToken.BRANCH)
+        return None
+
     def __str__(self):
         return str(self.line)
 
@@ -88,20 +99,25 @@ class InstructionTree:
         return random.choice(self.nodes)
 
     def insertSubTree(self, newParent: TreeNode, subTreeRoot: TreeNode):
-        newParent.addChild(subTreeRoot)
+        replacedChild = newParent.replaceChild(subTreeRoot)
+        if replacedChild:
+            self.removeSubTree(replacedChild)
 
+        self.addSubTree(subTreeRoot)
+
+    def addSubTree(self, subTree: TreeNode):
         def addToNodesList(node: TreeNode):
             self.nodes.append(node)
             for child in node.children:
                 addToNodesList(child)
 
-        addToNodesList(subTreeRoot)
+        addToNodesList(subTree)
 
     def removeSubTree(self, subTree: TreeNode):
         def removeFromNodesList(node: TreeNode):
             self.nodes.remove(node)
             for child in node.children:
-                removeFromNodesList(node)
+                removeFromNodesList(child)
 
         removeFromNodesList(subTree)
 
