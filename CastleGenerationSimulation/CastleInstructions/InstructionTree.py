@@ -46,12 +46,17 @@ class InstructionTree:
             node = self.sampleRandomNode()
 
         newElement = random.choices(mutationWeights.options, mutationWeights.weights)[0]
-        node.line.mutate(newElement)
+        removedElement = node.line.mutate(newElement)
 
         if newElement == InstructionToken.BRANCH:
             newBranch = TreeNode(InstructionLine(""))
             node.addChild(newBranch)
             self.nodes.append(newBranch)
+
+        if removedElement == InstructionToken.BRANCH:
+            # TODO: Consider picking the correct branch rather than just the last one
+            branchToRemove = node.children.pop()
+            self.removeSubTree(branchToRemove)
 
     def mutateAdditive(
         self,
@@ -69,11 +74,36 @@ class InstructionTree:
             node.addChild(newBranch)
             self.nodes.append(newBranch)
 
+    def mutateDestructive(self, node: TreeNode | None = None):
+        if node is None:
+            node = self.sampleRandomNode()
+
+        removedElement = node.line.mutateDestructive()
+        if removedElement == InstructionToken.BRANCH:
+            # TODO: Consider picking the correct branch rather than just the last one
+            branchToRemove = node.children.pop()
+            self.removeSubTree(branchToRemove)
+
     def sampleRandomNode(self):
         return random.choice(self.nodes)
 
     def insertSubTree(self, newParent: TreeNode, subTreeRoot: TreeNode):
         newParent.addChild(subTreeRoot)
+
+        def addToNodesList(node: TreeNode):
+            self.nodes.append(node)
+            for child in node.children:
+                addToNodesList(child)
+
+        addToNodesList(subTreeRoot)
+
+    def removeSubTree(self, subTree: TreeNode):
+        def removeFromNodesList(node: TreeNode):
+            self.nodes.remove(node)
+            for child in node.children:
+                removeFromNodesList(node)
+
+        removeFromNodesList(subTree)
 
     def getNextChild(self, parent: TreeNode):
         return parent.getNextChild()

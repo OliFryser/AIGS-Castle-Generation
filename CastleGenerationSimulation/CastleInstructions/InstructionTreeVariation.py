@@ -13,4 +13,6 @@ def add(instructionTree: InstructionTree):
 
 
 def crossover(firstTree: InstructionTree, secondTree: InstructionTree):
-    pass
+    newParent = firstTree.sampleRandomNode()
+    subtree = secondTree.sampleRandomNode()
+    firstTree.insertSubTree(newParent, subtree)
