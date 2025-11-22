@@ -56,5 +56,8 @@ class InstructionLine:
 
         return cost
 
+    def reset(self):
+        self._nextIndex = 0
+
     def __str__(self):
         return f"{' '.join(str(instruction) for instruction in self.instructions)}"

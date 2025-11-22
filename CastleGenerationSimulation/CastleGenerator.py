@@ -18,6 +18,7 @@ class CastleGenerator:
         targetPositionx,
         targetPositiony,
     ):
+        castleInstructionTree.reset()
         self.instructionTree: InstructionTree = castleInstructionTree
 
         self.tileMap = tileMap.tileMap
@@ -36,8 +37,8 @@ class CastleGenerator:
             int((targetPositiony) // self.scale),
         )
         self.centerOffset = (
-            self.center[0] * self.scale - (targetPositionx - self.scale/2),
-            self.center[1] * self.scale - (targetPositiony - self.scale/2)
+            self.center[0] * self.scale - (targetPositionx - self.scale / 2),
+            self.center[1] * self.scale - (targetPositiony - self.scale / 2),
         )
 
         # Place on top of Target
@@ -135,21 +136,21 @@ class CastleGenerator:
         return False
 
     def addGates(self, gridToScale, path):
-        #path, pos = pathAndPos
+        # path, pos = pathAndPos
         self.gateCount = 0
         directionFrom = []
         directionTo = []
         previousPos = (0, 0)
-        onSide: tuple[Direction,Direction] = (Direction.DOWN,Direction.RIGHT)
-        #purge path
+        onSide: tuple[Direction, Direction] = (Direction.DOWN, Direction.RIGHT)
+        # purge path
         for p in path:
             if path.count(p) > 1:
                 path.remove(p)
-        
-        for n in range(len(path)-1):
+
+        for n in range(len(path) - 1):
             step = path[n]
-            
-            def travelDirections(pos0, pos1, inverse = False):
+
+            def travelDirections(pos0, pos1, inverse=False):
                 tdirections = []
                 newX = (np.sign(pos1[0] - pos0[0]), 0)
                 newY = (0, np.sign(pos1[1] - pos0[1]))
@@ -159,15 +160,17 @@ class CastleGenerator:
                             direction = Direction((direction + 2) % 4)
                         tdirections.append(direction)
                 if tdirections == []:
-                    #print(pos0,pos1)
-                    #return directionTo
+                    # print(pos0,pos1)
+                    # return directionTo
                     pass
                 return tdirections
-            
-            if n < len(path) -2:
-                directionTo = travelDirections(step, path[n+1])
+
+            if n < len(path) - 2:
+                directionTo = travelDirections(step, path[n + 1])
             else:
-                directionTo = travelDirections((step[0]*self.scale,step[1]*self.scale), path[n+1])#(path[n+1][0] - int(self.scale/2), path[n+1][1]- int(self.scale/2) ))
+                directionTo = travelDirections(
+                    (step[0] * self.scale, step[1] * self.scale), path[n + 1]
+                )  # (path[n+1][0] - int(self.scale/2), path[n+1][1]- int(self.scale/2) ))
 
             directionFrom = travelDirections(previousPos, step, True)
             previousPos = step
@@ -185,55 +188,62 @@ class CastleGenerator:
 
             for d in directionFrom:
                 onSide = switchSide(d, onSide)
-            
+
             """
             print()
             print(f"{step} move towards {directionTo}, on side{onSide}")
             """
 
-            #going towards a direction should check if that movement is blocked
+            # going towards a direction should check if that movement is blocked
             for moveDirection in directionTo:
-                #if the direction of movement is the same as the side of the wall you are on, no worries
+                # if the direction of movement is the same as the side of the wall you are on, no worries
                 if moveDirection not in onSide:
-                    #however when moving to the side it isn't on a perpindicular wall on the on the same perpindicular side can block
+                    # however when moving to the side it isn't on a perpindicular wall on the on the same perpindicular side can block
                     if moveDirection in [Direction.UP, Direction.DOWN]:
                         side = onSide[1]
                     else:
                         side = onSide[0]
-                    
+
                     # if the path moves out of bounds, break
                     if step[1] >= len(self.grid) or step[0] >= len(self.grid[0]):
                         break
                     cellElement = self.grid[step[1]][step[0]]
-                    #if a castleElement is present
+                    # if a castleElement is present
                     if cellElement is not None:
-                        #if there is only one connection, it can be sidestepped
+                        # if there is only one connection, it can be sidestepped
                         if len(cellElement.directions) <= 1:
                             """
                             print("move around")
                             """
                             continue
-                        #otherwise the wall in that direction will need a door
+                        # otherwise the wall in that direction will need a door
                         if side in cellElement.directions:
-                            self.gateCount +=1
-                            #if it is a straight wall then it should be trivial
+                            self.gateCount += 1
+                            # if it is a straight wall then it should be trivial
                             position = (step[0] * self.scale, step[1] * self.scale)
-                            if set(cellElement.directions) == set([Direction.UP, Direction.DOWN]) or set(cellElement.directions) == set([Direction.LEFT, Direction.RIGHT]):
+                            if set(cellElement.directions) == set(
+                                [Direction.UP, Direction.DOWN]
+                            ) or set(cellElement.directions) == set(
+                                [Direction.LEFT, Direction.RIGHT]
+                            ):
                                 connections = cellElement.directions
                                 castleElement = CastleElement(
                                     ElementType.GATE, position[1], position[0]
                                 )
                                 castleElement.directions = connections
-                                self.fillTile(castleElement, gridToScale, position[1], position[0])
-                            #otherwise the gate needs to be pushed a bit, place half, and then force the neighbor to take the other half
+                                self.fillTile(
+                                    castleElement, gridToScale, position[1], position[0]
+                                )
+                            # otherwise the gate needs to be pushed a bit, place half, and then force the neighbor to take the other half
                             else:
-
                                 position2 = (
-                                            step[0] * self.scale
-                                            + directionToOffset[Direction(side)][0] * self.scale,
-                                            step[1] * self.scale
-                                            + directionToOffset[Direction(side)][1] * self.scale,
-                                        )
+                                    step[0] * self.scale
+                                    + directionToOffset[Direction(side)][0]
+                                    * self.scale,
+                                    step[1] * self.scale
+                                    + directionToOffset[Direction(side)][1]
+                                    * self.scale,
+                                )
                                 # get the special half gate block
                                 block = self.tileMap[ElementType.GATE][1]
                                 castleElement = CastleElement(
@@ -245,19 +255,33 @@ class CastleGenerator:
                                     castleElement = CastleElement(
                                         ElementType.GATE, position2[1], position2[0]
                                     )
-                                    connections = [Direction((side +2 ) % 4)]
-                                
+                                    connections = [Direction((side + 2) % 4)]
+
                                 castleElement.directions = connections
-                                self.fillTile(castleElement, gridToScale, position[1], position[0], block)
-                                castleElement.directions = [Direction((connections[0] +2 ) % 4)]
-                                self.fillTile(castleElement, gridToScale, position2[1], position2[0], np.fliplr(block))
-                            
+                                self.fillTile(
+                                    castleElement,
+                                    gridToScale,
+                                    position[1],
+                                    position[0],
+                                    block,
+                                )
+                                castleElement.directions = [
+                                    Direction((connections[0] + 2) % 4)
+                                ]
+                                self.fillTile(
+                                    castleElement,
+                                    gridToScale,
+                                    position2[1],
+                                    position2[0],
+                                    np.fliplr(block),
+                                )
+
                             """                            
                             for k,mb in castleElement.materialBlocks.items():    
                                 print(k,mb.materialType)
                             print(f"built gate {side.name}")
-                            """                
-                #eventually
+                            """
+                # eventually
                 onSide = switchSide(moveDirection, onSide)
                 """
                 print(f"switching side from {moveDirection.name} {onSide}")
@@ -265,8 +289,8 @@ class CastleGenerator:
                 """
 
     def clearCourtyard(self, grid):
-        courtyard = (self.center[0],self.center[1]+1)
-        cell = grid[courtyard[1]][ courtyard[0]]
+        courtyard = (self.center[0], self.center[1] + 1)
+        cell = grid[courtyard[1]][courtyard[0]]
         print(courtyard)
         if cell is None:
             return
@@ -276,12 +300,11 @@ class CastleGenerator:
                 courtyard[1] + directionToOffset[direction][1],
             )
             tmpCell = grid[tmpPosition[1]][tmpPosition[0]]
-            tmpCell.directions.remove(Direction((direction + 2) %4))
-        grid[courtyard[1]][ courtyard[0]] = None
-
+            tmpCell.directions.remove(Direction((direction + 2) % 4))
+        grid[courtyard[1]][courtyard[0]] = None
 
     # this assumes square tiles
-    def fillTile(self, castleElement: CastleElement, grid, x, y, block = None):
+    def fillTile(self, castleElement: CastleElement, grid, x, y, block=None):
         elementType = castleElement.elementType
         if block is None:
             blockMap = self.tileMap[elementType]
@@ -290,20 +313,21 @@ class CastleGenerator:
 
         neighbors = castleElement.directions
         tile = self.morphATile(blockMap, neighbors)
-        castleElement.column = x - int(self.scale/2)
-        castleElement.row = y - int(self.scale/2)
+        castleElement.column = x - int(self.scale / 2)
+        castleElement.row = y - int(self.scale / 2)
 
         for column in range(len(tile)):
             for row in range(len(tile[column])):
                 materialType = tile[column][row]
                 if any(materialType == e.value for e in MaterialType):
-                    grid[x - int(self.scale/2) + column][y  - int(self.scale/2)+ row] = castleElement
+                    grid[x - int(self.scale / 2) + column][
+                        y - int(self.scale / 2) + row
+                    ] = castleElement
                     castleElement.setMaterialBlock(
                         row, column, MaterialType(materialType)
                     )
 
     def morphATile(self, blocks, neighbors):
-  
         # end bits
         if len(neighbors) == 1 and len(blocks) >= 5:
             if neighbors[0] == Direction.UP:

@@ -28,7 +28,7 @@ def main(ctx: mlxp.Context) -> None:
 
 
 def runMapElites(cfg, terrainMap, tileMap):
-    mapElites = MapElites(terrainMap, tileMap, cfg.archiveSavepath)
+    mapElites = MapElites(terrainMap, tileMap, cfg.archiveSavepath, cfg.resolution)
     mapElites.run(cfg.iterations, cfg.population)
 
 

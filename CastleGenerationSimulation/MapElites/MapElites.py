@@ -23,7 +23,9 @@ from TerrainMap import TerrainMap
 
 
 class MapElites:
-    def __init__(self, terrainMap: TerrainMap, tileMap, archiveSavepath: str):
+    def __init__(
+        self, terrainMap: TerrainMap, tileMap, archiveSavepath: str, resolution: int
+    ):
         self.archive: dict[tuple[int, int], ArchiveEntry] = {}
         self.terrainMap: TerrainMap = terrainMap
         self.tileMap = tileMap
@@ -38,6 +40,8 @@ class MapElites:
 
         self.initializationMutationWeights = MutationWeights(0.5, 0.75, 1.0, 1.0, 1.0)
         self.variationMutationWeights = MutationWeights(1.0, 0.75, 1.0, 1.0, 0.5)
+
+        self.resolution = resolution
 
     def generateRandomSolution(self):
         # TODO: Better random solution
@@ -113,6 +117,7 @@ class MapElites:
             self.archive,
             self.tileMap,
             self.terrainMap,
+            self.resolution,
         )
 
     def saveArchiveToJSON(self):

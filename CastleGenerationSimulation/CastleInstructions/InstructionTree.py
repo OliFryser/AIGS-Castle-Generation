@@ -33,6 +33,10 @@ class TreeNode:
         self.line.instructions.append(InstructionToken.BRANCH)
         return None
 
+    def reset(self):
+        self._nextChildIndex = 0
+        self.line.reset()
+
     def __str__(self):
         return str(self.line)
 
@@ -126,6 +130,11 @@ class InstructionTree:
 
     def to_json(self):
         return str(self)
+
+    # Reset inner counters so we can build the castle again
+    def reset(self):
+        for node in self.nodes:
+            node.reset()
 
     def __str__(self):
         def recurse(node: TreeNode, depth: int) -> str:
