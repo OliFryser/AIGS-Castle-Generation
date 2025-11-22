@@ -84,7 +84,7 @@ class CastleGenerationAgent:
         offset = self.directionToOffset[self.direction]
         nextPosition = self.cursor[0] + offset[0], self.cursor[1] + offset[1]
 
-        return (
+        return not (
             nextPosition[0] >= self.padding
             and nextPosition[0] < width - self.padding
             and nextPosition[1] >= self.padding

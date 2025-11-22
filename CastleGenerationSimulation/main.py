@@ -1,13 +1,11 @@
 import pygame
 import sys
 import mlxp
-import json
-from datetime import datetime
 
 from CastleElement import CastleElement, ElementType
 from CastleInstructions.InstructionTreeParser import parseInstructionTree
 from InitializationParameters import InitializationParameters
-from MapElites import MapElites
+from MapElites.MapElites import MapElites
 from Simulation import Simulation
 from Renderer import Renderer
 from TerrainMap import TerrainMap
@@ -89,7 +87,9 @@ def runInteractiveMode(cfg, terrainMap, tileMap):
             simulation.step()
 
         currentToolName: str = currentTool.name if currentTool is not None else "Eraser"
-        renderer.render(currentToolName)
+
+        renderer.render()
+        pygame.display.flip()
 
     print(i)
     # Quit pygame cleanly

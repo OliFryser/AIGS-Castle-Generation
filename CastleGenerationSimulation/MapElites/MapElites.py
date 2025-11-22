@@ -1,7 +1,11 @@
-from dataclasses import asdict, dataclass
 from datetime import datetime
 import json
 import random
+
+from .ArchiveEntry import ArchiveEntry
+from .Behavior import Behavior
+from .MapElitesPlotter import MapElitesPlotter, PlotRecord
+from .MapElitesVisualizer import renderArchive
 
 from CastleInstructions.InstructionLine import InstructionLine
 from CastleInstructions.InstructionTree import InstructionTree
@@ -12,36 +16,10 @@ from CastleInstructions.InstructionTreeVariation import (
     remove,
 )
 from CastleInstructions.MutationWeights import MutationWeights
+
 from InitializationParameters import InitializationParameters
-from MapElitesPlotter import MapElitesPlotter, PlotRecord
 from Simulation import Simulation
 from TerrainMap import TerrainMap
-
-
-@dataclass
-class Behavior:
-    blocks: int
-    area: int
-
-    def to_json(self):
-        return asdict(self)
-
-
-@dataclass
-class ArchiveEntry:
-    fitness: int
-    behavior: Behavior
-    individual: InstructionTree
-
-    def __str__(self):
-        return f"Fitness: {self.fitness}\nBehavior: Blocks {self.behavior.blocks}, area {self.behavior.area}\n{self.individual}"
-
-    def to_json(self):
-        return {
-            "fitness": self.fitness,
-            "behavior": self.behavior.to_json(),
-            "individual": self.individual.to_json(),
-        }
 
 
 class MapElites:
@@ -51,7 +29,7 @@ class MapElites:
         self.tileMap = tileMap
 
         self.JSONDumpsPath = archiveSavepath + "rawDumps/"
-        self.visualizationPath = archiveSavepath + "visualization/"
+        self.visualizationPath = archiveSavepath + "visualizations/"
         self.dateString = str(datetime.now().strftime("%Y-%m-%d-%H_%M_%S"))
         self.plotPath = archiveSavepath + "plots/"
         self.plotter = MapElitesPlotter(
@@ -64,7 +42,7 @@ class MapElites:
     def generateRandomSolution(self):
         # TODO: Better random solution
         individual = InstructionTree(InstructionLine(""))
-        for i in range(50):
+        for i in range(20):
             add(individual, self.initializationMutationWeights)
         return individual
 
@@ -73,6 +51,8 @@ class MapElites:
 
     def randomVariation(self, individual: InstructionTree):
         rand = random.random()
+        add(individual, self.variationMutationWeights)
+        return
         if rand > 0.8:
             add(individual, self.variationMutationWeights)
         elif rand > 0.6:
@@ -124,6 +104,16 @@ class MapElites:
             )
         self.plotter.plot()
         self.saveArchiveToJSON()
+        self.saveArchiveVisualization()
+
+    def saveArchiveVisualization(self):
+        renderArchive(
+            self.visualizationPath + "visual_" + self.dateString + ".png",
+            10,
+            self.archive,
+            self.tileMap,
+            self.terrainMap,
+        )
 
     def saveArchiveToJSON(self):
         filepath = self.JSONDumpsPath + "rawDump_" + self.dateString + ".json"
