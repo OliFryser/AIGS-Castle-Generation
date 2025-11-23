@@ -55,8 +55,6 @@ class MapElites:
 
     def randomVariation(self, individual: InstructionTree):
         rand = random.random()
-        add(individual, self.variationMutationWeights)
-        return
         if rand > 0.8:
             add(individual, self.variationMutationWeights)
         elif rand > 0.6:
@@ -82,6 +80,8 @@ class MapElites:
 
     def run(self, iterations: int, populationSize: int):
         for i in range(iterations):
+            if i % 10 == 0:
+                print("MapElites iteration:", i)
             if i < populationSize:
                 individual: InstructionTree = self.generateRandomSolution()
             else:

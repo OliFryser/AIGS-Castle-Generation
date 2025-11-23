@@ -23,11 +23,11 @@ class TreeNode:
         return None
 
     def replaceChild(self, newChild):
-        if self.children:
+        if len(self.children) > 0:
             childIndex = random.randrange(len(self.children))
             replacedChild = self.children[childIndex]
             del self.children[childIndex]
-            self.children[childIndex] = newChild
+            self.children.insert(childIndex, newChild)
             return replacedChild
 
         self.line.instructions.append(InstructionToken.BRANCH)
@@ -96,6 +96,7 @@ class InstructionTree:
         removedElement = node.line.mutateDestructive()
         if removedElement == InstructionToken.BRANCH:
             # TODO: Consider picking the correct branch rather than just the last one
+            # Currently a bug where you can pop from an empty children list (Should not be possible, since a branch should always have a child)
             branchToRemove = node.children.pop()
             self.removeSubTree(branchToRemove)
 
@@ -110,20 +111,22 @@ class InstructionTree:
         self.addSubTree(subTreeRoot)
 
     def addSubTree(self, subTree: TreeNode):
-        def addToNodesList(node: TreeNode):
-            self.nodes.append(node)
-            for child in node.children:
-                addToNodesList(child)
+        stack = [subTree]
 
-        addToNodesList(subTree)
+        while stack:
+            node = stack.pop()
+            self.nodes.append(node)
+
+            stack.extend(reversed(node.children))
 
     def removeSubTree(self, subTree: TreeNode):
-        def removeFromNodesList(node: TreeNode):
-            self.nodes.remove(node)
-            for child in node.children:
-                removeFromNodesList(child)
+        stack = [subTree]
 
-        removeFromNodesList(subTree)
+        while stack:
+            node = stack.pop()
+            self.nodes.remove(node)
+
+            stack.extend(reversed(node.children))
 
     def getNextChild(self, parent: TreeNode):
         return parent.getNextChild()
