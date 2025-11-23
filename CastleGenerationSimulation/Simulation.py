@@ -60,6 +60,6 @@ class Simulation:
 
     def runSimulation(self):
         self.stepCount = 0
-        while not self.target.isOccupied():
+        while not self.target.isOccupied() and self.stepCount < 1_500:
             self.step()
             self.stepCount += 1

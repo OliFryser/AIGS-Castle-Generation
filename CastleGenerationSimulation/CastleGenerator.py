@@ -300,7 +300,9 @@ class CastleGenerator:
                 courtyard[1] + directionToOffset[direction][1],
             )
             tmpCell = grid[tmpPosition[1]][tmpPosition[0]]
-            tmpCell.directions.remove(Direction((direction + 2) % 4))
+            direct = Direction((direction + 2) % 4)
+            if direct in tmpCell.directions:
+                tmpCell.directions.remove(direct)
         grid[courtyard[1]][courtyard[0]] = None
 
     # this assumes square tiles

@@ -10,6 +10,6 @@ mapElites:
     levelFilepath: "resources/terrainMaps/perlinBy3.txt"
     castleTilesFilepath: "resources/castleTiles/"
     archiveSavepath: "resources/archives/"
-    iterations: 3
-    population: 5
+    iterations: 1000
+    population: 20
     resolution: 4
