@@ -3,32 +3,40 @@ from Level import Level
 from Units.Unit import Unit
 from Utils.FSM import FSM,State
 from Utils.Node import Node, Graph
+from CastleElement import MaterialType
+from Utils.PathFinding import aStar
 
 class AxeMan(Unit):
-    """
-    def __init__(self, level: Level, position: Vector2, health: int = 100, speed: float = 0.1, size=0.3, goal = None, teamName= "blank", teamMates = []):
-        super().__init__(level, position, health, speed, size, goal= goal, teamName= teamName,teamMates=teamMates)
-    def __init__(self, level: Level, position: Vector2, health: int = 100, speed: float = 0.2, size=0.3, goal=None, teamName = "blank", teamMates=...):
-        super().__init__(level, position, health, speed, size, goal, teamName, teamMates)
-    """
     def __init__(self, *args, health: int = 100, speed: float = 0.2, size=0.3 ,**kwargs):
         super().__init__(*args, health, speed, size, **kwargs)
         self.blockAttackDamage = 10
-        self.blockAttackRange = 0.8
+        self.blockAttackRange = 1
+        self.attackDamage = 15
+        self.attackRange = 1.5
         self.count = 0
         self.nodeTarget = None
         self.attackCoolDown = False
-        self.attackCoolDownTime = 50
+        self.attackCoolDownTime = 20
+        self.initFSMs()
+        self.initFSM()
         
-    """
     def initFSM(self):
+        #####################################################
+        # Get standard fsms
+        #####################################################
+        if "goToGoal" not in self.fsms.keys():
+            return
+        goToGoalFSM = self.fsms["goToGoal"]
+        if "attack" not in self.fsms.keys():
+            return
+        attackFSM = self.fsms["attack"]
         ######################################################
         #Demolishion FSM
         ######################################################
-        demolishFsm = FSM("demolish", State.MOVETO)
+        demolishFsm = FSM("demolish", goToGoalFSM)
 
         demolishFsm.addTransition(
-            State.MOVETO, State.DEMOLISH, self.closeEnoughToBlock
+            goToGoalFSM, State.DEMOLISH, self.closeEnoughToBlock
         )
         demolishFsm.addTransition(
             State.DEMOLISH, State.WAIT, self.onAttackCoolDown, onEnter= (self.setTimer,(self.attackCoolDownTime,),{})
@@ -36,9 +44,6 @@ class AxeMan(Unit):
         demolishFsm.addTransition(
             State.WAIT, State.DEMOLISH, self.hasCounted, onExit= (self.setAttackCooldown, (False,), {})
         )
-        #######################################################
-        #Top FSM
-        #######################################################
 
         #######################################################
         #Top FSM
@@ -46,25 +51,49 @@ class AxeMan(Unit):
         fsm = FSM("top",State.WAIT)
 
         fsm.addTransition(
-            State.MOVETO, demolishFsm, self.foundWallWeakPoint, 
+            goToGoalFSM, demolishFsm, self.foundWallWeakPoint, 
             (self.setNodeTargetAndPath, (), {}), onExit= (self.targetGoal, (), {})
         )
         fsm.addTransition(
-            State.MOVETO, State.STOP, self.closeEnough
-        )
-        fsm.addTransition(
-            State.MOVETO, State.WAIT, self.notHasPlan,(self.setTimer,(1,),{})
-        )
-        fsm.addTransition(
-            State.WAIT, State.MOVETO, self.hasCounted,
-             (self.planPath, (), {}), (self.setTimer, (1,),{}),
-        )
-        fsm.addTransition(
-            State.STOP, State.WAIT,
-            self.outOfReach
+            State.WAIT, goToGoalFSM, self.hasCounted,
+             (self.planPath, (MaterialType.DOOR,), {}), (self.setTimer, (1,),{}),
         )
         fsm.addTransition(
             demolishFsm, State.WAIT, self.targetBlockDemolished, (self.setTimer, (4,),{})
+        )
+        fsm.addTransition(
+            state0=goToGoalFSM,
+            state1=attackFSM,
+            transition=self.isInMelee,
+        )
+        """
+        fsm.addTransition(
+            state0=goToGoalFSM,
+            state1=attackFSM,
+            transition=self.enemyInRange,
+        )
+        """
+        fsm.addTransition(
+            state0=demolishFsm,
+            state1=attackFSM,
+            transition=self.isInMelee,
+        )
+        fsm.addTransition(
+            state0=demolishFsm,
+            state1=attackFSM,
+            transition=self.enemyInRange,
+        )
+        fsm.addTransition(
+            state0=State.WAIT,
+            state1=attackFSM,
+            transition=self.isInMelee,
+        )
+
+        fsm.addTransition(
+            state0=attackFSM,
+            state1=State.WAIT,
+            transition=self.isNotInMelee,
+            #onEnter=(print,("out of range",),{})
         )
 
         self.fsm = fsm
@@ -72,9 +101,9 @@ class AxeMan(Unit):
             State.MOVETO: self.goToTarget,
             State.STOP: self.wait,
             State.WAIT : self.wait,
-            State.DEMOLISH : self.strikeWall
+            State.DEMOLISH : self.strikeWall,
+            State.ATTACK : self.meleeAttack,
             }
-    """
         
     #Transition conditions
     def foundWallWeakPoint(self):
@@ -136,3 +165,12 @@ class AxeMan(Unit):
         node.materialBlock = None
         self.level.castleMap[int(node.position.z - 0.5)][int(node.position.x - 0.5)] = None
         self.nodeTarget = None
+
+    def planPath(self, toType = MaterialType.DOOR):
+        self.path = aStar(
+                self.position, self.target, self.nodeGraph,
+                costAdjustFunc= self.moveCostAdjust, ignoreNodes=self.nodesToSkip,
+                unit=self,
+                budget= self.level.height*2,
+                getFirstofType=toType
+            )

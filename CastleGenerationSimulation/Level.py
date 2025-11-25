@@ -219,7 +219,7 @@ class Level:
                 self.width / scale /2,
                 #0,
                 self.getBilinearHeight(self.width / scale / 2, self.height / scale),
-                self.height / scale,
+                self.height / scale -1,
                 #self.height / scale/2,
                 #0,
             ),

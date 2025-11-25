@@ -5,7 +5,7 @@ from Utils.Node import Node, Edge, Graph
 import numpy as np
 
 #get as node on Graph 2 gets the 3 closest nodes by distance
-def getAsNodeOnGraph2(startPosition: Vector3 , graph: dict[Node, list[Edge]], tmpNodes, ignoreNodes):
+def getAsNodeOnGraph2(startPosition: Vector3 , graph: dict[Node, list[Edge]], tmpNodes,unit ,ignoreNodes):
     node = Node(startPosition)
     if node in graph:
         return node
@@ -58,6 +58,9 @@ def getAsNodeOnGraph(startPosition: Vector3 , graph: Graph, tmpNodes, unit, igno
     tmpNodes.append(node)
     return node
 
+def getAsNodeOnGraph3(position, b: Graph, l,a,h):
+    return b.getNodeFromPosition(position)
+
 def distanceCost(node: Node, edge: Edge):
     return edge.cost
 
@@ -77,6 +80,7 @@ def aStar(startPosition: Vector3, targetPosition: Vector3, nodeGraph: Graph,
     startNode = getAsNodeOnGraph(startPosition, nodeGraph, tmpNodes, unit, ignoreNodes)
     targetNode = getAsNodeOnGraph(targetPosition, nodeGraph, tmpNodes, unit, ignoreNodes)
     """
+    print(startPosition,startNode,targetNode)
     startNode = nodeGraph.getNodeFromPosition(startPosition)
     targetNode = nodeGraph.getNodeFromPosition(targetPosition)
     """
@@ -110,7 +114,7 @@ def aStar(startPosition: Vector3, targetPosition: Vector3, nodeGraph: Graph,
 
         # if the next node is the target node the path has been set
         if distances[currentNode] > budget:
-            print(f"could not find path within budget {distances[currentNode], len(distances.keys())}")
+            #print(f"could not find path within budget {distances[currentNode], len(distances.keys())}")
             #print(currentNode.unit, currentNode.materialBlock.materialType)
             break
 

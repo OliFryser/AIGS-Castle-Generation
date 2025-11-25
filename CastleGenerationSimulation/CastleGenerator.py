@@ -33,7 +33,7 @@ class CastleGenerator:
 
         self.center = (
             int((targetPositionx) // self.scale),
-            int((targetPositiony) // self.scale),
+            int((targetPositiony) // self.scale)-1,
         )
         self.centerOffset = (
             self.center[0] * self.scale - (targetPositionx - self.scale/2),
@@ -44,7 +44,7 @@ class CastleGenerator:
         """
         """
         keep = CastleElement(ElementType.KEEP)
-        keep.directions = [Direction.LEFT, Direction.RIGHT]
+        keep.directions = [Direction.LEFT, Direction.RIGHT, Direction.UP]
         self.grid[self.center[1]][self.center[0]] = keep
 
         self.evaluateInstructionCost()

@@ -31,7 +31,7 @@ class FSM:
 
     def updateState(self):
         if self.currentState not in self.transitions: 
-            print("current state does not exist in state machine")
+            print(f"current state {self.currentState} does not exist in state machine")
             return
     
         for transition, stateTuple in self.transitions[self.currentState].items():
