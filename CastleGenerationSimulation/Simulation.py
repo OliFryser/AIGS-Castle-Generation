@@ -5,6 +5,7 @@ from Level import Level
 from InitializationParameters import InitializationParameters
 from Team import Team
 
+
 @dataclass
 class State:
     blocks: int

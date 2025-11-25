@@ -1,13 +1,11 @@
 import pygame
 import sys
 import mlxp
-import json
-from datetime import datetime
 
 from CastleElement import CastleElement, ElementType
 from CastleInstructions.InstructionTreeParser import parseInstructionTree
 from InitializationParameters import InitializationParameters
-from MapElites import MapElites
+from MapElites.MapElites import MapElites
 from Simulation import Simulation
 from Renderer import Renderer
 from TerrainMap import TerrainMap
@@ -30,17 +28,8 @@ def main(ctx: mlxp.Context) -> None:
 
 
 def runMapElites(cfg, terrainMap, tileMap):
-    mapElites = MapElites(terrainMap, tileMap)
+    mapElites = MapElites(terrainMap, tileMap, cfg.archiveSavepath, cfg.resolution)
     mapElites.run(cfg.iterations, cfg.population)
-    filepath = (
-        cfg.archiveSavepath
-        + "archive_"
-        + str(datetime.now().strftime("%Y-%m-%d-%H_%M_%S"))
-        + ".json"
-    )
-    jsonSafeArchive = {str(k): v.to_json() for k, v in mapElites.archive.items()}
-    with open(filepath, "x") as fp:
-        json.dump(jsonSafeArchive, fp, indent=2)
 
 
 def runInteractiveMode(cfg, terrainMap, tileMap):
@@ -98,7 +87,9 @@ def runInteractiveMode(cfg, terrainMap, tileMap):
             simulation.step()
 
         currentToolName: str = currentTool.name if currentTool is not None else "Eraser"
-        renderer.render(currentToolName)
+
+        renderer.render()
+        pygame.display.flip()
 
     print(i)
     # Quit pygame cleanly

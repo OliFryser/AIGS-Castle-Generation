@@ -9,7 +9,11 @@ def getAsNodeOnGraph2(startPosition: Vector3 , graph: dict[Node, list[Edge]], tm
     node = Node(startPosition)
     if node in graph:
         return node
-    positions = sorted(graph.keys(), key=lambda node: node not in ignoreNodes and node.position.distance_to(startPosition))[:5]
+    positions = sorted(
+        graph.keys(),
+        key=lambda node: node not in ignoreNodes
+        and node.position.distance_to(startPosition),
+    )[:5]
     edges = []
     for tmpNode in positions:
         graph[tmpNode].append(Edge(node, tmpNode.position.distance_to(node.position)))
@@ -20,12 +24,13 @@ def getAsNodeOnGraph2(startPosition: Vector3 , graph: dict[Node, list[Edge]], tm
     tmpNodes.append(node)
     return node
 
-#get as node on graph gets the four closest nodes directly from the graph
-def getAsNodeOnGraph(startPosition: Vector3 , graph: Graph, tmpNodes, unit, ignoreNodes):
+
+# get as node on graph gets the four closest nodes directly from the graph
+def getAsNodeOnGraph(startPosition: Vector3, graph: Graph, tmpNodes, unit, ignoreNodes):
     node = Node(startPosition)
     if node in graph.graph:
         return node
-    
+
     x, y, z = startPosition.x, startPosition.y, startPosition.z
     # Each coordinate is centered at 0.5 + int(n)
     x0 = np.floor(x - 0.5) + 0.5
@@ -45,12 +50,19 @@ def getAsNodeOnGraph(startPosition: Vector3 , graph: Graph, tmpNodes, unit, igno
         tmpNode = Node(pos)
         if tmpNode not in ignoreNodes and tmpNode in graph.graph:
             blockNode = graph.getNodeFromPosition(tmpNode.position)
-            block = blockNode.materialBlock #type: ignore
+            block = blockNode.materialBlock  # type: ignore
             if block is not None and block.blocking:
                 continue
-            if blockNode is not None and blockNode.unit is not None and unit is not None and blockNode.unit != unit:
+            if (
+                blockNode is not None
+                and blockNode.unit is not None
+                and unit is not None
+                and blockNode.unit != unit
+            ):
                 continue
-            graph.graph[tmpNode].append(Edge(node, tmpNode.position.distance_to(node.position)))
+            graph.graph[tmpNode].append(
+                Edge(node, tmpNode.position.distance_to(node.position))
+            )
             tmpEdge = Edge(tmpNode, node.position.distance_to(tmpNode.position))
             edges.append(tmpEdge)
 
@@ -64,21 +76,30 @@ def getAsNodeOnGraph3(position, b: Graph, l,a,h):
 def distanceCost(node: Node, edge: Edge):
     return edge.cost
 
+
 def euclidianDistance(node0: Node, node1: Node):
     return node0.position.distance_to(node1.position)
 
-def aStar(startPosition: Vector3, targetPosition: Vector3, nodeGraph: Graph,
-          heuristic = euclidianDistance, costAdjustFunc = distanceCost, budget = 1000, 
-          ignoreNodes: list[Node] = [],
-          unit = None,
-          getFirstofType = None
-          ):
+
+def aStar(
+    startPosition: Vector3,
+    targetPosition: Vector3,
+    nodeGraph: Graph,
+    heuristic=euclidianDistance,
+    costAdjustFunc=distanceCost,
+    budget=200,
+    ignoreNodes: list[Node] = [],
+    unit=None,
+    getFirstofType=None,
+):
     graph = nodeGraph.graph
-    #pprint(graph.values())
+    # pprint(graph.values())
     tmpNodes = []
 
     startNode = getAsNodeOnGraph(startPosition, nodeGraph, tmpNodes, unit, ignoreNodes)
-    targetNode = getAsNodeOnGraph(targetPosition, nodeGraph, tmpNodes, unit, ignoreNodes)
+    targetNode = getAsNodeOnGraph(
+        targetPosition, nodeGraph, tmpNodes, unit, ignoreNodes
+    )
     """
     print(startPosition,startNode,targetNode)
     startNode = nodeGraph.getNodeFromPosition(startPosition)
@@ -98,18 +119,18 @@ def aStar(startPosition: Vector3, targetPosition: Vector3, nodeGraph: Graph,
 
     # incomming nodes is for storing the shortest path between nodes
     incomming_nodes = {}
-    
+
     while open_nodes.not_empty:
         # we only really need the next node
         _, r, currentNode = open_nodes.get()
-        #print(currentNode.position,graph[currentNode])
+        # print(currentNode.position,graph[currentNode])
         """
         if (currentNode.unit is not None and currentNode.unit is not unit):
             print(f" unit {currentNode.unit}, {unit}")
             print(f"price {distances[currentNode]}")
         """
 
-        if (currentNode in ignoreNodes ):
+        if currentNode in ignoreNodes:
             print("this should have been ignored")
 
         # if the next node is the target node the path has been set
@@ -119,10 +140,10 @@ def aStar(startPosition: Vector3, targetPosition: Vector3, nodeGraph: Graph,
             break
 
         if currentNode == targetNode or (
-            getFirstofType is not None and 
-            currentNode.materialBlock is not None and
-            getFirstofType == currentNode.materialBlock.materialType            
-            ):
+            getFirstofType is not None
+            and currentNode.materialBlock is not None
+            and getFirstofType == currentNode.materialBlock.materialType
+        ):
             """
             print(f"path cost {distances[currentNode]}")
             """
@@ -131,27 +152,29 @@ def aStar(startPosition: Vector3, targetPosition: Vector3, nodeGraph: Graph,
             path = []
             while currentNode != startNode:
                 path.insert(0, currentNode)
-                #if currentNode.materialBlock is not None:
-                    #path = []
+                # if currentNode.materialBlock is not None:
+                # path = []
                 currentNode = incomming_nodes[currentNode]
-            
+
             for node in tmpNodes:
                 nodeGraph.removeNode(node)
             return path
         random.shuffle((graph[currentNode]))
         for edge in graph[currentNode]:
-            #cost is calculated here
+            # cost is calculated here
             cost = costAdjustFunc(currentNode, edge)
             """
             if cost > 200:
                 print(cost)
                 #continue
             """
-                
+
             new_distance = distances[currentNode] + cost
 
             if edge.node in ignoreNodes or edge.node not in graph:
-                print(f'Error node not in graph {edge.node.position}, start Node: {startNode.position}')
+                print(
+                    f"Error node not in graph {edge.node.position}, start Node: {startNode.position}"
+                )
                 continue
             if edge.node not in distances or new_distance < distances[edge.node]:
                 distances[edge.node] = new_distance
@@ -159,7 +182,6 @@ def aStar(startPosition: Vector3, targetPosition: Vector3, nodeGraph: Graph,
                 predicted_total = new_distance + heuristic(edge.node, targetNode)
                 incomming_nodes[edge.node] = currentNode
                 open_nodes.put((predicted_total, np.random.rand(), edge.node))
-
 
     return []
 

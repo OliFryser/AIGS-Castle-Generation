@@ -1,4 +1,4 @@
-mode: "interactive" # interactive | mapElites
+mode: "mapElites" # interactive | mapElites
 
 interactive:
     castleGenerationFilepath: "resources/castleGenerationInstructions/test4.txt"
@@ -7,8 +7,9 @@ interactive:
     castleTilesFilepath: "resources/castleTiles/"
 
 mapElites:
-    levelFilepath: "resources/terrainMaps/perlinBy4.txt"
+    levelFilepath: "resources/terrainMaps/perlinBy3.txt"
     castleTilesFilepath: "resources/castleTiles/"
     archiveSavepath: "resources/archives/"
-    iterations: 100
-    population: 5
+    iterations: 200
+    population: 20
+    resolution: 4
