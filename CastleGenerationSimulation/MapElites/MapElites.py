@@ -59,11 +59,11 @@ class MapElites:
             add(individual, self.variationMutationWeights)
         elif rand > 0.6:
             substitute(individual, self.variationMutationWeights)
-        elif rand > 0.4:
-            remove(individual)
-        else:
-            other = self.sampleRandomSolution()
-            crossover(individual, other)
+        # elif rand > 0.4:
+        #     remove(individual)
+        # else:
+        #     other = self.sampleRandomSolution()
+        #     crossover(individual, other)
 
     def getBehavior(self, simulation: Simulation) -> Behavior:
         return Behavior(simulation.getState().blocks, simulation.getState().area)

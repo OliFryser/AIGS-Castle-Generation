@@ -52,7 +52,7 @@ class InstructionTree:
         parent.addChild(childNode)
         return childNode
 
-    def mutate(
+    def mutateSubstitute(
         self,
         mutationWeights: MutationWeights,
         node: TreeNode | None = None,

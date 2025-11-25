@@ -3,7 +3,7 @@ from CastleInstructions.MutationWeights import MutationWeights
 
 
 def substitute(instructionTree: InstructionTree, mutationWeights: MutationWeights):
-    instructionTree.mutate(mutationWeights)
+    instructionTree.mutateSubstitute(mutationWeights)
 
 
 def add(instructionTree: InstructionTree, mutationWeights: MutationWeights):
