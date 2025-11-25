@@ -30,8 +30,6 @@ class Simulation:
 
         for n in range(5):
             self.defender.addArcher()
-        """
-        """
         
         self.attacker.updateGoal(self.target.position)
         self.defender.updateGoal(self.target.position)
@@ -60,3 +58,6 @@ class Simulation:
         while not self.target.isOccupied():
             self.step()
             self.stepCount += 1
+            if self.attacker.units == []:
+                self.stepCount += 10000
+                break
