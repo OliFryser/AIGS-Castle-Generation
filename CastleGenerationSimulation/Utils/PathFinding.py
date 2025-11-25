@@ -4,8 +4,11 @@ from queue import PriorityQueue
 from Utils.Node import Node, Edge, Graph
 import numpy as np
 
-#get as node on Graph 2 gets the 3 closest nodes by distance
-def getAsNodeOnGraph2(startPosition: Vector3 , graph: dict[Node, list[Edge]], tmpNodes,unit ,ignoreNodes):
+
+# get as node on Graph 2 gets the 3 closest nodes by distance
+def getAsNodeOnGraph2(
+    startPosition: Vector3, graph: dict[Node, list[Edge]], tmpNodes, unit, ignoreNodes
+):
     node = Node(startPosition)
     if node in graph:
         return node
@@ -70,8 +73,10 @@ def getAsNodeOnGraph(startPosition: Vector3, graph: Graph, tmpNodes, unit, ignor
     tmpNodes.append(node)
     return node
 
-def getAsNodeOnGraph3(position, b: Graph, l,a,h):
+
+def getAsNodeOnGraph3(position, b: Graph, l, a, h):
     return b.getNodeFromPosition(position)
+
 
 def distanceCost(node: Node, edge: Edge):
     return edge.cost
@@ -87,7 +92,7 @@ def aStar(
     nodeGraph: Graph,
     heuristic=euclidianDistance,
     costAdjustFunc=distanceCost,
-    budget=200,
+    budget=1000,
     ignoreNodes: list[Node] = [],
     unit=None,
     getFirstofType=None,
@@ -135,8 +140,8 @@ def aStar(
 
         # if the next node is the target node the path has been set
         if distances[currentNode] > budget:
-            #print(f"could not find path within budget {distances[currentNode], len(distances.keys())}")
-            #print(currentNode.unit, currentNode.materialBlock.materialType)
+            # print(f"could not find path within budget {distances[currentNode], len(distances.keys())}")
+            # print(currentNode.unit, currentNode.materialBlock.materialType)
             break
 
         if currentNode == targetNode or (

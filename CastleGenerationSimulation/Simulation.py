@@ -20,10 +20,22 @@ class Simulation:
             initParams.castleInstructionTree,
             initParams.tileMap,
         )
-   
-        self.attacker = Team("attacker",self.level, Vector2(self.level.width /2, self.level.height - 6,))
+
+        self.attacker = Team(
+            "attacker",
+            self.level,
+            Vector2(
+                self.level.width / 2,
+                self.level.height - 6,
+            ),
+        )
         self.target = Target(self.level)
-        self.defender = Team("defeder", self.level,Vector2(self.target.position.x,self.target.position.z), self.attacker.units)
+        self.defender = Team(
+            "defeder",
+            self.level,
+            Vector2(self.target.position.x, self.target.position.z),
+            self.attacker.units,
+        )
         self.attacker.setEnemies(self.defender.units)
 
         for n in range(10):
@@ -31,7 +43,7 @@ class Simulation:
 
         for n in range(5):
             self.defender.addArcher()
-        
+
         self.attacker.updateGoal(self.target.position)
         self.defender.updateGoal(self.target.position)
         self.target.team = self.defender.units
@@ -39,7 +51,7 @@ class Simulation:
     def step(self):
         for unit in self.getUnits():
             unit.step()
-        #Node unit sanity check
+        # Node unit sanity check
         """
         n = 0
         for node in self.level.nodeGraph.graph.keys():
@@ -52,7 +64,7 @@ class Simulation:
         return self.attacker.units + self.defender.units
 
     def getState(self):
-        return State(self.level.castleCost, self.level.protectedArea, self.stepCount)
+        return State(self.level.blockCount, self.level.protectedArea, self.stepCount)
 
     def runSimulation(self):
         self.stepCount = 0
@@ -62,3 +74,9 @@ class Simulation:
             if self.attacker.units == []:
                 self.stepCount += 10000
                 break
+
+    def getMaxBlocks(self):
+        return self.level.maxBlocks
+
+    def getMaxArea(self):
+        return self.level.maxArea

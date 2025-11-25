@@ -1,6 +1,7 @@
 from datetime import datetime
 import json
 import random
+import copy
 
 from .ArchiveEntry import ArchiveEntry
 from .Behavior import Behavior
@@ -38,7 +39,7 @@ class MapElites:
             self.plotPath + "plot_" + self.dateString + ".png"
         )
 
-        self.initializationMutationWeights = MutationWeights(0.5, 0.75, 1.0, 1.0, 1.0)
+        self.initializationMutationWeights = MutationWeights(0.75, 0.5, 1.0, 1.0, 1.0)
         self.variationMutationWeights = MutationWeights(1.0, 0.75, 1.0, 1.0, 0.5)
 
         self.resolution = resolution
@@ -50,20 +51,25 @@ class MapElites:
             add(individual, self.initializationMutationWeights)
         return individual
 
-    def sampleRandomSolution(self):
-        return random.choice(list(self.archive.values())).individual
+    def sampleRandomSolution(self, samplePool: list[ArchiveEntry]):
+        return random.choice(samplePool)
 
-    def randomVariation(self, individual: InstructionTree):
+    def randomVariation(self, individual: InstructionTree, entry: ArchiveEntry):
         rand = random.random()
         if rand > 0.8:
             add(individual, self.variationMutationWeights)
         elif rand > 0.6:
             substitute(individual, self.variationMutationWeights)
-        # elif rand > 0.4:
-        #     remove(individual)
-        # else:
-        #     other = self.sampleRandomSolution()
-        #     crossover(individual, other)
+        elif rand > 0.4:
+            remove(individual)
+        else:
+            pool = list(self.archive.values())
+            print(pool, entry)
+            pool.remove(entry)
+            if not pool:
+                return
+            other = copy.deepcopy(self.sampleRandomSolution(pool).individual)
+            crossover(individual, other)
 
     def getBehavior(self, simulation: Simulation) -> Behavior:
         return Behavior(simulation.getState().blocks, simulation.getState().area)
@@ -71,10 +77,10 @@ class MapElites:
     def getFitness(self, simulation: Simulation) -> int:
         return simulation.getState().stepCount
 
-    def getKey(self, behavior: Behavior):
-        maxArea = self.terrainMap.width * self.terrainMap.height
+    def getKey(self, behavior: Behavior, simulation: Simulation):
+        maxArea = simulation.getMaxArea()
         areaKey = round((behavior.area / maxArea) * 10)
-        maxBlocks = maxArea
+        maxBlocks = simulation.getMaxBlocks()
         blockKey = round((behavior.blocks / maxBlocks) * 10)
         return (blockKey, areaKey)
 
@@ -85,8 +91,9 @@ class MapElites:
             if i < populationSize:
                 individual: InstructionTree = self.generateRandomSolution()
             else:
-                individual: InstructionTree = self.sampleRandomSolution()
-                self.randomVariation(individual)
+                entry = self.sampleRandomSolution(list(self.archive.values()))
+                individual: InstructionTree = copy.deepcopy(entry.individual)
+                self.randomVariation(individual, entry)
 
             initParams: InitializationParameters = InitializationParameters(
                 self.terrainMap, self.tileMap, individual
@@ -95,7 +102,7 @@ class MapElites:
             simulation.runSimulation()
             behavior: Behavior = self.getBehavior(simulation)
             fitness: int = self.getFitness(simulation)
-            key = self.getKey(behavior)
+            key = self.getKey(behavior, simulation)
 
             if key not in self.archive or fitness > self.archive[key].fitness:
                 entry = ArchiveEntry(fitness, behavior, individual)

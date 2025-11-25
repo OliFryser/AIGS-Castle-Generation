@@ -18,6 +18,7 @@ class CastleGenerator:
         targetPositionx,
         targetPositiony,
     ):
+        self.padding = 2
         castleInstructionTree.reset()
         self.instructionTree: InstructionTree = castleInstructionTree
 
@@ -34,7 +35,7 @@ class CastleGenerator:
 
         self.center = (
             int((targetPositionx) // self.scale),
-            int((targetPositiony) // self.scale)-1,
+            int((targetPositiony) // self.scale) - 1,
         )
         self.centerOffset = (
             self.center[0] * self.scale - (targetPositionx - self.scale / 2),
@@ -53,12 +54,27 @@ class CastleGenerator:
         agents: list[CastleGenerationAgent] = []
         agents.append(
             CastleGenerationAgent(
-                self.center, Direction.UP, self.instructionTree.root, self.grid
+                self.center,
+                Direction.UP,
+                self.instructionTree.root,
+                self.grid,
+                self.padding,
             )
         )
 
         while len(agents) > 0:
             self.step(agents)
+
+    def getMaxArea(self):
+        return self.getGridSize() * self.scale
+
+    def countBlocks(self):
+        count = 0
+        for row in self.grid:
+            for block in row:
+                if block is not None:
+                    count += 1
+        return count
 
     def evaluateInstructionCost(self):
         self.cost = 0
@@ -90,6 +106,7 @@ class CastleGenerator:
                             agent.direction,
                             newBranch,
                             self.grid,
+                            self.padding,
                             agent.fromDirection,
                             agent.lastElement,
                         )
@@ -97,6 +114,11 @@ class CastleGenerator:
             else:
                 elementType = tokenToElementType[instruction]
                 agent.placeNextElement(elementType)
+
+    def getGridSize(self):
+        return (len(self.grid) - self.padding * 2) * (
+            len(self.grid[0]) - self.padding * 2
+        )
 
     def getCastleMapInTerrainScale(self, path):
         grid = self.grid.copy()

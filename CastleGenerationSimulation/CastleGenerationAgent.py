@@ -11,6 +11,7 @@ class CastleGenerationAgent:
         initialDirection: Direction,
         treeNode: TreeNode,
         grid: list[list[None | CastleElement]],
+        padding: int,
         fromDirection: Direction | None = None,
         lastElement: CastleElement | None = None,
     ):
@@ -33,7 +34,7 @@ class CastleGenerationAgent:
         self.fromDirection = fromDirection
         self.lastElement = lastElement
 
-        self.padding = 2
+        self.padding = padding
 
     def getNextInstruction(self) -> InstructionToken | None:
         if self.treeNode.line.isEmpty():

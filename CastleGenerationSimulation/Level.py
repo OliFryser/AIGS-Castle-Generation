@@ -58,10 +58,13 @@ class Level:
         # gather data
         self.instructionCost = castleGenerator.cost
         self.gates = castleGenerator.getGateCount()
-        self.castleCost = self.getCastleCost()
+        self.blockCount = castleGenerator.countBlocks()
         self.protectedArea = self.getProtectedArea()
 
-        #Debug print for path
+        self.maxBlocks = castleGenerator.getGridSize()
+        self.maxArea = castleGenerator.getMaxArea()
+
+        # Debug print for path
         """
         for pos in positionPath:
             v3 = Vector3(
@@ -210,23 +213,25 @@ class Level:
         scale = castleGenerator.scale
         pathGraph = self.makeGraph(self.pathCostAdjustFunc, scale)
         home = Vector3(
-                self.targetPosition.x / scale,
-                self.targetPosition.y,
-                self.targetPosition.z / scale,
-            )
+            self.targetPosition.x / scale,
+            self.targetPosition.y,
+            self.targetPosition.z / scale,
+        )
         nodePath = aStar(
             Vector3(
-                self.width / scale /2,
-                #0,
+                self.width / scale / 2,
+                # 0,
                 self.getBilinearHeight(self.width / scale / 2, self.height / scale),
-                self.height / scale -1,
-                #self.height / scale/2,
-                #0,
+                self.height / scale - 1,
+                # self.height / scale/2,
+                # 0,
             ),
             home,
             pathGraph,
         )
-        return [(int(node.position.x), int(node.position.z)) for node in nodePath] + [(self.targetPosition.x,self.targetPosition.z)]
+        return [(int(node.position.x), int(node.position.z)) for node in nodePath] + [
+            (self.targetPosition.x, self.targetPosition.z)
+        ]
 
     ##############################################################
     # Behaviour
@@ -243,9 +248,6 @@ class Level:
                 enclosed, gates = self.getEnclosedNodes(gate, enclosed, gates)
 
         return len(enclosed)
-
-    def getCastleCost(self):
-        return self.instructionCost + self.gates * 3
 
     def getEnclosedNodes(self, startPosition, enclosedNodes, gates):
         currentNode = self.nodeGraph.getNodeFromPosition(startPosition)
