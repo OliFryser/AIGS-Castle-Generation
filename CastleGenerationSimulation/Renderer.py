@@ -74,9 +74,14 @@ class Renderer:
             * self.resolution
             * (1 + (unit.position[1] / self.simulation.level.maxHeight)),
         )
+        if unit.teamName == "attacker":
+            color = (0, 0, 255)
+        else:
+            color = (255, 0, 0)
+            
         pygame.draw.circle(
             self.screen,
-            (0, 0, 255),
+            color,
             self.modelToViewSpace(unit.position),
             unit.size
             * self.resolution

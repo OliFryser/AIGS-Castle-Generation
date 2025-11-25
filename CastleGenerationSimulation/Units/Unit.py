@@ -14,8 +14,11 @@ class Unit:
         position: Vector2,
         health: int = 100,
         speed: float = 0.2,
-        size=0.1,
-        goal= None
+        size =0.1,
+        goal = Vector3(0,0,0),
+        teamName = "blank",
+        teamMates = [],
+        enemies = []
     ):
         self.health = health
         self.speed = speed
@@ -33,53 +36,138 @@ class Unit:
         self.target = None
         self.goal: None | Vector3 = goal
         self.count = 0
-        self.initFSM()
         self.nodesToSkip = []
+        self.fsms: dict[str, FSM] = {}
+        self.teamName: str = teamName
+        self.teamMates = teamMates
+        self.blocked = False
+        self.enemies = enemies
+        self.attackDamage = 1
+        self.attackRange = 1
+        self.inMelee = None
+        self.attackCoolDown = False
+
+        #place on grid
+        self.nodeGraph.getNodeFromPosition(self.position).unit = self
+
+        self.initFSMs()
+        self.fsm: FSM = self.initFSM()
 
     def step(self):
-        # print(self)
         self.fsm.updateState()
         state = self.fsm.getState()
+        #self.fsm.printState()
         if state in self.stateMap:
             self.stateMap[state]()
-        return True
+    
+    def takeDamage(self, damage):
+        self.health -= damage
+        #print(f"take damage {self.health}")
+        if self.health < 1:
+            self.die()
+            return True
+        return False
+
+    def die(self):
+        #print(f"unit {self} died:")
+        self.nodeGraph.getNodeFromPosition(self.position).unit = None
+        if self in self.teamMates:
+            self.teamMates.remove(self)
 
     def targetGoal(self):
         self.target = self.goal
 
     # making a finite state machine. This should be overwritten by subclasses
     def initFSM(self):
-        fsm = FSM(State.WAIT)
+        topFSM = FSM("top", State.WAIT)
 
-        fsm.addTransition(
-            State.MOVETO,
-            State.WAIT,
-            self.notHasPlan,
-            self.planPath,
-            fsm.onExitPrint,
-        )
-        fsm.addTransition(
-            State.MOVETO,
-            State.STOP,
-            self.closeEnough,
-            fsm.onEnterPrint,
-            fsm.onExitPrint,
-        )
-        fsm.addTransition(
-            State.WAIT,
-            State.MOVETO,
-            self.hasCounted,
-            lambda: setattr(self, "count", 4),
-            lambda: setattr(self, "count", 0),
-        )
-        fsm.addTransition(State.STOP, State.WAIT, self.outOfReach)
+        goToGoalFSM = None
+        if "goToGoal" in self.fsms.keys():
+            goToGoalFSM = self.fsms["goToGoal"]
 
-        self.fsm = fsm
+        if goToGoalFSM is not None:
+            topFSM.addTransition(
+                state0=State.WAIT,
+                state1=goToGoalFSM,
+                transition=self.hasCounted,
+            )
+            topFSM.addTransition(
+                state0= goToGoalFSM,
+                state1= State.WAIT,
+                transition=self.closeEnough,
+                onEnter= (print, (f"reached goal team: {self.teamName}",), {})
+            )
+
         self.stateMap = {
             State.MOVETO: self.goToTarget,
             State.STOP: self.wait,
-            State.WAIT: self.wait,
-        }
+            State.WAIT : self.wait,
+            State.PLANPATH : self.planPath,
+            }
+
+        return topFSM
+        pass
+
+    # making general fsms to be used by subclasses
+    def initFSMs(self):
+        #############################################
+        # GoToGoal FSM
+        #############################################
+        goToGoalFSM = FSM("goToGoal", State.WAIT)
+
+        goToGoalFSM.addTransition(
+            State.WAIT, 
+            State.MOVETO,
+            self.hasCounted,
+            onEnter = (self.planPath, (), {}),
+            )
+        goToGoalFSM.addTransition(
+            state0= State.MOVETO,
+            state1= State.WAIT,
+            transition=self.isBlocked,
+            onEnter= (self.setTimer, (15,), {}),
+            onExit= (self.unBlock, (), {}), 
+        )
+        goToGoalFSM.addTransition(
+            state0= State.MOVETO,
+            state1= State.WAIT,
+            transition=self.notHasPlan,
+            onEnter= (self.setTimer, (80,), {}),
+            onExit= (self.unBlock, (), {}), 
+        )
+        goToGoalFSM.addTransition(
+            state0= State.MOVETO,
+            state1= State.WAIT,
+            transition=self.closeEnough,
+            onEnter= (self.setTimer, (80,), {}),
+        )
+        
+        self.fsms[goToGoalFSM.name] = goToGoalFSM
+
+        #############################################
+        # Attack FSM
+        #############################################
+
+        attackFSM = FSM("attack", State.WAIT)
+
+        attackFSM.addTransition(
+            state0=State.WAIT,
+            state1=State.ATTACK,
+            transition=self.hasCounted,
+        )
+        attackFSM.addTransition(
+            state0=State.ATTACK,
+            state1=State.WAIT,
+            transition=self.onAttackCoolDown,
+            onEnter= (self.setTimer,(self.attackCoolDownTime,),{})
+        )
+        attackFSM.addTransition(
+            state0=State.WAIT,
+            state1=State.ATTACK,
+            transition=self.hasCounted,
+            onExit= (self.setAttackCooldown, (False,), {})
+        )
+        self.fsms[attackFSM.name] = attackFSM
 
     ######################
     # Transition bools
@@ -96,6 +184,9 @@ class Unit:
             and self.position.distance_to(self.target) > self.size * 3
         )
 
+    def onAttackCoolDown(self):
+        return self.attackCoolDown
+
     def hasPlan(self):
         return not self.path == []
 
@@ -105,83 +196,150 @@ class Unit:
     def hasCounted(self):
         return self.count < 1
 
+    def isBlocked(self):
+        if not self.blocked:
+            self.count = 10
+            return False
+        self.count -= 1
+        if self.count < 1:
+            self.blocked = False
+            #print("blocked")
+            return True
+        return False
+    
+    def isInMelee(self):
+        if self.inMelee is not None:
+            #print("in melee")
+            return True
+        return False
+    
+    def isNotInMelee(self):
+        if self.inMelee is None:
+            return True
+        if self.inMelee not in self.enemies:
+            self.inMelee = None
+            return True
+        if self.position.distance_to(self.inMelee.position) > self.attackRange + self.size:
+            self.inMelee = None
+            return True
+        return False
+    
+    def enemyInRange(self):
+        for unit in self.enemies:
+            if self.position.distance_to(unit.position) < self.attackRange:
+                self.targetEnemy = unit
+                return True
+        return False
+    
+    def enemyOutOfRange(self):
+        if self.targetEnemy is None:
+            return True
+        if self.targetEnemy not in self.enemies:
+            self.targetEnemy = None
+            return True
+        if self.position.distance_to(self.targetEnemy.position) > self.attackRange:
+            self.targetEnemy = None
+            return True
+        return False
+
     ##########################
     # on enter / exit
     #####################################
     def setTimer(self, n):
         self.count = n
 
+    def unBlock(self):
+        self.blocked = False
+    
+    def setAttackCooldown(self, boo):
+        self.attackCoolDown = boo
+
     ######################
     # Actions
     ######################
 
+    def meleeAttack(self):
+        if self.inMelee is not None and self.position.distance_to(self.inMelee.position) < self.attackRange:
+            self.inMelee.inMelee = self
+            if self.inMelee.takeDamage(self.attackDamage):
+                self.inMelee = None
+            self.attackCoolDown = True
+
+    def rangeAttack(self):
+        if self.targetEnemy is not None:
+            if self.targetEnemy.takeDamage(self.attackDamage):
+                self.targetEnemy = None
+            self.attackCoolDown = True
+
     def wait(self):
         self.count -= 1
-        # print(self.count)
+        #print(self.count)
         pass
 
     def planPath(self, toType = None):
-        if self.target is None:
-            return
         self.path = aStar(
                 self.position, self.target, self.nodeGraph,
                 costAdjustFunc= self.moveCostAdjust, ignoreNodes=self.nodesToSkip,
                 unit=self,
+                budget= self.level.height*2,
                 getFirstofType=toType
             )
-        #print(len(self.path))
-        #self.fsm.printState()
 
 
     def goToTarget(self):
         if self.notHasPlan():
             return
 
-        #for avoiding units
-        """
-        """
-        for node in self.path[:1]:
-            if node.unit is not None and node.unit is not self:
-                self.planPath()
-                break
-                # return
-        if self.path == []:
-            return
         self.move(self.path[0].position - self.position)
         if self.position.distance_to(self.path[0].position) <= self.size:
             self.path.pop(0)
 
     def move(self, direction: Vector3, n =0):
-        if n > 4:
+        if n > 8:
             return
-        
+        self.blocked = False
         direction.normalize()
         newPosition = self.position + direction * self.speed
         # "hit detection"
         node0 = self.nodeGraph.getNodeFromPosition(self.position)
         node1 = self.nodeGraph.getNodeFromPosition(newPosition)
-        #node is none shield
+        # node is none shield
 
         ###
-        # this stuff needs to be exchanged for the most bare bones but workable hit detection ever
+        # this is naive hit detection
         ###
-        
-        frontNodes = self.getFrontNodes(direction)
-        for tnode in frontNodes:
-            if tnode.unit is not None and tnode.unit is not self:
-                other = tnode.unit
-                if newPosition.distance_to(other.position) < self.size + other.size:
-                    # compute push away from other
-                    push = (self.position - other.position).normalize()
-                    # combine with intended direction
-                    newDirection = (direction + push).normalize()
-                    self.move(newDirection, n+1)
+        #clash with units
+        if node0 is not None and node1 is not None and node0 is not node1:
+            frontNodes = self.getFrontNodes(direction)
+            if node1.unit is not None and node1.unit is not self:
+                if node1.unit in self.teamMates:
+                    self.blocked = True
                     return
-            if tnode.materialBlock is not None and tnode.materialBlock.blocking:
-                if newPosition.distance_to(tnode.position) < self.size *2:
-                    newDirection = (direction + (self.position - tnode.position).normalize()).normalize()
-                    self.move(newDirection, n+1)
+                
+            for tnode in frontNodes:
+                if tnode.unit is not None and tnode.unit in self.enemies:
+                    self.inMelee = tnode.unit
                     return
+            #clash with walls
+            for tnode in frontNodes:
+                if tnode.materialBlock is not None and tnode.materialBlock.blocking:
+                    if newPosition.distance_to(tnode.position) < self.size *2:
+                        newDirection = (direction + (self.position - tnode.position).normalize()).normalize()
+                        self.move(newDirection, n+1)
+                        return
+                """
+                if tnode.unit is not None and tnode.unit is not self:
+                    other = tnode.unit
+                    print(other, self)
+                    return
+                    if newPosition.distance_to(other.position) < self.size + other.size:
+                        # compute push away from other
+                        push = (self.position - other.position).normalize()
+                        # combine with intended direction
+                        newDirection = (direction + push).normalize()
+                        self.move(newDirection, n+1)
+                        return
+                """
 
         if node0 is not None and node1 is not None:
             if node0 is not node1 and (node1.materialBlock is None or not node1.materialBlock.blocking):
@@ -196,6 +354,8 @@ class Unit:
 
         dx = int(round(direction.x))
         dy = int(round(direction.z))
+        if x+dx > self.level.width or x+dx < 0 or y+dy > self.level.height or y+dy < 0:
+            return []
         nodes = [self.nodeGraph.nodes[(x+dx,y+dy)]]
         if abs(dx) + abs(dy) >=2:
             if x+dx >=0 and x+dx <= self.level.width:
@@ -243,11 +403,10 @@ class Unit:
             materialBlock: MaterialType = node.materialBlock
             if self.blockAttackDamage <=  materialBlock.damageThreshold:
                 return 10000
-            return materialBlock.health/ (self.blockAttackDamage - materialBlock.damageThreshold) * self.attackCoolDownTime/5
+            return materialBlock.health #/ (self.blockAttackDamage - materialBlock.damageThreshold) * self.attackCoolDownTime/5
         return 0
 
     def unitCost(self, node):
-        if node.unit is not None and node.unit is not self:
-            # print(f"big cost {node.position}, {edge.node.position}")
+        if node.unit is not None and node.unit is not self and node.unit not in self.enemies:
             return 1400
         return 0

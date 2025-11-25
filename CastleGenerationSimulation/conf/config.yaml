@@ -2,7 +2,7 @@ mode: "mapElites" # interactive | mapElites
 
 interactive:
     castleGenerationFilepath: "resources/castleGenerationInstructions/test4.txt"
-    resolution: 8
+    resolution: 4
     levelFilepath: "resources/terrainMaps/perlinBy3.txt"
     castleTilesFilepath: "resources/castleTiles/"
 
