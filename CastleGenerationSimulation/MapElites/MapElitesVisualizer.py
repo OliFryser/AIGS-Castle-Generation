@@ -1,4 +1,3 @@
-import os
 import pygame
 
 from .ArchiveEntry import ArchiveEntry
@@ -8,9 +7,6 @@ from Simulation import Simulation
 from TerrainMap import TerrainMap
 from TileMap import TileMap
 from Utils.Timer import Timer
-
-# Disable visual for pygame
-os.environ["SDL_VIDEODRIVER"] = "dummy"
 
 
 def renderArchive(

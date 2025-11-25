@@ -1,3 +1,4 @@
+import os
 import pygame
 import sys
 import mlxp
@@ -28,6 +29,8 @@ def main(ctx: mlxp.Context) -> None:
 
 
 def runMapElites(cfg, terrainMap, tileMap):
+    # Disable visual for pygame
+    os.environ["SDL_VIDEODRIVER"] = "dummy"
     mapElites = MapElites(terrainMap, tileMap, cfg.archiveSavepath, cfg.resolution)
     mapElites.run(cfg.iterations, cfg.population)
 
