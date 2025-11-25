@@ -6,7 +6,7 @@ from Target import Target
 
 
 class Renderer:
-    def __init__(self, simulation: Simulation, screen, resolution: int):
+    def __init__(self, simulation: Simulation, screen: pygame.Surface, resolution: int):
         self.simulation = simulation
         self.screen = screen
         self.resolution = resolution
@@ -20,7 +20,7 @@ class Renderer:
             MaterialType.DOOR: (98, 50, 1),
         }
 
-    def render(self, currentTool: str):
+    def render(self):
         self.screen.fill((255, 0, 255))
 
         self.displayTerrainMap(self.screen)
@@ -28,13 +28,7 @@ class Renderer:
         for unit in self.simulation.getUnits():
             self.chaosUnitRender(unit)
         self.renderTarget(self.simulation.target)
-
-        text = self.font.render(f"Tool: {currentTool}", True, (255, 255, 255))
-        text_rect = text.get_rect()
-        text_rect.topleft = (10, 10)
-        self.screen.blit(text, text_rect)  # Draw text
-        # swap buffer
-        pygame.display.flip()
+        return self.screen
 
     def renderCastleMap(self):
         cellSize = self.resolution

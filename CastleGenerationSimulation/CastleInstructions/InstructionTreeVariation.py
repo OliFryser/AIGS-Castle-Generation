@@ -2,15 +2,22 @@ from CastleInstructions.InstructionTree import InstructionTree
 from CastleInstructions.MutationWeights import MutationWeights
 
 
-def substitute(instructionTree: InstructionTree):
-    mutationWeights = MutationWeights(1.0, 1.0, 1.0, 1.0, 0.1)
+def substitute(instructionTree: InstructionTree, mutationWeights: MutationWeights):
     instructionTree.mutate(mutationWeights)
 
 
-def add(instructionTree: InstructionTree):
-    mutationWeights = MutationWeights(1.0, 1.0, 1.0, 1.0, 0.1)
+def add(instructionTree: InstructionTree, mutationWeights: MutationWeights):
     instructionTree.mutateAdditive(mutationWeights)
 
 
-def crossover(firstTree: InstructionTree, secondTree: InstructionTree):
-    pass
+def remove(instructionTree: InstructionTree):
+    instructionTree.mutateDestructive()
+
+
+def crossover(
+    firstTree: InstructionTree,
+    secondTree: InstructionTree,
+):
+    newParent = firstTree.sampleRandomNode()
+    subtree = secondTree.sampleRandomNode()
+    firstTree.insertSubTree(newParent, subtree)
