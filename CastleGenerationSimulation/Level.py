@@ -47,7 +47,9 @@ class Level:
         )
         timer.stop()
 
-        positionPath = self.generatePath(castleGenerator)
+        self.castleMapDuplo = castleGenerator.grid
+        self.scale = castleGenerator.scale
+        positionPath = self.generatePath()
         self.castleMap = castleGenerator.getCastleMapInTerrainScale(positionPath)
 
         timer = Timer("Node Graph")
@@ -171,27 +173,34 @@ class Level:
                         material = castleCell.getMaterialBlockGlobal(x, y)
                         node.setMaterialBlock(material)
         for node in nodes.values():
+            if node.materialBlock is not None and not (node.materialBlock.materialType is MaterialType.DOOR or node.materialBlock.materialType is MaterialType.PAVEMENT):
+                graph[node] = []
+                continue
+                pass
             edges = []
             east = (node.position.x + 1, node.position.z)
             west = (node.position.x - 1, node.position.z)
             south = (node.position.x, node.position.z + 1)
             north = (node.position.x, node.position.z - 1)
-            northEast = (east[0], north[1])
-            northWest = (west[0], north[1])
-            southEast = (east[0], south[1])
-            southWest = (west[0], south[1])
+            #northEast = (east[0], north[1])
+            #northWest = (west[0], north[1])
+            #southEast = (east[0], south[1])
+            #southWest = (west[0], south[1])
             for cardinalNode in [
                 east,
                 west,
                 north,
-                northEast,
-                northWest,
-                southEast,
-                southWest,
+                #northEast,
+                #northWest,
+                #southEast,
+                #southWest,
                 south,
             ]:
                 if cardinalNode in nodes:
                     tmpNode = nodes[cardinalNode]
+                    if tmpNode.materialBlock is not None and not (tmpNode.materialBlock.materialType is MaterialType.DOOR or tmpNode.materialBlock.materialType is MaterialType.PAVEMENT):
+                        continue
+                        pass
                     tmpEdge = Edge(tmpNode, edgeCostFunc(node, tmpNode))
                     edges.append(tmpEdge)
             graph[node] = edges
@@ -209,8 +218,8 @@ class Level:
         diff = abs(node0.position.y - node1.position.y) * 10
         return node0.position.distance_to(node1.position) + diff
 
-    def generatePath(self, castleGenerator: CastleGenerator):
-        scale = castleGenerator.scale
+    def generatePath(self):
+        scale = self.scale
         pathGraph = self.makeGraph(self.pathCostAdjustFunc, scale)
         home = Vector3(
             self.targetPosition.x / scale,

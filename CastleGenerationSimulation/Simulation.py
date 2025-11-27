@@ -41,8 +41,7 @@ class Simulation:
         for n in range(10):
             self.attacker.addAxeman()
 
-        for n in range(5):
-            self.defender.addArcher()
+        self.defender.addArchersToTowers()
 
         self.attacker.updateGoal(self.target.position)
         self.defender.updateGoal(self.target.position)

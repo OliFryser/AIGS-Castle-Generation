@@ -47,7 +47,7 @@ class MapElites:
     def generateRandomSolution(self):
         # TODO: Better random solution
         individual = InstructionTree(InstructionLine(""))
-        for i in range(20):
+        for i in range(100):
             add(individual, self.initializationMutationWeights)
         return individual
 
@@ -79,9 +79,9 @@ class MapElites:
 
     def getKey(self, behavior: Behavior, simulation: Simulation):
         maxArea = simulation.getMaxArea()
-        areaKey = round((behavior.area / maxArea) * 10)
+        areaKey = round(10 / (1 + (behavior.area / (maxArea / 1000))))
         maxBlocks = simulation.getMaxBlocks()
-        blockKey = round((behavior.blocks / maxBlocks) * 10)
+        blockKey = round(10 / (1 +(behavior.blocks / (maxBlocks / 100)) * 10))
         return (blockKey, areaKey)
 
     def run(self, iterations: int, populationSize: int):

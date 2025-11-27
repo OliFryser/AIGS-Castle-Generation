@@ -1,0 +1,170 @@
+{
+  "(0, 3)": {
+    "fitness": 1430,
+    "behavior": {
+      "blocks": 19,
+      "area": 0
+    },
+    "individual": "RIGHT T RIGHT LEFT RIGHT RIGHT W T W LEFT LEFT LEFT LEFT W T RIGHT BRANCH LEFT W RIGHT T LEFT T W T RIGHT\n\tLEFT W RIGHT W RIGHT RIGHT LEFT RIGHT RIGHT RIGHT LEFT T LEFT LEFT\n"
+  },
+  "(0, 5)": {
+    "fitness": 1426,
+    "behavior": {
+      "blocks": 25,
+      "area": 0
+    },
+    "individual": "RIGHT T LEFT T W T W LEFT RIGHT RIGHT W T LEFT LEFT W LEFT RIGHT W RIGHT RIGHT T RIGHT LEFT LEFT LEFT LEFT RIGHT T RIGHT W BRANCH W LEFT\n\tW RIGHT\n"
+  },
+  "(0, 6)": {
+    "fitness": 1426,
+    "behavior": {
+      "blocks": 31,
+      "area": 0
+    },
+    "individual": "RIGHT W W T LEFT T RIGHT LEFT W LEFT LEFT W RIGHT T RIGHT W W T RIGHT T RIGHT RIGHT T W W RIGHT W LEFT W RIGHT T T T W RIGHT T RIGHT W RIGHT RIGHT T T BRANCH LEFT T T W RIGHT W W RIGHT LEFT T RIGHT W\n\tW BRANCH W BRANCH\n\t\tRIGHT RIGHT LEFT W RIGHT T T RIGHT T\n\t\t\n"
+  },
+  "(0, 1)": {
+    "fitness": 1427,
+    "behavior": {
+      "blocks": 9,
+      "area": 0
+    },
+    "individual": "RIGHT LEFT BRANCH LEFT W LEFT RIGHT W LEFT RIGHT RIGHT LEFT RIGHT RIGHT BRANCH BRANCH LEFT RIGHT RIGHT LEFT\n\tW W T LEFT RIGHT LEFT RIGHT T\n\tRIGHT LEFT\n\tLEFT RIGHT\n"
+  },
+  "(0, 4)": {
+    "fitness": 1426,
+    "behavior": {
+      "blocks": 20,
+      "area": 0
+    },
+    "individual": "RIGHT T RIGHT LEFT RIGHT RIGHT W T W LEFT LEFT LEFT LEFT W T RIGHT BRANCH LEFT W RIGHT T LEFT T W T RIGHT\n\tLEFT W RIGHT W RIGHT RIGHT LEFT RIGHT RIGHT RIGHT LEFT T LEFT LEFT\n"
+  },
+  "(0, 7)": {
+    "fitness": 1426,
+    "behavior": {
+      "blocks": 36,
+      "area": 0
+    },
+    "individual": "RIGHT W W T LEFT T RIGHT LEFT W LEFT LEFT W RIGHT T RIGHT W W T RIGHT T RIGHT RIGHT T W W RIGHT W LEFT W RIGHT T T T W RIGHT T RIGHT W RIGHT RIGHT T T BRANCH LEFT T T W RIGHT W W RIGHT LEFT T RIGHT W\n\tW BRANCH W BRANCH\n\t\tRIGHT RIGHT LEFT W RIGHT T T RIGHT T\n\t\t\n"
+  },
+  "(0, 8)": {
+    "fitness": 1426,
+    "behavior": {
+      "blocks": 40,
+      "area": 0
+    },
+    "individual": "RIGHT W W T LEFT T RIGHT LEFT W LEFT LEFT W RIGHT T RIGHT W W T RIGHT T RIGHT RIGHT T W W RIGHT W LEFT W RIGHT T T T W RIGHT T RIGHT W RIGHT RIGHT T T BRANCH LEFT T T W RIGHT W W RIGHT LEFT T RIGHT W\n\tW BRANCH W BRANCH\n\t\tRIGHT RIGHT LEFT W RIGHT T T RIGHT T\n\t\t\n"
+  },
+  "(0, 9)": {
+    "fitness": 1426,
+    "behavior": {
+      "blocks": 45,
+      "area": 0
+    },
+    "individual": "RIGHT W W T LEFT T RIGHT LEFT W LEFT LEFT W RIGHT T RIGHT W W T RIGHT T RIGHT RIGHT T W W RIGHT W LEFT W RIGHT T T T W RIGHT T RIGHT W RIGHT RIGHT T T BRANCH LEFT T T W RIGHT W W RIGHT LEFT T RIGHT W\n\tW BRANCH W BRANCH\n\t\tRIGHT RIGHT LEFT W RIGHT T T RIGHT T\n\t\t\n"
+  },
+  "(0, 10)": {
+    "fitness": 1426,
+    "behavior": {
+      "blocks": 50,
+      "area": 0
+    },
+    "individual": "RIGHT W W T LEFT T RIGHT LEFT W LEFT LEFT W RIGHT T RIGHT W W T RIGHT T RIGHT RIGHT T W W RIGHT W LEFT W RIGHT T T T W RIGHT T RIGHT W RIGHT RIGHT T T BRANCH LEFT T T W RIGHT W W RIGHT LEFT T RIGHT W\n\tW BRANCH W BRANCH\n\t\tRIGHT RIGHT LEFT W RIGHT T T RIGHT T\n\t\t\n"
+  },
+  "(0, 11)": {
+    "fitness": 1426,
+    "behavior": {
+      "blocks": 55,
+      "area": 0
+    },
+    "individual": "RIGHT W W T LEFT T RIGHT LEFT W LEFT LEFT W RIGHT T RIGHT W W T RIGHT T RIGHT RIGHT T W W RIGHT W LEFT W RIGHT T T T W RIGHT T RIGHT W RIGHT RIGHT T T BRANCH LEFT T T W RIGHT W W RIGHT LEFT T RIGHT W\n\tW BRANCH W BRANCH\n\t\tRIGHT RIGHT LEFT W RIGHT T T RIGHT T\n\t\t\n"
+  },
+  "(0, 12)": {
+    "fitness": 1426,
+    "behavior": {
+      "blocks": 61,
+      "area": 0
+    },
+    "individual": "RIGHT W W T LEFT T RIGHT LEFT W LEFT LEFT W RIGHT T RIGHT W W T RIGHT T RIGHT RIGHT T W W RIGHT W LEFT W RIGHT T T T W RIGHT T RIGHT W RIGHT RIGHT T T BRANCH LEFT T T W RIGHT W W RIGHT LEFT T RIGHT W\n\tW BRANCH W BRANCH\n\t\tRIGHT RIGHT LEFT W RIGHT T T RIGHT T\n\t\t\n"
+  },
+  "(0, 13)": {
+    "fitness": 1426,
+    "behavior": {
+      "blocks": 67,
+      "area": 0
+    },
+    "individual": "RIGHT W W T LEFT T RIGHT LEFT W LEFT LEFT W RIGHT T RIGHT W W T RIGHT T RIGHT RIGHT T W W RIGHT W LEFT W RIGHT T T T W RIGHT T RIGHT W RIGHT RIGHT T T BRANCH LEFT T T W RIGHT W W RIGHT LEFT T RIGHT W\n\tW BRANCH W BRANCH\n\t\tRIGHT RIGHT LEFT W RIGHT T T RIGHT T\n\t\t\n"
+  },
+  "(0, 14)": {
+    "fitness": 1426,
+    "behavior": {
+      "blocks": 72,
+      "area": 0
+    },
+    "individual": "RIGHT W W T LEFT T RIGHT LEFT W LEFT LEFT W RIGHT T RIGHT W W T RIGHT T RIGHT RIGHT T W W RIGHT W LEFT W RIGHT T T T W RIGHT T RIGHT W RIGHT RIGHT T T BRANCH LEFT T T W RIGHT W W RIGHT LEFT T RIGHT W\n\tW BRANCH W BRANCH\n\t\tRIGHT RIGHT LEFT W RIGHT T T RIGHT T\n\t\t\n"
+  },
+  "(0, 15)": {
+    "fitness": 1426,
+    "behavior": {
+      "blocks": 77,
+      "area": 0
+    },
+    "individual": "RIGHT W W T LEFT T RIGHT LEFT W LEFT LEFT W RIGHT T RIGHT W W T RIGHT T RIGHT RIGHT T W W RIGHT W LEFT W RIGHT T T T W RIGHT T RIGHT W RIGHT RIGHT T T BRANCH LEFT T T W RIGHT W W RIGHT LEFT T RIGHT W\n\tW BRANCH W BRANCH\n\t\tRIGHT RIGHT LEFT W RIGHT T T RIGHT T\n\t\t\n"
+  },
+  "(0, 16)": {
+    "fitness": 1426,
+    "behavior": {
+      "blocks": 82,
+      "area": 0
+    },
+    "individual": "RIGHT W W T LEFT T RIGHT LEFT W LEFT LEFT W RIGHT T RIGHT W W T RIGHT T RIGHT RIGHT T W W RIGHT W LEFT W RIGHT T T T W RIGHT T RIGHT W RIGHT RIGHT T T BRANCH LEFT T T W RIGHT W W RIGHT LEFT T RIGHT W\n\tW BRANCH W BRANCH\n\t\tRIGHT RIGHT LEFT W RIGHT T T RIGHT T\n\t\t\n"
+  },
+  "(0, 17)": {
+    "fitness": 1426,
+    "behavior": {
+      "blocks": 85,
+      "area": 0
+    },
+    "individual": "RIGHT W W T LEFT T RIGHT LEFT W LEFT LEFT W RIGHT T RIGHT W W T RIGHT T RIGHT RIGHT T W W RIGHT W LEFT W RIGHT T T T W RIGHT T RIGHT W RIGHT RIGHT T T BRANCH LEFT T T W RIGHT W W RIGHT LEFT T RIGHT W\n\tW BRANCH W BRANCH\n\t\tRIGHT RIGHT LEFT W RIGHT T T RIGHT T\n\t\t\n"
+  },
+  "(0, 2)": {
+    "fitness": 1426,
+    "behavior": {
+      "blocks": 14,
+      "area": 0
+    },
+    "individual": "RIGHT LEFT BRANCH LEFT W LEFT RIGHT W LEFT RIGHT RIGHT LEFT RIGHT RIGHT BRANCH BRANCH LEFT RIGHT RIGHT LEFT\n\tW W T LEFT RIGHT LEFT RIGHT T\n\tRIGHT LEFT\n\tLEFT RIGHT\n"
+  },
+  "(0, 18)": {
+    "fitness": 1426,
+    "behavior": {
+      "blocks": 92,
+      "area": 0
+    },
+    "individual": "RIGHT W W T LEFT T RIGHT LEFT W LEFT LEFT W RIGHT T RIGHT W W T RIGHT T RIGHT RIGHT T W W RIGHT W LEFT W RIGHT T T T W RIGHT T RIGHT W RIGHT RIGHT T T BRANCH LEFT T T W RIGHT W W RIGHT LEFT T RIGHT W\n\tW BRANCH W BRANCH\n\t\tRIGHT RIGHT LEFT W RIGHT T T RIGHT T\n\t\t\n"
+  },
+  "(0, 19)": {
+    "fitness": 1426,
+    "behavior": {
+      "blocks": 97,
+      "area": 0
+    },
+    "individual": "RIGHT W W T LEFT T RIGHT LEFT W LEFT LEFT W RIGHT T RIGHT W W T RIGHT T RIGHT RIGHT T W W RIGHT W LEFT W RIGHT T T T W RIGHT T RIGHT W RIGHT RIGHT T T BRANCH LEFT T T W RIGHT W W RIGHT LEFT T RIGHT W\n\tW BRANCH W BRANCH\n\t\tRIGHT RIGHT LEFT W RIGHT T T RIGHT T\n\t\t\n"
+  },
+  "(0, 20)": {
+    "fitness": 1426,
+    "behavior": {
+      "blocks": 103,
+      "area": 0
+    },
+    "individual": "RIGHT W W T LEFT T RIGHT LEFT W LEFT LEFT W RIGHT T RIGHT W W T RIGHT T RIGHT RIGHT T W W RIGHT W LEFT W RIGHT T T T W RIGHT T RIGHT W RIGHT RIGHT T T BRANCH LEFT T T W RIGHT W W RIGHT LEFT T RIGHT W\n\tW BRANCH W BRANCH\n\t\tRIGHT RIGHT LEFT W RIGHT T T RIGHT T\n\t\t\n"
+  },
+  "(0, 21)": {
+    "fitness": 1426,
+    "behavior": {
+      "blocks": 109,
+      "area": 0
+    },
+    "individual": "RIGHT W W T LEFT T RIGHT LEFT W LEFT LEFT W RIGHT T RIGHT W W T RIGHT T RIGHT RIGHT T W W RIGHT W LEFT W RIGHT T T T W RIGHT T RIGHT W RIGHT RIGHT T T BRANCH LEFT T T W RIGHT W W RIGHT LEFT T RIGHT W\n\tW BRANCH W BRANCH\n\t\tRIGHT RIGHT LEFT W RIGHT T T RIGHT T\n\t\t\n"
+  }
+}

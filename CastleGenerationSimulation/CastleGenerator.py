@@ -35,7 +35,7 @@ class CastleGenerator:
 
         self.center = (
             int((targetPositionx) // self.scale),
-            int((targetPositiony) // self.scale) - 1,
+            int((targetPositiony) // self.scale),
         )
         self.centerOffset = (
             self.center[0] * self.scale - (targetPositionx - self.scale / 2),
