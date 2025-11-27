@@ -179,6 +179,11 @@ class AxeMan(Unit):
     def moveCostAdjust2(self, node: Node, edge: Edge):
         cost = edge.cost
         if edge.node.unit is not None and edge.node.unit is not self and edge.node.unit in self.teamMates:
-            return cost + 10
+            cost += 10
+        """
+        if edge.node.materialBlock is not None:
+            cost += edge.node.materialBlock.health
+            print(cost)
+        """
         return cost
         
