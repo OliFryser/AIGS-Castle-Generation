@@ -37,11 +37,11 @@ class Simulation:
             self.attacker.units,
         )
         self.attacker.setEnemies(self.defender.units)
-
+        self.target.enemies = self.attacker.units
         for n in range(10):
             self.attacker.addAxeman()
 
-        self.defender.addArchersToTowers()
+        #self.defender.addArchersToTowers()
 
         self.attacker.updateGoal(self.target.position)
         self.defender.updateGoal(self.target.position)
@@ -73,6 +73,13 @@ class Simulation:
             if self.attacker.units == []:
                 self.stepCount += 10000
                 break
+            if self.stepCount > 20000:
+                print("step Break")
+                break
+        #units might hold on to eachother and dodge the garbage collector along with nodes and level and all that jazz
+        for unit in self.getUnits():
+            unit.die()
+            pass
 
     def getMaxBlocks(self):
         return self.level.maxBlocks

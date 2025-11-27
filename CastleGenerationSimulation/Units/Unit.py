@@ -71,8 +71,11 @@ class Unit:
     def die(self):
         #print(f"unit {self} died:")
         self.nodeGraph.getNodeFromPosition(self.position).unit = None
+        self.nodeGraph = None
+        self.level = None
         if self in self.teamMates:
             self.teamMates.remove(self)
+        
 
     def targetGoal(self):
         self.target = self.goal

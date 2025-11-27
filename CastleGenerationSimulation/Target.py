@@ -7,8 +7,12 @@ class Target:
         self.level = level
         self.position = level.targetPosition
         self.team: list[Unit] = []
+        self.enemies: list[Unit] = []
 
     def isOccupied(self):
+        for unit in self.enemies:
+            if unit.position.distance_to(self.position) < 2:
+                return True
         if (
             self.level.nodeGraph.getNodeFromPosition(self.position) is not None
             and self.level.nodeGraph.getNodeFromPosition(self.position).unit is not None
