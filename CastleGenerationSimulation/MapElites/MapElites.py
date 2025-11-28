@@ -6,7 +6,7 @@ import copy
 from Utils.Timer import Timer
 from .ArchiveEntry import ArchiveEntry
 from .Behavior import Behavior
-from .DynamicDiscreteKey import DynamicDiscreteKey
+from .DynamicCeiling import DynamicCeiling
 from .MapElitesPlotter import MapElitesPlotter, PlotRecord
 from .MapElitesVisualizer import renderArchive
 
@@ -49,12 +49,12 @@ class MapElites:
         self.variationMutationWeights = MutationWeights(4.0, 0.75, 1.0, 1.0, 0.5)
 
         self.resolution = resolution
-        self.dynamicKeys = [DynamicDiscreteKey(), DynamicDiscreteKey()]
+        self.dynamicKeys = [DynamicCeiling(), DynamicCeiling()]
 
     def generateRandomSolution(self):
         # TODO: Better random solution
         individual = InstructionTree(InstructionLine(""))
-        r = random.randint(1,30)
+        r = random.randint(1,40)
         for i in range(r):
             add(individual, self.initializationMutationWeights)
         return individual
@@ -89,41 +89,25 @@ class MapElites:
 
     def getKey(self, behavior: Behavior, simulation: Simulation):
         key = []
-        for n in range(len(self.dynamicKeys)):
-            dKey = self.dynamicKeys[n]
-            bValue = behavior.getBehaviours()[n]
+        for i in range(len(self.dynamicKeys)):
+            dKey = self.dynamicKeys[i]
+            bValue = behavior.getBehaviours()[i]
             if bValue > dKey.ceiling:
-                #dKey.ceiling = bValue
-                dKey.increaseCeiling(bValue)
+                dKey.redefineCeiling(bValue)
                 print(f"increased max in key new max: {dKey.ceiling}")
-                self.reShiftArchive(n)
+                self.reShiftArchive(i)
                 pass
             keyValue = dKey.calcValue(bValue)
             key.append(keyValue)
         return tuple(key)
-        """
-        maxBlocks = self.key0.ceiling
-        if behavior.blocks > maxBlocks:
-            #TODO redifine key
-            pass
-        blockKey = self.key0.calcValue(behavior.blocks)
-
-        maxArea = self.key1.ceiling
-        if behavior.area > maxArea:
-            #TODO redifine key aka reshift archive
-            pass
-        areaKey = self.key1.calcValue(behavior.area)
-        
-        return (blockKey, areaKey)
-        """
     
     def reShiftArchive(self, keyIndex):
         newArchive: dict[tuple[int, int], ArchiveEntry] = {}
         for k,v in self.archive.items():
-            newKey = list(k)
-            newKey[keyIndex] = self.dynamicKeys[keyIndex].calcValue((v.behavior.getBehaviours()[keyIndex]))
-            newKey = tuple(newKey)
-            if newKey not in newArchive.keys() or v.fitness > newArchive[newKey].fitness:
+            newKeyList = list(k)
+            newKeyList[keyIndex] = self.dynamicKeys[keyIndex].calcValue((v.behavior.getBehaviours()[keyIndex]))
+            newKey: tuple[int,int] = (newKeyList[0], newKeyList[1])
+            if newKey not in newArchive or v.fitness > newArchive[newKey].fitness:
                 newArchive[newKey] = v
 
         self.archive = newArchive
@@ -172,13 +156,13 @@ class MapElites:
             
             #Garbage Issue!
             simulation = None
-            """
             #gc.collect()
+            """
             types = Counter(type(obj) for obj in gc.get_objects())
             print(types.most_common(20))
 
             all_objects = gc.get_objects()
-            count = sum(1 for o in all_objects if isinstance(o, Level))
+            count = sum(1 for o in all_objects if isinstance(o, Simulation))
             print(f"Iteration {i+1}: {count} instances of Simulation")
             """
 
