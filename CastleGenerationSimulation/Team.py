@@ -2,6 +2,7 @@ from pygame import Vector2,Vector3
 from Units.Unit import Unit
 from Units.AxeMan import AxeMan
 from Units.Archer import Archer
+from CastleElement import ElementType,CastleElement
 from Level import Level
 
 class Team:
@@ -21,6 +22,13 @@ class Team:
     def addArcher(self):
         position = self.getNextPosition(self.line)
         self.units.append(Archer(self.level, position, goal= self.goal, teamName = self.name, teamMates = self.units, enemies = self.enemies))
+
+    def addArchersToTowers(self):
+        for row in self.level.castleMapDuplo:
+            for cell in row:
+                if cell is not None and cell.elementType is ElementType.TOWER:
+                    position = Vector2(cell.row + self.level.scale/2, cell.column + self.level.scale /2)
+                    self.units.append(Archer(self.level, position, goal= self.goal, teamName = self.name, teamMates = self.units, enemies = self.enemies))
 
     def getNextPosition(self, plus = 0):
         index = len(self.units) + plus

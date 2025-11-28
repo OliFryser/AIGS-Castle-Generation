@@ -35,7 +35,7 @@ class CastleGenerator:
 
         self.center = (
             int((targetPositionx) // self.scale),
-            int((targetPositiony) // self.scale) - 1,
+            int((targetPositiony) // self.scale),
         )
         self.centerOffset = (
             self.center[0] * self.scale - (targetPositionx - self.scale / 2),
@@ -313,7 +313,6 @@ class CastleGenerator:
     def clearCourtyard(self, grid):
         courtyard = (self.center[0], self.center[1] + 1)
         cell = grid[courtyard[1]][courtyard[0]]
-        print(courtyard)
         if cell is None:
             return
         for direction in cell.directions:

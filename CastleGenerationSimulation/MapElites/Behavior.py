@@ -8,3 +8,6 @@ class Behavior:
 
     def to_json(self):
         return asdict(self)
+    
+    def getBehaviours(self):
+        return [self.blocks, self.area]

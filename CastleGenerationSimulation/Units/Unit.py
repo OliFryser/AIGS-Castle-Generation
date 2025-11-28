@@ -71,8 +71,11 @@ class Unit:
     def die(self):
         #print(f"unit {self} died:")
         self.nodeGraph.getNodeFromPosition(self.position).unit = None
+        self.nodeGraph = None
+        self.level = None
         if self in self.teamMates:
             self.teamMates.remove(self)
+        
 
     def targetGoal(self):
         self.target = self.goal
@@ -132,14 +135,14 @@ class Unit:
             state0= State.MOVETO,
             state1= State.WAIT,
             transition=self.notHasPlan,
-            onEnter= (self.setTimer, (80,), {}),
+            onEnter= (self.setTimer, (10,), {}),
             onExit= (self.unBlock, (), {}), 
         )
         goToGoalFSM.addTransition(
             state0= State.MOVETO,
             state1= State.WAIT,
             transition=self.closeEnough,
-            onEnter= (self.setTimer, (80,), {}),
+            onEnter= (self.setTimer, (10,), {}),
         )
         
         self.fsms[goToGoalFSM.name] = goToGoalFSM
@@ -198,7 +201,7 @@ class Unit:
 
     def isBlocked(self):
         if not self.blocked:
-            self.count = 10
+            self.count = 50
             return False
         self.count -= 1
         if self.count < 1:
@@ -408,5 +411,5 @@ class Unit:
 
     def unitCost(self, node):
         if node.unit is not None and node.unit is not self and node.unit not in self.enemies:
-            return 1400
+            return 10
         return 0

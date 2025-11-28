@@ -2,14 +2,14 @@ from pygame import Vector2, Vector3
 from Level import Level
 from Units.Unit import Unit
 from Utils.FSM import FSM,State
-from Utils.Node import Node, Graph
+from Utils.Node import Edge, Node, Graph
 from CastleElement import MaterialType
 from Utils.PathFinding import aStar
 
 class AxeMan(Unit):
-    def __init__(self, *args, health: int = 100, speed: float = 0.2, size=0.3 ,**kwargs):
+    def __init__(self, *args, health: int = 100, speed: float = 0.5, size=0.3 ,**kwargs):
         super().__init__(*args, health, speed, size, **kwargs)
-        self.blockAttackDamage = 10
+        self.blockAttackDamage = 20
         self.blockAttackRange = 1
         self.attackDamage = 15
         self.attackRange = 1.5
@@ -169,8 +169,21 @@ class AxeMan(Unit):
     def planPath(self, toType = MaterialType.DOOR):
         self.path = aStar(
                 self.position, self.target, self.nodeGraph,
-                costAdjustFunc= self.moveCostAdjust, ignoreNodes=self.nodesToSkip,
+                costAdjustFunc= self.moveCostAdjust2, 
+                ignoreNodes=self.nodesToSkip,
                 unit=self,
                 budget= self.level.height*2,
                 getFirstofType=toType
             )
+
+    def moveCostAdjust2(self, node: Node, edge: Edge):
+        cost = edge.cost
+        if edge.node.unit is not None and edge.node.unit is not self and edge.node.unit in self.teamMates:
+            cost += 10
+        """
+        if edge.node.materialBlock is not None:
+            cost += edge.node.materialBlock.health
+            print(cost)
+        """
+        return cost
+        
