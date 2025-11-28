@@ -41,7 +41,7 @@ class Simulation:
         for n in range(10):
             self.attacker.addAxeman()
 
-        #self.defender.addArchersToTowers()
+        self.defender.addArchersToTowers()
 
         self.attacker.updateGoal(self.target.position)
         self.defender.updateGoal(self.target.position)
@@ -51,12 +51,12 @@ class Simulation:
         for unit in self.getUnits():
             unit.step()
         # Node unit sanity check
-        """
         n = 0
         for node in self.level.nodeGraph.graph.keys():
             if node.unit is not None:
                 n +=1
         print(n, len(self.getUnits()))
+        """
         """
 
     def getUnits(self):
@@ -71,7 +71,7 @@ class Simulation:
             self.step()
             self.stepCount += 1
             if self.attacker.units == []:
-                self.stepCount += 10000
+                self.stepCount = 20000
                 break
             if self.stepCount > 20000:
                 print("step Break")

@@ -1,4 +1,4 @@
-mode: "mapElites" # interactive | mapElites
+mode: "interactive" # interactive | mapElites
 
 interactive:
     castleGenerationFilepath: "resources/castleGenerationInstructions/test8.txt"
