@@ -23,7 +23,7 @@ class TreeNode:
         return None
 
     def replaceChild(self, newChild):
-        if len(self.children) > 0:
+        if self.children:
             childIndex = random.randrange(len(self.children))
             replacedChild = self.children[childIndex]
             del self.children[childIndex]
@@ -31,6 +31,7 @@ class TreeNode:
             return replacedChild
 
         self.line.instructions.append(InstructionToken.BRANCH)
+        self.children.append(newChild)
         return None
 
     def reset(self):

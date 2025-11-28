@@ -11,10 +11,12 @@ from Simulation import Simulation
 from Renderer import Renderer
 from TerrainMap import TerrainMap
 from TileMap import TileMap
+import Utils.Timer
 
 
 @mlxp.launch(config_path="./conf")
 def main(ctx: mlxp.Context) -> None:
+    Utils.Timer.printTimer = ctx.config.printTimer
     cfg = getattr(ctx.config, ctx.config.mode)
     terrainMap = TerrainMap(cfg.levelFilepath)
     tileMap = TileMap(cfg.castleTilesFilepath)

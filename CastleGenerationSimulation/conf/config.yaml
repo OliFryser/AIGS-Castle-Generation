@@ -1,4 +1,5 @@
-mode: "interactive" # interactive | mapElites
+mode: "mapElites" # interactive | mapElites
+printTimer: False
 
 interactive:
     castleGenerationFilepath: "resources/castleGenerationInstructions/test8.txt"

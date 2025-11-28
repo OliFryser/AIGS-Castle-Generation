@@ -51,12 +51,12 @@ class Simulation:
         for unit in self.getUnits():
             unit.step()
         # Node unit sanity check
+        """
         n = 0
         for node in self.level.nodeGraph.graph.keys():
             if node.unit is not None:
                 n +=1
         print(n, len(self.getUnits()))
-        """
         """
 
     def getUnits(self):
@@ -76,7 +76,7 @@ class Simulation:
             if self.stepCount > 20000:
                 print("step Break")
                 break
-        #units might hold on to eachother and dodge the garbage collector along with nodes and level and all that jazz
+        # units might hold on to eachother and dodge the garbage collector along with nodes and level and all that jazz
         for unit in self.getUnits():
             unit.die()
             pass

@@ -32,7 +32,6 @@ def renderArchive(
     )
     renderSurface.fill((30, 30, 48))
     for key, entry in archive.items():
-        print(entry.individual)
         entrySurface = pygame.Surface((entryDimensions[0], entryDimensions[1]))
         initParams = InitializationParameters(terrainMap, tileMap, entry.individual)
         simulation = Simulation(initParams)

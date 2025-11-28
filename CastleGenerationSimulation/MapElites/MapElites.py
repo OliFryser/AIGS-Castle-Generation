@@ -24,10 +24,6 @@ from InitializationParameters import InitializationParameters
 from Simulation import Simulation
 from TerrainMap import TerrainMap
 
-import gc
-from collections import Counter
-from Level import Level
-
 
 class MapElites:
     def __init__(
@@ -54,7 +50,7 @@ class MapElites:
     def generateRandomSolution(self):
         # TODO: Better random solution
         individual = InstructionTree(InstructionLine(""))
-        r = random.randint(1,40)
+        r = random.randint(1, 40)
         for i in range(r):
             add(individual, self.initializationMutationWeights)
         return individual
@@ -72,7 +68,7 @@ class MapElites:
             remove(individual)
         else:
             pool = list(self.archive.values())
-            print(pool, entry)
+            # print(pool, entry)
             pool.remove(entry)
             if not pool:
                 return
@@ -94,19 +90,20 @@ class MapElites:
             bValue = behavior.getBehaviours()[i]
             if bValue > dKey.ceiling:
                 dKey.redefineCeiling(bValue)
-                print(f"increased max in key new max: {dKey.ceiling}")
                 self.reShiftArchive(i)
                 pass
             keyValue = dKey.calcValue(bValue)
             key.append(keyValue)
         return tuple(key)
-    
+
     def reShiftArchive(self, keyIndex):
         newArchive: dict[tuple[int, int], ArchiveEntry] = {}
-        for k,v in self.archive.items():
+        for k, v in self.archive.items():
             newKeyList = list(k)
-            newKeyList[keyIndex] = self.dynamicKeys[keyIndex].calcValue((v.behavior.getBehaviours()[keyIndex]))
-            newKey: tuple[int,int] = (newKeyList[0], newKeyList[1])
+            newKeyList[keyIndex] = self.dynamicKeys[keyIndex].calcValue(
+                (v.behavior.getBehaviours()[keyIndex])
+            )
+            newKey: tuple[int, int] = (newKeyList[0], newKeyList[1])
             if newKey not in newArchive or v.fitness > newArchive[newKey].fitness:
                 newArchive[newKey] = v
 
@@ -116,13 +113,14 @@ class MapElites:
         maxArea = simulation.getMaxArea()
         areaKey = round(10 / (1 + (behavior.area / (maxArea / 1000))))
         maxBlocks = simulation.getMaxBlocks()
-        blockKey = round(10 / (1 +(behavior.blocks / (maxBlocks / 100)) * 10))
+        blockKey = round(10 / (1 + (behavior.blocks / (maxBlocks / 100)) * 10))
         return (blockKey, areaKey)
 
     def run(self, iterations: int, populationSize: int):
         for i in range(iterations):
             if i % 10 == 0:
                 print("MapElites iteration:", i)
+                print(f"Archive size: {len(self.archive.keys())}")
             if i < populationSize:
                 individual: InstructionTree = self.generateRandomSolution()
             else:
@@ -147,16 +145,15 @@ class MapElites:
             if key not in self.archive or fitness > self.archive[key].fitness:
                 entry = ArchiveEntry(fitness, behavior, individual)
                 self.archive[key] = entry
-            print(f"achive size: {len(self.archive.keys())}")
             self.plotter.addRecord(
                 PlotRecord(
                     self.getMaxFitness(), self.getAverageFitness(), self.getCoverage()
                 )
             )
-            
-            #Garbage Issue!
+
+            # Garbage Issue!
             simulation = None
-            #gc.collect()
+            # gc.collect()
             """
             types = Counter(type(obj) for obj in gc.get_objects())
             print(types.most_common(20))
@@ -165,7 +162,6 @@ class MapElites:
             count = sum(1 for o in all_objects if isinstance(o, Simulation))
             print(f"Iteration {i+1}: {count} instances of Simulation")
             """
-
 
         self.plotter.plot()
         self.saveArchiveToJSON()

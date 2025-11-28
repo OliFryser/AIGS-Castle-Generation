@@ -99,6 +99,9 @@ class CastleGenerator:
                 newBranch = self.instructionTree.getNextChild(agent.treeNode)
                 if newBranch is None:
                     print("Wrongly formatted branching")
+                    print("Tree:", self.instructionTree)
+                    print(f"Line: {agent.treeNode}")
+                    print(f"Children: {agent.treeNode.children}")
                 else:
                     agents.append(
                         CastleGenerationAgent(
@@ -126,9 +129,10 @@ class CastleGenerator:
         gridToScale = np.full((self.height, self.width), None)
         for row in range(len(grid)):
             for column in range(len(grid[0])):
-                if grid[row][column] is not None:
-                    if self.isBox(grid[row][column].elementType):
-                        self.boxAdjust(grid[row][column], row, column)
+                cell = grid[row][column]
+                if cell is not None:
+                    if self.isBox(cell.elementType):
+                        self.boxAdjust(cell, row, column)
                     self.fillTile(
                         grid[row][column],  # type: ignore
                         gridToScale,
