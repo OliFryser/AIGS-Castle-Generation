@@ -55,11 +55,11 @@ class MapElites:
             leftWeight=1.0,
             rightWeight=1.0,
             branchWeight= 0.2,
-            emptyWeight=0.2
+            emptyWeight=0.4
             )
 
         self.resolution = resolution
-        self.dynamicKeys = [DynamicCeiling(maximum=100), DynamicCeiling(maximum= 1000)]
+        self.dynamicKeys = [DynamicCeiling(maximum=50), DynamicCeiling(maximum= 1000)]
 
     def generateRandomSolution(self):
         # TODO: Better random solution
@@ -78,7 +78,7 @@ class MapElites:
             add(individual, self.variationMutationWeights)
         elif rand > 0.6:
             substitute(individual, self.variationMutationWeights)
-        elif rand > 0.4:
+        elif rand > 0.3:
             remove(individual)
         else:
             pool = list(self.archive.values())
@@ -100,14 +100,14 @@ class MapElites:
     def getKey(self, behavior: Behavior, simulation: Simulation):
         key = []
         for i in range(len(self.dynamicKeys)):
-            dKey = self.dynamicKeys[i]
-            bValue = behavior.getBehaviours()[i]
-            if bValue > dKey.maximum:
+            dynamicCeiling = self.dynamicKeys[i]
+            rawValue = behavior.getBehaviours()[i]
+            if rawValue > dynamicCeiling.maximum:
                 return False
-            if dKey.redefineCeiling(bValue):
+            if dynamicCeiling.redefineCeiling(rawValue):
                 self.reShiftArchive(i)
                 pass
-            keyValue = dKey.calcValue(bValue)
+            keyValue = dynamicCeiling.calcValue(rawValue)
             if keyValue <= 10:
                 key.append(keyValue)
         return tuple(key)

@@ -1,4 +1,4 @@
-mode: "mapElites" # interactive | mapElites
+mode: "interactive" # interactive | mapElites
 printTimer: False
 
 interactive:
@@ -11,6 +11,6 @@ mapElites:
     levelFilepath: "resources/terrainMaps/perlinBy4.txt"
     castleTilesFilepath: "resources/castleTiles/"
     archiveSavepath: "resources/archives/"
-    iterations: 2000
+    iterations: 2500
     population: 200
     resolution: 4

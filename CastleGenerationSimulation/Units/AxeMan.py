@@ -172,7 +172,7 @@ class AxeMan(Unit):
                 costAdjustFunc= self.moveCostAdjust2, 
                 ignoreNodes=self.nodesToSkip,
                 unit=self,
-                budget= self.level.height*2,
+                budget= self.level.height*2 + 100,
                 getFirstofType=toType
             )
 
