@@ -1,4 +1,4 @@
-from CastleElement import CastleElement
+from CastleElement import CastleElement, ElementType
 from CastleInstructions.InstructionToken import InstructionToken
 from CastleInstructions.InstructionTree import TreeNode
 from Utils.Direction import Direction
@@ -14,9 +14,10 @@ class CastleGenerationAgent:
         padding: int,
         fromDirection: Direction | None = None,
         lastElement: CastleElement | None = None,
+        tabuCells: list[tuple[int,int]] = []
     ):
         self.treeNode = treeNode
-
+        self.tabuCells = tabuCells
         self.directionToOffset = {
             Direction.UP: (0, -1),
             Direction.DOWN: (0, 1),
@@ -49,6 +50,19 @@ class CastleGenerationAgent:
         if self.lastElement is not None:
             if self.direction not in self.lastElement.directions:
                 self.lastElement.directions.append(self.direction)
+        else:
+            self.fromDirection = None
+
+        # handling Empty
+        if castleElement is ElementType.EMPTY:
+            for direction, offset in self.directionToOffset.items():
+                neighborCell = self.grid[self.cursor[1] + offset[1]][self.cursor[0] + offset[0]]
+                inverseDirection = Direction((direction + 2) % 4)
+                if neighborCell is not None and inverseDirection in neighborCell.directions:
+                    neighborCell.directions.remove(inverseDirection)
+            self.fromDirection = None
+            self.lastElement = None
+            return
 
         cell = self.grid[self.cursor[1]][self.cursor[0]]
         if cell is None:
@@ -64,12 +78,14 @@ class CastleGenerationAgent:
     def turnClockwise(self):
         # Add 1 modulo 4
         self.direction = Direction((self.direction + 1) % 4)
-        self.fromDirection = Direction((self.fromDirection + 1) % 4)
+        if self.fromDirection is not None:
+            self.fromDirection = Direction((self.fromDirection + 1) % 4)
 
     def turnCounterClockwise(self):
         # Subtract 1 modulo 4
         self.direction = Direction((self.direction - 1) % 4)
-        self.fromDirection = Direction((self.fromDirection - 1) % 4)
+        if self.fromDirection is not None:
+            self.fromDirection = Direction((self.fromDirection - 1) % 4)
 
     def moveCursorInDirection(self, range=1):
         offset = self.directionToOffset[self.direction]
@@ -84,10 +100,10 @@ class CastleGenerationAgent:
 
         offset = self.directionToOffset[self.direction]
         nextPosition = self.cursor[0] + offset[0], self.cursor[1] + offset[1]
-
         return not (
             nextPosition[0] >= self.padding
             and nextPosition[0] < width - self.padding
             and nextPosition[1] >= self.padding
             and nextPosition[1] < height - self.padding
+            and nextPosition not in self.tabuCells
         )

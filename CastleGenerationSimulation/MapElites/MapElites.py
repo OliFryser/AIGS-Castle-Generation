@@ -41,16 +41,30 @@ class MapElites:
             self.plotPath + "plot_" + self.dateString + ".png"
         )
 
-        self.initializationMutationWeights = MutationWeights(2.75, 0.5, 1.0, 1.0, 1.0)
-        self.variationMutationWeights = MutationWeights(4.0, 0.75, 1.0, 1.0, 0.5)
+        self.initializationMutationWeights = MutationWeights(
+            wallWeight=2.75,
+            towerWeight=0.5,
+            leftWeight=1.0,
+            rightWeight=1.0,
+            branchWeight= 0.5,
+            emptyWeight=0.0
+            )
+        self.variationMutationWeights = MutationWeights(
+            wallWeight= 2.0,
+            towerWeight= 0.75,
+            leftWeight=1.0,
+            rightWeight=1.0,
+            branchWeight= 0.2,
+            emptyWeight=0.2
+            )
 
         self.resolution = resolution
-        self.dynamicKeys = [DynamicCeiling(), DynamicCeiling()]
+        self.dynamicKeys = [DynamicCeiling(maximum=100), DynamicCeiling(maximum= 1000)]
 
     def generateRandomSolution(self):
         # TODO: Better random solution
         individual = InstructionTree(InstructionLine(""))
-        r = random.randint(1, 40)
+        r = random.randint(1, 50)
         for i in range(r):
             add(individual, self.initializationMutationWeights)
         return individual
@@ -88,12 +102,14 @@ class MapElites:
         for i in range(len(self.dynamicKeys)):
             dKey = self.dynamicKeys[i]
             bValue = behavior.getBehaviours()[i]
-            if bValue > dKey.ceiling:
-                dKey.redefineCeiling(bValue)
+            if bValue > dKey.maximum:
+                return False
+            if dKey.redefineCeiling(bValue):
                 self.reShiftArchive(i)
                 pass
             keyValue = dKey.calcValue(bValue)
-            key.append(keyValue)
+            if keyValue <= 10:
+                key.append(keyValue)
         return tuple(key)
 
     def reShiftArchive(self, keyIndex):
@@ -117,6 +133,8 @@ class MapElites:
         return (blockKey, areaKey)
 
     def run(self, iterations: int, populationSize: int):
+        outerTimer = Timer(f"MapElites for {iterations} iterations", forcePrint= True)
+        outerTimer.start()
         for i in range(iterations):
             if i % 10 == 0:
                 print("MapElites iteration:", i)
@@ -141,6 +159,8 @@ class MapElites:
             behavior: Behavior = self.getBehavior(simulation)
             fitness: int = self.getFitness(simulation)
             key = self.getKey(behavior, simulation)
+            if key is False:
+                continue
 
             if key not in self.archive or fitness > self.archive[key].fitness:
                 entry = ArchiveEntry(fitness, behavior, individual)
@@ -162,7 +182,7 @@ class MapElites:
             count = sum(1 for o in all_objects if isinstance(o, Simulation))
             print(f"Iteration {i+1}: {count} instances of Simulation")
             """
-
+        outerTimer.stop()
         self.plotter.plot()
         self.saveArchiveToJSON()
         self.saveArchiveVisualization()

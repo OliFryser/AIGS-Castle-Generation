@@ -62,6 +62,7 @@ class Level:
         self.gates = castleGenerator.getGateCount()
         self.blockCount = castleGenerator.countBlocks()
         self.protectedArea = self.getProtectedArea()
+        self.castleCost = castleGenerator.countBlockCost()
 
         self.maxBlocks = castleGenerator.getGridSize()
         self.maxArea = castleGenerator.getMaxArea()
@@ -284,7 +285,7 @@ class Level:
                 ):
                     tempEnclosedNodes.append(edge.node)
                     openNodes.append(edge.node)
-                    # edge.node.unit = 1
+                    #edge.node.unit = 1
                 if edge.node is None:
                     continue
                 # if touching an edge, don't count erea as being enclosed
@@ -299,9 +300,8 @@ class Level:
                     edge.node not in tmpGates
                     and edge.node.materialBlock is not None
                     and edge.node.materialBlock.materialType == MaterialType.DOOR
-                    and edge.node.materialBlock.castleElement is not None
-                    and edge.node.materialBlock.castleElement.elementType
-                    is ElementType.GATE
+                    #and edge.node.materialBlock.castleElement is not None
+                    #and edge.node.materialBlock.castleElement.elementType is ElementType.GATE
                 ):
                     tmpGates.append(edge.node.position)
 

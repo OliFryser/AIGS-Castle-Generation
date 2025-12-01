@@ -95,10 +95,12 @@ class InstructionTree:
             node = self.sampleRandomNode()
 
         removedElement = node.line.mutateDestructive()
-        if removedElement == InstructionToken.BRANCH:
+        if removedElement is InstructionToken.BRANCH:
             # TODO: Consider picking the correct branch rather than just the last one
             # Currently a bug where you can pop from an empty children list (Should not be possible, since a branch should always have a child)
-            branchToRemove = node.children.pop()
+            # this should be equivalent to taking a random branch
+            branchToRemove = random.choice(node.children)
+            node.children.remove(branchToRemove)
             self.removeSubTree(branchToRemove)
 
     def sampleRandomNode(self):

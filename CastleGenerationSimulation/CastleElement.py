@@ -8,6 +8,7 @@ class ElementType(Enum):
     WALL = "wall"
     TOWER = "tower"
     GATE = "gate"
+    EMPTY = "empty"
 
 
 class MaterialType(Enum):
@@ -25,12 +26,15 @@ tokenToElementType: dict[InstructionToken, ElementType] = {
     InstructionToken.WALL: ElementType.WALL,
     InstructionToken.GATE: ElementType.GATE,
     InstructionToken.TOWER: ElementType.TOWER,
+    InstructionToken.EMPTY: ElementType.EMPTY,
 }
 
 
 class CastleElement:
     def __init__(self, elementType: ElementType, column: int = 0, row: int = 0):
         self.elementType = elementType
+        if elementType == ElementType.EMPTY:
+            return None
         self.column = column
         self.row = row
         self.materialBlocks: dict[tuple[int, int], MaterialBlock] = {}

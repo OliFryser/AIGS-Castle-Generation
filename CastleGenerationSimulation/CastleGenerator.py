@@ -35,13 +35,13 @@ class CastleGenerator:
 
         self.center = (
             int((targetPositionx) // self.scale),
-            int((targetPositiony) // self.scale),
+            int((targetPositiony) // self.scale) -1,
         )
         self.centerOffset = (
             self.center[0] * self.scale - (targetPositionx - self.scale / 2),
             self.center[1] * self.scale - (targetPositiony - self.scale / 2),
         )
-
+        self.courtYard = (self.center[0], self.center[1] + 1)
         # Place on top of Target
         """
         """
@@ -59,6 +59,8 @@ class CastleGenerator:
                 self.instructionTree.root,
                 self.grid,
                 self.padding,
+                tabuCells= [self.courtYard],
+                lastElement= keep
             )
         )
 
@@ -75,6 +77,20 @@ class CastleGenerator:
                 if block is not None:
                     count += 1
         return count
+
+    def countBlockCost(self):
+        costMap = {
+            ElementType.KEEP: 5,
+            ElementType.WALL: 1,
+            ElementType.GATE: 10,
+            ElementType.TOWER: 10,
+        }
+        count = 0
+        for row in self.grid:
+            for block in row:
+                if block is not None and block.elementType in costMap:
+                    count += costMap[block.elementType]
+        return count + self.gateCount * 10
 
     def evaluateInstructionCost(self):
         self.cost = 0
@@ -112,6 +128,7 @@ class CastleGenerator:
                             self.padding,
                             agent.fromDirection,
                             agent.lastElement,
+                            tabuCells=[self.courtYard],
                         )
                     )
             else:
@@ -260,6 +277,7 @@ class CastleGenerator:
                                 self.fillTile(
                                     castleElement, gridToScale, position[1], position[0]
                                 )
+                                self.grid[step[1]][step[0]] = None
                             # otherwise the gate needs to be pushed a bit, place half, and then force the neighbor to take the other half
                             else:
                                 position2 = (
@@ -391,5 +409,7 @@ class CastleGenerator:
         # Straight bit
         if Direction.UP in neighbors or Direction.DOWN in neighbors:
             return np.transpose(blocks[0])
+        if neighbors == [] and len(blocks) >= 6:
+            return blocks[5]
         # Default
         return blocks[0]

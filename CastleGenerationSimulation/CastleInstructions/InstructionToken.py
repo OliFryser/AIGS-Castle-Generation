@@ -9,6 +9,7 @@ class InstructionToken(Enum):
     BRANCH = "BRANCH"
     GATE = "G"
     KEEP = "K"
+    EMPTY = "E"
 
     def __str__(self):
         return self.value

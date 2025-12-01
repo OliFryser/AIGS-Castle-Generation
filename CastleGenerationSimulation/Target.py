@@ -11,7 +11,7 @@ class Target:
 
     def isOccupied(self):
         for unit in self.enemies:
-            if unit.position.distance_to(self.position) < 2:
+            if unit.position.distance_to(self.position) < 3:
                 return True
         if (
             self.level.nodeGraph.getNodeFromPosition(self.position) is not None
