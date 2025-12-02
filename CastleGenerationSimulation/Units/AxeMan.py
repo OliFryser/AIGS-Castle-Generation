@@ -8,7 +8,7 @@ from Utils.PathFinding import aStar
 
 class AxeMan(Unit):
     def __init__(self, *args, health: int = 100, speed: float = 0.5, size=0.3 ,**kwargs):
-        super().__init__(*args, health, speed, size, **kwargs)
+        super().__init__(*args, health, speed, size, **kwargs)  
         self.blockAttackDamage = 20
         self.blockAttackRange = 1
         self.attackDamage = 15
@@ -104,7 +104,7 @@ class AxeMan(Unit):
             State.DEMOLISH : self.strikeWall,
             State.ATTACK : self.meleeAttack,
             }
-        
+
     #Transition conditions
     def foundWallWeakPoint(self):
         if self.path == []:

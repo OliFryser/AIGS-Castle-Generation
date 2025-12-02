@@ -91,6 +91,7 @@ class Simulation:
         return self.level.maxArea
     
     def getFitness(self):
+        """
         castleCost = self.level.castleCost
         castleBudget = 100
         overBudget = 0
@@ -99,3 +100,5 @@ class Simulation:
             #overBudget = overBudget*overBudget
             #print(overBudget)
         return self.stepCount - overBudget
+        """
+        return self.stepCount
