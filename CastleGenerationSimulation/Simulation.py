@@ -38,10 +38,10 @@ class Simulation:
         )
         self.attacker.setEnemies(self.defender.units)
         self.target.enemies = self.attacker.units
-        for n in range(10):
+        self.defender.addArchersToTowers()
+        for n in range(8 + len(self.defender.units)):
             self.attacker.addAxeman()
 
-        self.defender.addArchersToTowers()
 
         self.attacker.updateGoal(self.target.position)
         self.defender.updateGoal(self.target.position)

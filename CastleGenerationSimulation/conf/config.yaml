@@ -1,4 +1,4 @@
-mode: "interactive" # interactive | mapElites
+mode: "mapElites" # interactive | mapElites
 printTimer: False
 
 interactive:

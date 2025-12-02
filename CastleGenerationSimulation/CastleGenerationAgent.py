@@ -60,6 +60,7 @@ class CastleGenerationAgent:
                 inverseDirection = Direction((direction + 2) % 4)
                 if neighborCell is not None and inverseDirection in neighborCell.directions:
                     neighborCell.directions.remove(inverseDirection)
+            self.grid[self.cursor[1]][self.cursor[0]] = None
             self.fromDirection = None
             self.lastElement = None
             return
