@@ -16,7 +16,8 @@ class Team:
         self.enemies = enemies
 
     def addAxeman(self):
-        position = self.getNextPosition()
+        #position = self.getNextPosition()
+        position = self.getNextCirclePosition()
         self.units.append(AxeMan(self.level, position, goal=self.goal, teamName = self.name, teamMates = self.units, enemies = self.enemies))
     
     def addArcher(self):
@@ -38,6 +39,24 @@ class Team:
         x = self.startPosition.x + ((index % self.line +1)//2) * side
         y = self.startPosition.y + (index//self.line)
         return Vector2(x,y)
+    
+    def getNextCirclePosition(self):
+        scale = self.level.scale
+        height = self.level.height
+        width = self.level.width
+        eightWinds = [
+            Vector2(scale/2,scale/2),
+            Vector2(width/2 + scale/2,scale/2),
+            Vector2(width - scale/2,scale/2),
+            Vector2(width - scale/2, height/2 + scale/2),
+            Vector2(width - scale/2, height - scale/2),
+            Vector2(width/2 + scale/2,height - scale/2),
+            Vector2(scale/2,height - scale/2),
+            Vector2(scale/2, height/2 + scale/2),
+        ]
+        position = eightWinds[len(self.units)%8] + Vector2(0,round(len(self.units)/8))
+        return position
+
     
     def updateGoal(self, position: Vector3):
         self.goal = position

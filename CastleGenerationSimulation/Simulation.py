@@ -38,10 +38,10 @@ class Simulation:
         )
         self.attacker.setEnemies(self.defender.units)
         self.target.enemies = self.attacker.units
-        for n in range(10):
+        self.defender.addArchersToTowers()
+        for n in range(8 + len(self.defender.units)):
             self.attacker.addAxeman()
 
-        self.defender.addArchersToTowers()
 
         self.attacker.updateGoal(self.target.position)
         self.defender.updateGoal(self.target.position)
@@ -50,20 +50,21 @@ class Simulation:
     def step(self):
         for unit in self.getUnits():
             unit.step()
-        # Node unit sanity check
+        # Node unit sanity check, should not be run, it is expensive
         """
         n = 0
         for node in self.level.nodeGraph.graph.keys():
             if node.unit is not None:
                 n +=1
-        print(n, len(self.getUnits()))
+        if len(self.getUnits()) > n:       
+            print(f"Sanity check failed {n, len(self.getUnits())}")
         """
 
     def getUnits(self):
         return self.attacker.units + self.defender.units
 
     def getState(self):
-        return State(self.level.blockCount, self.level.protectedArea, self.stepCount)
+        return State(self.level.blockCount, self.level.protectedArea, self.getFitness())
 
     def runSimulation(self):
         self.stepCount = 0
@@ -77,12 +78,27 @@ class Simulation:
                 print("step Break")
                 break
         # units might hold on to eachother and dodge the garbage collector along with nodes and level and all that jazz
+        self.clearUnits()
+
+    def clearUnits(self):
         for unit in self.getUnits():
             unit.die()
-            pass
 
     def getMaxBlocks(self):
         return self.level.maxBlocks
 
     def getMaxArea(self):
         return self.level.maxArea
+    
+    def getFitness(self):
+        """
+        castleCost = self.level.castleCost
+        castleBudget = 100
+        overBudget = 0
+        if castleCost > castleBudget:
+            overBudget = (castleCost - castleBudget) * 20
+            #overBudget = overBudget*overBudget
+            #print(overBudget)
+        return self.stepCount - overBudget
+        """
+        return self.stepCount

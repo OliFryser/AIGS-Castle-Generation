@@ -9,6 +9,7 @@ class MutationWeights:
         leftWeight: float,
         rightWeight: float,
         branchWeight: float,
+        emptyWeight: float,
     ):
         self.options = [
             InstructionToken.WALL,
@@ -16,5 +17,6 @@ class MutationWeights:
             InstructionToken.LEFT,
             InstructionToken.RIGHT,
             InstructionToken.BRANCH,
+            InstructionToken.EMPTY,
         ]
-        self.weights = [wallWeight, towerWeight, leftWeight, rightWeight, branchWeight]
+        self.weights = [wallWeight, towerWeight, leftWeight, rightWeight, branchWeight, emptyWeight]

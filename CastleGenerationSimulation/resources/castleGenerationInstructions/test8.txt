@@ -1,11 +1,44 @@
-T BRANCH RIGHT W W RIGHT LEFT BRANCH BRANCH BRANCH W W W T T
-    W LEFT LEFT W W BRANCH LEFT RIGHT
-        W T
-    W W T W
-    W RIGHT W BRANCH
-        W W
-    W W LEFT W BRANCH
-        W W W LEFT T W W LEFT T W W W LEFT RIGHT W W T T W RIGHT LEFT W W BRANCH W RIGHT W W
-            W W W LEFT T W W LEFT T W W W LEFT RIGHT W W T T W RIGHT LEFT W W BRANCH W RIGHT W W
-                W W W LEFT T W W LEFT T W W W LEFT RIGHT W W T T W LEFT W W BRANCH W RIGHT W W
-                    LEFT W LEFT
+W W T W BRANCH LEFT BRANCH W W BRANCH RIGHT W
+    W BRANCH LEFT BRANCH W
+        W W T BRANCH W LEFT LEFT LEFT W W T W BRANCH W LEFT RIGHT W BRANCH LEFT W
+            T W W W RIGHT
+            RIGHT W W W W W
+            W BRANCH BRANCH
+                
+                
+        RIGHT LEFT LEFT BRANCH RIGHT
+            T LEFT W W BRANCH W
+                LEFT W BRANCH
+                    W BRANCH BRANCH
+                        RIGHT W W W
+                        
+    W BRANCH BRANCH
+        RIGHT W W W
+        BRANCH
+            RIGHT W W W W W
+    BRANCH
+        T LEFT W W BRANCH W W
+            LEFT W BRANCH
+                W W T BRANCH W LEFT LEFT LEFT W W T W BRANCH W LEFT RIGHT W BRANCH LEFT W
+                    T W W W RIGHT
+                    RIGHT W W W W W
+                    W BRANCH BRANCH
+                        BRANCH
+                            T LEFT W W BRANCH W W
+                                LEFT W BRANCH
+                                    W W T BRANCH W LEFT LEFT LEFT W W T W BRANCH W LEFT RIGHT W BRANCH LEFT W
+                                        T W W W RIGHT
+                                        RIGHT W W W W W
+                                        W BRANCH BRANCH
+                                            
+                                            
+                        BRANCH
+                            RIGHT LEFT LEFT BRANCH RIGHT
+                                T LEFT W W BRANCH W W
+                                    LEFT W BRANCH
+                                        W W T BRANCH W LEFT LEFT LEFT W W T W BRANCH W LEFT RIGHT W BRANCH LEFT W
+                                            T W W W RIGHT
+                                            RIGHT W W W W W
+                                            W BRANCH BRANCH
+                                                
+                                                

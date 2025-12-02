@@ -51,7 +51,7 @@ class Unit:
         self.nodeGraph.getNodeFromPosition(self.position).unit = self
 
         self.initFSMs()
-        self.fsm: FSM = self.initFSM()
+        self.initFSM()
 
     def step(self):
         self.fsm.updateState()
@@ -108,8 +108,7 @@ class Unit:
             State.PLANPATH : self.planPath,
             }
 
-        return topFSM
-        pass
+        self.fsm = topFSM
 
     # making general fsms to be used by subclasses
     def initFSMs(self):
