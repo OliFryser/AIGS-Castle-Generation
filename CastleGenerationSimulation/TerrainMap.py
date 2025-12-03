@@ -16,13 +16,22 @@ class TerrainMap:
             self.waterMap: set[tuple[int, int]] = set()
             self.path: set[tuple[int, int]] = set()
 
-            waterCount = f.readline()
-            if waterCount == "":
+            self.target = None
+
+            line = f.readline()
+            parsedLine = [int(x) for x in line.rstrip().split()]
+            if line == "":
                 return
 
-            for i in range(int(waterCount)):
-                x, y = map(int, f.readline().rstrip().split())
-                self.addWater(x, y)
+            if len(parsedLine) == 2:
+                self.target = parsedLine[0], parsedLine[1]
+                line = f.readline()
+                parsedLine = [int(x) for x in line.rstrip().split()]
+
+            if len(parsedLine) == 1:
+                for i in range(int(line)):
+                    x, y = map(int, f.readline().rstrip().split())
+                    self.addWater(x, y)
 
             pathCount = f.readline()
             if pathCount == "":
@@ -60,3 +69,34 @@ class TerrainMap:
     def decreaseHeight(self, x, y, amount):
         newHeight = self.map[y][x] - amount
         self.map[y][x] = max(newHeight, 0)
+
+    def saveToFile(self, filepath: str):
+        with open(filepath, "w") as f:
+            # Write terrain
+            line = f"{self.width} {self.height} {self.maxHeight}"
+            f.write(line + "\n")
+
+            for y in range(self.height):
+                line = " ".join(str(self.getHeight(x, y)) for x in range(self.width))
+                f.write(line + "\n")
+
+            # Write target
+            if self.target is not None:
+                line = f"{self.target[0]} {self.target[1]}"
+                f.write(line + "\n")
+
+            # Write water
+            line = f"{len(self.waterMap)}"
+            f.write(line + "\n")
+
+            for x, y in self.waterMap:
+                f.write(f"{x} {y}\n")
+
+            # Write path
+            line = f"{len(self.path)}"
+            f.write(line + "\n")
+
+            for x, y in self.path:
+                f.write(f"{x} {y}\n")
+
+            print(f"Successfully saved terrain to {filepath}")

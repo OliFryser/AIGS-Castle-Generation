@@ -15,5 +15,5 @@ mapElites:
     resolution: 4
 
 terrainBuilder:
-    levelFilepath: "resources/terrainMaps/perlinBy4.txt"
+    levelFilepath: "resources/terrainMaps/perlinBy4 - test.txt"
     resolution: 4

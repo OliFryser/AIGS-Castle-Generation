@@ -3,7 +3,6 @@ import math
 
 import pygame
 
-from TerrainBuilder import TerrainSaver
 from TerrainBuilder.IntSlider import IntSlider
 from TerrainBuilder.Button import Button
 from TerrainBuilder.Slider import Slider
@@ -113,7 +112,7 @@ class TerrainBuilder:
         self.currentTool = TerrainTool.TERRAIN
 
     def onSaveButtonClick(self, _):
-        TerrainSaver.saveToFile(self.terrainMap, self.levelFilepath)
+        self.terrainMap.saveToFile(self.levelFilepath)
 
     def onToolButtonClick(self, tool: TerrainTool, button: Button):
         self.currentTool = tool
@@ -147,6 +146,12 @@ class TerrainBuilder:
                 self.rightMouseButtonHeld = True
             elif event.type == pygame.MOUSEBUTTONUP and event.button == 3:
                 self.rightMouseButtonHeld = False
+
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_t:
+                targetPosX, targetPosY = self.mousePos
+                targetPosX = targetPosX // self.resolution
+                targetPosY = (targetPosY - self.statusBarOffset) // self.resolution
+                self.terrainMap.target = (targetPosX, targetPosY)
 
             for b in self.toolButtons:
                 b.handleEvent(event)
@@ -342,15 +347,10 @@ class TerrainBuilder:
         cellX = (cellX // self.castleGridSize) * self.castleGridSize + brushSize
         cellY = (cellY // self.castleGridSize) * self.castleGridSize + brushSize
 
-        for dy in range(-brushSize, brushSize + 1):
-            for dx in range(-brushSize, brushSize + 1):
-                x = cellX + dx
-                y = cellY + dy
-
-                if add:
-                    self.terrainMap.addPath(x, y)
-                else:
-                    self.terrainMap.removePath(x, y)
+        if add:
+            self.terrainMap.addPath(cellX, cellY)
+        else:
+            self.terrainMap.removePath(cellX, cellY)
 
     def withinLevelBounds(self, x, y):
         return 0 <= x < self.terrainMap.width and 0 <= y < self.terrainMap.height

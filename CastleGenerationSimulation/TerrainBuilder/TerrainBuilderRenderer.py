@@ -13,6 +13,7 @@ class TerrainBuilderRenderer:
         self.terrainMapCached = False
         self.waterColor = (40, 50, 255)
         self.pathColor = (120, 60, 30)
+        self.targetColor = (255, 255, 0)
 
     def render(self, screen: pygame.surface.Surface):
         if not self.terrainMapCached:
@@ -21,6 +22,15 @@ class TerrainBuilderRenderer:
             self.renderPath(self.terrainMap)
 
         screen.blit(self.surface, (0, self.statusBarOffset))
+        self.renderTarget(screen)
+
+    def renderTarget(self, screen):
+        if self.terrainMap.target is None:
+            return
+        targetPos = self.modelToViewSpace(
+            self.terrainMap.target[0], self.terrainMap.target[1]
+        )
+        pygame.draw.circle(screen, self.targetColor, targetPos, 1 * self.resolution)
 
     def renderWaterMap(self, terrainMap: TerrainMap):
         for x, y in terrainMap.waterMap:
