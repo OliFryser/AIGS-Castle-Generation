@@ -9,6 +9,7 @@ from InitializationParameters import InitializationParameters
 from MapElites.MapElites import MapElites
 from Simulation import Simulation
 from Renderer import Renderer
+from TerrainBuilder.TerrainBuilder import TerrainBuilder
 from TerrainMap import TerrainMap
 from TileMap import TileMap
 import Utils.Timer
@@ -19,15 +20,20 @@ def main(ctx: mlxp.Context) -> None:
     Utils.Timer.printTimer = ctx.config.printTimer
     cfg = getattr(ctx.config, ctx.config.mode)
     terrainMap = TerrainMap(cfg.levelFilepath)
-    tileMap = TileMap(cfg.castleTilesFilepath)
+    tileMap = TileMap(ctx.config.castleTilesFilepath)
 
     match ctx.config.mode:
         case "interactive":
             runInteractiveMode(cfg, terrainMap, tileMap)
         case "mapElites":
             runMapElites(cfg, terrainMap, tileMap)
-
+        case "terrainBuilder":
+            runTerrainBuilder(cfg, terrainMap)
     sys.exit()
+
+
+def runTerrainBuilder(cfg, terrainMap):
+    TerrainBuilder(cfg, terrainMap).run()
 
 
 def runMapElites(cfg, terrainMap, tileMap):
