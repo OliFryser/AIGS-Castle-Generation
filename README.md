@@ -27,7 +27,7 @@ We use conda for managing the python environment. We have provided the configura
 - Implement random variation between variations ✅
 - Implement better initial sampling with different mutation weights ✅
 - Plotting of MaxFitness, coverage and QD-score ✅
-- Plotting of archive
+- Plotting of archive ✅
 - Restrict agent to "buildable area" ✅
 
 - Loading from archive
