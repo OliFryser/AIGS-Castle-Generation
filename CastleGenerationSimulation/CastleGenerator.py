@@ -71,12 +71,15 @@ class CastleGenerator:
         return self.getGridSize() * self.scale
 
     def countBlocks(self):
-        count = 0
+        blocks: dict[ElementType, int] = {}
         for row in self.grid:
             for block in row:
                 if block is not None:
-                    count += 1
-        return count
+                    if block.elementType in blocks:
+                        blocks[block.elementType] = blocks[block.elementType] + 1
+                    else:
+                        blocks[block.elementType] = 1
+        return blocks
 
     def countBlockCost(self):
         costMap = {

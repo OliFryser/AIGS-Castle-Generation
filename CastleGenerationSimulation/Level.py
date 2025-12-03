@@ -60,7 +60,9 @@ class Level:
         # gather data
         self.instructionCost = castleGenerator.cost
         self.gates = castleGenerator.getGateCount()
-        self.blockCount = castleGenerator.countBlocks()
+        self.blocks = castleGenerator.countBlocks()
+        self.blockCount = self.countBlocks()
+        self.towerRatio = self.getTowerRatio()
         self.protectedArea = self.getProtectedArea()
         self.castleCost = castleGenerator.countBlockCost()
 
@@ -89,6 +91,18 @@ class Level:
                     n.unit=1 #type: ignore
             
         """
+    def countBlocks(self):
+        count = 0
+        for value in self.blocks.values():
+            count += value
+        return count
+    
+    def getTowerRatio(self):
+        if ElementType.TOWER not in self.blocks:
+            return 0
+        if ElementType.WALL not in self.blocks:
+            return 1
+        return self.blocks[ElementType.TOWER] / self.blocks[ElementType.WALL]
 
     def getLevel(self):
         return self.terrainMap

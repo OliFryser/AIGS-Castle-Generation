@@ -10,7 +10,11 @@ from Team import Team
 class State:
     blocks: int
     area: int
-    stepCount: int
+    cost: int
+    towerRatio: float
+    kills: int
+    gates: int
+    fitness: int
 
 
 class Simulation:
@@ -46,6 +50,7 @@ class Simulation:
         self.attacker.updateGoal(self.target.position)
         self.defender.updateGoal(self.target.position)
         self.target.team = self.defender.units
+        self.noAttackers = len(self.attacker.units)
 
     def step(self):
         for unit in self.getUnits():
@@ -64,7 +69,16 @@ class Simulation:
         return self.attacker.units + self.defender.units
 
     def getState(self):
-        return State(self.level.blockCount, self.level.protectedArea, self.getFitness())
+        state = State(
+            blocks= self.level.blockCount,
+            area= self.level.protectedArea,
+            cost= self.getCost(),
+            towerRatio= self.level.towerRatio,
+            kills= self.kills,
+            gates= self.level.gates,
+            fitness=self.getFitness(),
+            )
+        return state
 
     def runSimulation(self):
         self.stepCount = 0
@@ -77,6 +91,7 @@ class Simulation:
             if self.stepCount > 20000:
                 print("step Break")
                 break
+        self.kills = - (len(self.attacker.units) - self.noAttackers)
         # units might hold on to eachother and dodge the garbage collector along with nodes and level and all that jazz
         self.clearUnits()
 
@@ -89,6 +104,9 @@ class Simulation:
 
     def getMaxArea(self):
         return self.level.maxArea
+    
+    def getCost(self):
+        return self.level.castleCost
     
     def getFitness(self):
         """

@@ -95,7 +95,7 @@ class MapElites:
         return Behavior(blocks, area)
 
     def getFitness(self, simulation: Simulation) -> int:
-        return simulation.getState().stepCount
+        return simulation.getState().fitness
 
     def getKey(self, behavior: Behavior, simulation: Simulation):
         key = []
