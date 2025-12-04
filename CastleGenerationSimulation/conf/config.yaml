@@ -1,4 +1,4 @@
-mode: "mapElites" # interactive | mapElites | terrainBuilder
+mode: "interactive" # interactive | mapElites | terrainBuilder
 printTimer: False
 castleTilesFilepath: "resources/castleTiles/"
 
