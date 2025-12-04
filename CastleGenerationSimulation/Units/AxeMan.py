@@ -180,9 +180,9 @@ class AxeMan(Unit):
         cost = edge.cost
         if edge.node.unit is not None and edge.node.unit is not self and edge.node.unit in self.teamMates:
             cost += 10
-        if edge.node.materialBlock is not None:
-            cost += edge.node.materialBlock.health
         """
+        if edge.node.materialBlock is not None:
+            cost += edge.node.materialBlock.health/10
             print(cost)
         """
         return cost

@@ -1,17 +1,17 @@
-mode: "terrainBuilder" # interactive | mapElites | terrainBuilder
+mode: "mapElites" # interactive | mapElites | terrainBuilder
 printTimer: False
 castleTilesFilepath: "resources/castleTiles/"
 
 interactive:
     castleGenerationFilepath: "resources/castleGenerationInstructions/test4.txt"
     resolution: 4
-    levelFilepath: "resources/terrainMaps/perlinBy3.txt"
+    levelFilepath: "resources/terrainMaps/perlinBy4 - test.txt"
 
 mapElites:
-    levelFilepath: "resources/terrainMaps/perlinBy4.txt"
+    levelFilepath: "resources/terrainMaps/perlinBy4 - test.txt"
     archiveSavepath: "resources/archives/"
-    iterations: 2500
-    population: 200
+    iterations: 1000
+    population: 100
     resolution: 4
 
 terrainBuilder:

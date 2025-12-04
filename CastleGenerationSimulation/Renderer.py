@@ -3,7 +3,7 @@ from CastleElement import MaterialType
 from Simulation import Simulation
 from Units.Unit import Unit
 from Target import Target
-
+import random
 
 class Renderer:
     def __init__(self, simulation: Simulation, screen: pygame.Surface, resolution: int):
@@ -24,6 +24,7 @@ class Renderer:
         self.screen.fill((255, 0, 255))
 
         self.displayTerrainMap(self.screen)
+        self.renderWaterMap()
         self.renderCastleMap()
         for unit in self.simulation.getUnits():
             self.chaosUnitRender(unit)
@@ -43,7 +44,7 @@ class Renderer:
                     pygame.draw.rect(self.screen, color, rect)
                 """
                 node = level.nodeGraph.nodes[(x + 0.5, y + 0.5)]
-                if node.materialBlock is not None:
+                if node.materialBlock is not None and node.materialBlock.materialType is not MaterialType.WATER:
                     color = self.materialTypeToColor[node.materialBlock.materialType]
                     rect = pygame.Rect(x * cellSize, y * cellSize, cellSize, cellSize)
                     pygame.draw.rect(self.screen, color, rect)
@@ -110,6 +111,20 @@ class Renderer:
             self.modelToViewSpace(target.position),
             2,
         )
+    
+    def renderWaterMap(self):
+        waterMap = self.simulation.level.waterMap
+        for x, y in waterMap:
+            rect = pygame.Rect(
+                x * self.resolution,
+                y * self.resolution,
+                self.resolution,
+                self.resolution,
+            )
+            r = random.randint(-10,10)
+            waterColor = (0,0,200 + r)
+            pygame.draw.rect(self.screen, waterColor, rect)
+
 
     def modelToViewSpace(self, position: pygame.Vector3) -> pygame.Vector2:
         return pygame.Vector2(

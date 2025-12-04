@@ -19,6 +19,7 @@ class MaterialType(Enum):
     SANDSTONE = "S"
     PAVEMENT = "P"
     EMPTY = "0"
+    WATER = "v"
 
 
 tokenToElementType: dict[InstructionToken, ElementType] = {
@@ -96,6 +97,10 @@ class MaterialBlock:
         if self.materialType == MaterialType.SANDSTONE:
             self.health = 200
             self.damageThreshold = 9
+            return
+        if self.materialType == MaterialType.WATER:
+            self.health = 0
+            self.damageThreshold = 1000
             return
         if self.materialType == MaterialType.PAVEMENT:
             self.health = 0

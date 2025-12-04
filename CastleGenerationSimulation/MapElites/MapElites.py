@@ -59,7 +59,7 @@ class MapElites:
             )
 
         self.resolution = resolution
-        self.dynamicKeys = [DynamicCeiling(maximum=50), DynamicCeiling(maximum= 1000)]
+        self.dynamicKeys = [DynamicCeiling(maximum=150), DynamicCeiling(maximum= 1000)]
 
     def generateRandomSolution(self):
         # TODO: Better random solution
@@ -90,7 +90,7 @@ class MapElites:
             crossover(individual, other)
 
     def getBehavior(self, simulation: Simulation) -> Behavior:
-        blocks = simulation.getState().blocks
+        blocks = simulation.getState().cost
         area = simulation.getState().area
         return Behavior(blocks, area)
 

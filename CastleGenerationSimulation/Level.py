@@ -1,5 +1,5 @@
 import numpy as np
-from pygame import Vector3
+from pygame import Vector2, Vector3
 
 from CastleGenerator import CastleGenerator
 from CastleInstructions.InstructionTree import InstructionTree
@@ -8,7 +8,7 @@ from TileMap import TileMap
 from Utils.Timer import Timer
 from Utils.Node import Graph, Node, Edge
 from Utils.PathFinding import aStar
-from CastleElement import ElementType, MaterialType
+from CastleElement import ElementType, MaterialType, MaterialBlock
 
 
 class Level:
@@ -17,23 +17,27 @@ class Level:
         terrainMap: TerrainMap,
         castleInstructionTree: InstructionTree,
         tileMap: TileMap,
-        targetPosition: Vector3 | None = None,
+        #targetPosition: Vector3 | None = None,
     ):
         self.terrainMap = terrainMap.map
+        self.waterMap = terrainMap.waterMap
         self.width = terrainMap.width
         self.height = terrainMap.height
         self.maxHeight = terrainMap.maxHeight
         self.castleMap = None
+        targetPosition = terrainMap.target
+
         if targetPosition is None:
             x = int(self.width / 2)
             z = int(self.height / 3)
-            self.targetPosition = Vector3(
-                x,
-                self.getBilinearHeight(self.width / 2 - 0.5, self.height / 2 - 0.5),
-                z,
-            )
         else:
-            self.targetPosition = targetPosition
+            x = targetPosition[0]//5 * 5
+            z = targetPosition[1]//5 * 5
+        self.targetPosition = Vector3(
+            x,
+            self.getBilinearHeight(x, z),
+            z,
+        )
 
         timer = Timer("Castle generator")
         timer.start()
@@ -49,8 +53,10 @@ class Level:
 
         self.castleMapDuplo = castleGenerator.grid
         self.scale = castleGenerator.scale
-        positionPath = self.generatePath()
-        self.castleMap = castleGenerator.getCastleMapInTerrainScale(positionPath)
+        self.path = terrainMap.path
+        self.inferPathOrder()
+
+        self.castleMap = castleGenerator.getCastleMapInTerrainScale(self.path)
 
         timer = Timer("Node Graph")
         timer.start()
@@ -71,7 +77,7 @@ class Level:
 
         # Debug print for path
         """
-        for pos in positionPath:
+        for pos in self.path:
             v3 = Vector3(
                 pos[0]*castleGenerator.scale+castleGenerator.scale/2 - int(castleGenerator.scale/2), 
                 0, 
@@ -88,8 +94,7 @@ class Level:
                 )
                 n = self.nodeGraph.getNodeFromPosition(v3)
                 if n is not None:
-                    n.unit=1 #type: ignore
-            
+                    n.unit=1 #type: ignore 
         """
     def countBlocks(self):
         count = 0
@@ -187,6 +192,9 @@ class Level:
                     if castleCell is not None:
                         material = castleCell.getMaterialBlockGlobal(x, y)
                         node.setMaterialBlock(material)
+                    elif (x,y) in self.waterMap:
+                        node.setMaterialBlock(MaterialBlock(MaterialType.WATER))
+                        
         for node in nodes.values():
             if node.materialBlock is not None and not (node.materialBlock.materialType is MaterialType.DOOR or node.materialBlock.materialType is MaterialType.PAVEMENT):
                 graph[node] = []
@@ -256,6 +264,17 @@ class Level:
         return [(int(node.position.x), int(node.position.z)) for node in nodePath] + [
             (self.targetPosition.x, self.targetPosition.z)
         ]
+    
+    def inferPathOrder(self):
+        point = Vector2(self.targetPosition.x,self.targetPosition.z)
+        newPath = [point]
+        tmpPath = [Vector2(p) for p in self.path]
+        while tmpPath != []:
+            point = min(tmpPath, key=lambda x: point.distance_to(x))
+            newPath.append(point)
+            tmpPath.remove(point)
+
+        self.path = [(int(p.x//self.scale),int(p.y//self.scale)) for p in newPath]
 
     ##############################################################
     # Behaviour
