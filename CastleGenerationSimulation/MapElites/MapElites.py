@@ -5,10 +5,10 @@ import copy
 
 from Utils.Timer import Timer
 from .ArchiveEntry import ArchiveEntry
-from .Behavior import Behavior
+from .Behavior import Behavior, Behaviors
 from .DynamicCeiling import DynamicCeiling
 from .MapElitesPlotter import MapElitesPlotter, PlotRecord
-from .MapElitesVisualizer import renderArchive
+from .ArchiveVisualizer import renderArchive
 
 from CastleInstructions.InstructionLine import InstructionLine
 from CastleInstructions.InstructionTree import InstructionTree
@@ -46,20 +46,20 @@ class MapElites:
             towerWeight=0.5,
             leftWeight=1.0,
             rightWeight=1.0,
-            branchWeight= 0.5,
-            emptyWeight=0.0
-            )
+            branchWeight=0.5,
+            emptyWeight=0.0,
+        )
         self.variationMutationWeights = MutationWeights(
-            wallWeight= 2.0,
-            towerWeight= 0.75,
+            wallWeight=2.0,
+            towerWeight=0.75,
             leftWeight=1.0,
             rightWeight=1.0,
-            branchWeight= 0.2,
-            emptyWeight=0.4
-            )
+            branchWeight=0.2,
+            emptyWeight=0.4,
+        )
 
         self.resolution = resolution
-        self.dynamicKeys = [DynamicCeiling(maximum=150), DynamicCeiling(maximum= 1000)]
+        self.dynamicKeys = [DynamicCeiling(maximum=150), DynamicCeiling(maximum=1000)]
 
     def generateRandomSolution(self):
         # TODO: Better random solution
@@ -82,32 +82,31 @@ class MapElites:
             remove(individual)
         else:
             pool = list(self.archive.values())
-            # print(pool, entry)
             pool.remove(entry)
             if not pool:
                 return
             other = copy.deepcopy(self.sampleRandomSolution(pool).individual)
             crossover(individual, other)
 
-    def getBehavior(self, simulation: Simulation) -> Behavior:
-        blocks = simulation.getState().cost
-        area = simulation.getState().area
-        return Behavior(blocks, area)
+    def getBehavior(self, simulation: Simulation) -> Behaviors:
+        behaviorX = Behavior(simulation.getState().cost, "Cost")
+        behaviorY = Behavior(simulation.getState().area, "Area")
+        return Behaviors(behaviorX, behaviorY)
 
     def getFitness(self, simulation: Simulation) -> int:
         return simulation.getState().fitness
 
-    def getKey(self, behavior: Behavior, simulation: Simulation):
+    def getKey(self, behaviors: Behaviors):
         key = []
         for i in range(len(self.dynamicKeys)):
             dynamicCeiling = self.dynamicKeys[i]
-            rawValue = behavior.getBehaviours()[i]
-            if rawValue > dynamicCeiling.maximum:
+            behavior = behaviors.getBehaviors()[i]
+            if behavior.value > dynamicCeiling.maximum:
                 return False
-            if dynamicCeiling.redefineCeiling(rawValue):
+            if dynamicCeiling.redefineCeiling(behavior.value):
                 self.reShiftArchive(i)
                 pass
-            keyValue = dynamicCeiling.calcValue(rawValue)
+            keyValue = dynamicCeiling.calcValue(behavior.value)
             if keyValue <= 10:
                 key.append(keyValue)
         return tuple(key)
@@ -117,7 +116,7 @@ class MapElites:
         for k, v in self.archive.items():
             newKeyList = list(k)
             newKeyList[keyIndex] = self.dynamicKeys[keyIndex].calcValue(
-                (v.behavior.getBehaviours()[keyIndex])
+                (v.behavior.getBehaviors()[keyIndex].value)
             )
             newKey: tuple[int, int] = (newKeyList[0], newKeyList[1])
             if newKey not in newArchive or v.fitness > newArchive[newKey].fitness:
@@ -125,15 +124,8 @@ class MapElites:
 
         self.archive = newArchive
 
-    def getKey2(self, behavior: Behavior, simulation: Simulation):
-        maxArea = simulation.getMaxArea()
-        areaKey = round(10 / (1 + (behavior.area / (maxArea / 1000))))
-        maxBlocks = simulation.getMaxBlocks()
-        blockKey = round(10 / (1 + (behavior.blocks / (maxBlocks / 100)) * 10))
-        return (blockKey, areaKey)
-
     def run(self, iterations: int, populationSize: int):
-        outerTimer = Timer(f"MapElites for {iterations} iterations", forcePrint= True)
+        outerTimer = Timer(f"MapElites for {iterations} iterations", forcePrint=True)
         outerTimer.start()
         for i in range(iterations):
             if i % 10 == 0:
@@ -156,9 +148,9 @@ class MapElites:
             simulation.runSimulation()
             timer.stop()
 
-            behavior: Behavior = self.getBehavior(simulation)
+            behavior: Behaviors = self.getBehavior(simulation)
             fitness: int = self.getFitness(simulation)
-            key = self.getKey(behavior, simulation)
+            key = self.getKey(behavior)
             if key is False:
                 continue
 

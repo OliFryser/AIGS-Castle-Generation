@@ -1,13 +1,13 @@
 from dataclasses import dataclass
 
 from CastleInstructions.InstructionTree import InstructionTree
-from .Behavior import Behavior
+from .Behavior import Behaviors
 
 
 @dataclass
 class ArchiveEntry:
     fitness: int
-    behavior: Behavior
+    behavior: Behaviors
     individual: InstructionTree
 
     def __str__(self):
