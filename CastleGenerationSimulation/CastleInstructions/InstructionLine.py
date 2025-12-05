@@ -10,7 +10,7 @@ class InstructionLine:
         )
         self._nextIndex = 0
 
-    def mutate(self, newElement: InstructionToken) -> InstructionToken | None:
+    def mutateSubstitute(self, newElement: InstructionToken) -> int | None:
         if not self.instructions:
             return None
         mutationIndex = random.randrange(len(self.instructions))
@@ -18,18 +18,20 @@ class InstructionLine:
         del self.instructions[mutationIndex]
         self.instructions.insert(mutationIndex, newElement)
 
-        return removedInstruction
+        if removedInstruction == InstructionToken.BRANCH:
+            return mutationIndex
 
     def mutateAdditive(self, newElement: InstructionToken):
         self.instructions.append(newElement)
 
-    def mutateDestructive(self):
+    def mutateDestructive(self) -> None | int:
         if not self.instructions:
             return None
         mutationIndex = random.randrange(len(self.instructions))
         removedInstruction = self.instructions[mutationIndex]
         del self.instructions[mutationIndex]
-        return removedInstruction
+        if removedInstruction == InstructionToken.BRANCH:
+            return mutationIndex
 
     def getNextInstruction(self):
         if self._nextIndex < len(self.instructions):

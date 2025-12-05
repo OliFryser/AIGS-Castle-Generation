@@ -8,18 +8,6 @@ We use conda for managing the python environment. We have provided the configura
 2. Run ``conda env create -f environment.yml`` or ``conda env update -f environment.yml``, if you have already created the environment.
 3. Run ``conda activate fortify``.
 
-## Ask supervisor
-
-- How do we manage castle growth - limiting how far it can grow? Do not place outside range?
-- Starting point - Keep block or predefined?
-
-- MaxFitness
-- Coverage
-- QD-score - Average fitness of everything in archive
-
-- 10x10 archive - can visualize
-- 1000 iterations
-
 ## TODO for map elite
 
 ### TODO Oliver
@@ -38,3 +26,15 @@ We use conda for managing the python environment. We have provided the configura
 - Better AI FSM
 - Implement Archer unit
 - Profiling of simulation
+
+
+## Supervision
+
+- Hard max for block behavior to limit infinite growth
+- Removing block behavior may converge to just infinite growth
+- Adding more enemy units per tower - essentially scaling defense vs. attacking units
+  
+- Baseline algorithm: Traditional EA - Do you have a good reference for this?
+
+Multi objective mapelite
+Multi emitter Map elite

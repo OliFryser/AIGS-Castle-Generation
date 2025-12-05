@@ -34,6 +34,13 @@ class TreeNode:
         self.children.append(newChild)
         return None
 
+    def getBranchIndexFromInstructionIndex(self, index):
+        branchCount = 0
+        for i in range(0, index):
+            if self.line.instructions[i] == InstructionToken.BRANCH:
+                branchCount += 1
+        return branchCount
+
     def reset(self):
         self._nextChildIndex = 0
         self.line.reset()
@@ -62,17 +69,15 @@ class InstructionTree:
             node = self.sampleRandomNode()
 
         newElement = random.choices(mutationWeights.options, mutationWeights.weights)[0]
-        removedElement = node.line.mutate(newElement)
+        mutationIndex = node.line.mutateSubstitute(newElement)
 
         if newElement == InstructionToken.BRANCH:
             newBranch = TreeNode(InstructionLine(""))
             node.addChild(newBranch)
             self.nodes.append(newBranch)
 
-        if removedElement == InstructionToken.BRANCH:
-            # TODO: Consider picking the correct branch rather than just the last one
-            branchToRemove = node.children.pop()
-            self.removeSubTree(branchToRemove)
+        if mutationIndex is not None:
+            self.removeBranchAtMutationIndex(node, mutationIndex)
 
     def mutateAdditive(
         self,
@@ -94,14 +99,14 @@ class InstructionTree:
         if node is None:
             node = self.sampleRandomNode()
 
-        removedElement = node.line.mutateDestructive()
-        if removedElement is InstructionToken.BRANCH:
-            # TODO: Consider picking the correct branch rather than just the last one
-            # Currently a bug where you can pop from an empty children list (Should not be possible, since a branch should always have a child)
-            # this should be equivalent to taking a random branch
-            branchToRemove = random.choice(node.children)
-            node.children.remove(branchToRemove)
-            self.removeSubTree(branchToRemove)
+        mutationIndex = node.line.mutateDestructive()
+        if mutationIndex is not None:
+            self.removeBranchAtMutationIndex(node, mutationIndex)
+
+    def removeBranchAtMutationIndex(self, node: TreeNode, mutationIndex):
+        childIndex = node.getBranchIndexFromInstructionIndex(mutationIndex)
+        self.removeSubTree(node.children[childIndex])
+        del node.children[childIndex]
 
     def sampleRandomNode(self):
         return random.choice(self.nodes)
