@@ -23,12 +23,15 @@ class TerrainBuilder:
         # used by path
         self.castleGridSize = 5
 
+        self.terrainMap: TerrainMap = terrainMap
+        self.terrainMap.maxHeight *= cfg.maxHeightMultiplier
+
         self.brushPreviewColor = (40, 210, 255, 80)
         self.leftMouseButtonHeld = False
         self.rightMouseButtonHeld = False
         self.currentTool: TerrainTool = TerrainTool.TERRAIN
         self.levelFilepath: str = cfg.levelFilepath
-        self.terrainMap: TerrainMap = terrainMap
+
         self.resolution = cfg.resolution
         self.statusBarOffset = 50
         self.screen = pygame.display.set_mode(
