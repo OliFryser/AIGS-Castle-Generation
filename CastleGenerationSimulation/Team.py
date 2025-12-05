@@ -45,19 +45,28 @@ class Team:
         height = self.level.height
         width = self.level.width
         eightWinds = [
-            Vector2(scale/2,scale/2),
-            Vector2(width/2 + scale/2,scale/2),
-            Vector2(width - scale/2,scale/2),
-            Vector2(width - scale/2, height/2 + scale/2),
-            Vector2(width - scale/2, height - scale/2),
-            Vector2(width/2 + scale/2,height - scale/2),
-            Vector2(scale/2,height - scale/2),
-            Vector2(scale/2, height/2 + scale/2),
+            Vector2(scale,scale),
+            Vector2(width/2,scale),
+            Vector2(width - scale,scale),
+            Vector2(width - scale, height/2 + scale),
+            Vector2(width - scale, height - scale),
+            Vector2(width/2 + scale,height - scale),
+            Vector2(scale,height - scale),
+            Vector2(scale, height/2 + scale),
         ]
-        position = eightWinds[len(self.units)%8] + Vector2(0,round(len(self.units)/8))
-        return position
+        position = eightWinds[len(self.units)%8]# + Vector2(0,round(len(self.units)/8))
+        return self.getNextPosition2(position)
 
+    def getNextPosition2(self, position):
+        index = int(len(self.units)/8)
+        if index == 0:
+            return position
+        side = 1 if index % 2 == 0 else -1
+        x = position.x + ((index % self.line +1)//2) * side
+        y = position.y + (index//self.line)
+        return Vector2(x,y)
     
+
     def updateGoal(self, position: Vector3):
         self.goal = position
         for unit in self.units:
