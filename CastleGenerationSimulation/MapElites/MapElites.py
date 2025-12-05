@@ -37,9 +37,7 @@ class MapElites:
         self.visualizationPath = archiveSavepath + "visualizations/"
         self.dateString = str(datetime.now().strftime("%Y-%m-%d-%H_%M_%S"))
         self.plotPath = archiveSavepath + "plots/"
-        self.plotter = MapElitesPlotter(
-            self.plotPath + "plot_" + self.dateString + ".png"
-        )
+        self.plotter = MapElitesPlotter(self.plotPath + "plot_" + self.dateString)
 
         self.initializationMutationWeights = MutationWeights(
             wallWeight=2.75,
@@ -175,8 +173,9 @@ class MapElites:
             print(f"Iteration {i+1}: {count} instances of Simulation")
             """
         outerTimer.stop()
-        self.plotter.plot()
-        self.saveArchiveToJSON()
+        self.plotter.plotMaxFitnessAndQDScore()
+        self.plotter.plotCoverage()
+        # self.saveArchiveToJSON()
         self.saveArchiveVisualization()
 
     def saveArchiveVisualization(self):
