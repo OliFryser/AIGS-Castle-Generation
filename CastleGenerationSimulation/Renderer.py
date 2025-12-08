@@ -90,7 +90,7 @@ class Renderer:
             + 1,
             # 7,
         )
-        if len(unit.path) > 1:
+        if unit.path and len(unit.path) > 1:
             pygame.draw.lines(
                 self.screen,
                 (255, 255, 0),

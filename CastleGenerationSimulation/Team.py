@@ -6,7 +6,7 @@ from CastleElement import ElementType,CastleElement
 from Level import Level
 
 class Team:
-    def __init__(self, name, level:Level, startPosition: Vector2, enemies: list[Unit] = []) -> None:
+    def __init__(self, name, level:Level, startPosition: Vector2, executor, enemies: list[Unit] = []) -> None:
         self.name = name
         self.startPosition = startPosition
         self.units: list[Unit] = []
@@ -14,15 +14,16 @@ class Team:
         self.level = level
         self.goal: Vector3 = Vector3(5,self.level.getBilinearHeight(5,5),5)
         self.enemies = enemies
+        self.executor = executor
 
     def addAxeman(self):
         #position = self.getNextPosition()
         position = self.getNextCirclePosition()
-        self.units.append(AxeMan(self.level, position, goal=self.goal, teamName = self.name, teamMates = self.units, enemies = self.enemies))
+        self.units.append(AxeMan(self.level, position, self.executor, goal=self.goal, teamName = self.name, teamMates = self.units, enemies = self.enemies))
     
     def addArcher(self):
         position = self.getNextPosition(self.line)
-        self.units.append(Archer(self.level, position, goal= self.goal, teamName = self.name, teamMates = self.units, enemies = self.enemies))
+        self.units.append(Archer(self.level, position,self.executor, goal= self.goal, teamName = self.name, teamMates = self.units, enemies = self.enemies))
 
     def addArchersToTowers(self):
         for row in self.level.castleMapDuplo:

@@ -8,7 +8,7 @@ from Utils.PathFinding import aStar
 
 class AxeMan(Unit):
     def __init__(self, *args, health: int = 100, speed: float = 0.5, size=0.3 ,**kwargs):
-        super().__init__(*args, health, speed, size, **kwargs)  
+        super().__init__(*args, health, speed, size, **kwargs)
         self.blockAttackDamage = 20
         self.blockAttackRange = 1
         self.attackDamage = 15
@@ -107,7 +107,7 @@ class AxeMan(Unit):
 
     #Transition conditions
     def foundWallWeakPoint(self):
-        if self.path == []:
+        if self.path == [] or self.path is None:
             return False
         return (
             self.path[0].materialBlock is not None and self.path[0].materialBlock.blocking
@@ -167,6 +167,10 @@ class AxeMan(Unit):
         self.nodeTarget = None
 
     def planPath(self, toType = MaterialType.DOOR):
+        if self.future is None:
+            self.future = self.executor.submit(self.planPathInner, toType)
+
+    def planPathInner(self, toType = MaterialType.DOOR):
         self.path = aStar(
                 self.position, self.target, self.nodeGraph,
                 costAdjustFunc= self.moveCostAdjust2, 

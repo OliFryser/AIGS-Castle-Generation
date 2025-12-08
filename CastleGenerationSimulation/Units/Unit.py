@@ -5,6 +5,7 @@ from Utils.FSM import State
 from Utils.PathFinding import aStar
 from Utils.Node import Node, Edge, Graph
 from CastleElement import MaterialType
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 
 
 class Unit:
@@ -12,13 +13,14 @@ class Unit:
         self,
         level: Level,
         position: Vector2,
+        executor: ThreadPoolExecutor,
         health: int = 100,
         speed: float = 0.2,
         size =0.1,
         goal = Vector3(0,0,0),
         teamName = "blank",
         teamMates = [],
-        enemies = []
+        enemies = [],
     ):
         self.health = health
         self.speed = speed
@@ -32,7 +34,7 @@ class Unit:
         self.position: Vector3 = Vector3(
             position.x, level.getBilinearHeight(position.x, position.y), position.y
         )
-        self.path: list[Node] = []
+        self.path: list[Node]|None = None
         self.target = None
         self.goal: None | Vector3 = goal
         self.count = 0
@@ -46,6 +48,8 @@ class Unit:
         self.attackRange = 1
         self.inMelee = None
         self.attackCoolDown = False
+        self.future = None
+        self.executor = executor
 
         #place on grid
         self.nodeGraph.getNodeFromPosition(self.position).unit = self
@@ -54,6 +58,13 @@ class Unit:
         self.initFSM()
 
     def step(self):
+        if self.future and self.future.done():
+            #self.path = self.future.result()
+            self.future = None
+
+        if self.future is not None:
+            return
+
         self.fsm.updateState()
         state = self.fsm.getState()
         #self.fsm.printState()
@@ -190,7 +201,7 @@ class Unit:
         return self.attackCoolDown
 
     def hasPlan(self):
-        return not self.path == []
+        return not (self.path == [] or self.path is None)
 
     def notHasPlan(self):
         return not self.hasPlan()
@@ -278,7 +289,7 @@ class Unit:
         #print(self.count)
         pass
 
-    def planPath(self, toType = None):
+    def planPathInner(self, toType = None):
         self.path = aStar(
                 self.position, self.target, self.nodeGraph,
                 costAdjustFunc= self.moveCostAdjust, ignoreNodes=self.nodesToSkip,
@@ -287,6 +298,9 @@ class Unit:
                 getFirstofType=toType
             )
 
+    def planPath(self, target):
+        if self.future is None:
+            self.future = self.executor.submit(self.planPathInner, target)
 
     def goToTarget(self):
         if self.notHasPlan():

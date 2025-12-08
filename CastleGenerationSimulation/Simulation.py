@@ -4,7 +4,7 @@ from Target import Target
 from Level import Level
 from InitializationParameters import InitializationParameters
 from Team import Team
-
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 
 @dataclass
 class State:
@@ -24,21 +24,24 @@ class Simulation:
             initParams.castleInstructionTree,
             initParams.tileMap,
         )
+        self.executor = ThreadPoolExecutor(max_workers=4)#ProcessPoolExecutor()
 
         self.attacker = Team(
-            "attacker",
-            self.level,
-            Vector2(
+            name="attacker",
+            level=self.level,
+            startPosition=Vector2(
                 self.level.width / 2,
                 self.level.height - 6,
             ),
+            executor=self.executor
         )
         self.target = Target(self.level)
         self.defender = Team(
-            "defeder",
-            self.level,
-            Vector2(self.target.position.x, self.target.position.z),
-            self.attacker.units,
+            name="defeder",
+            level=self.level,
+            startPosition=Vector2(self.target.position.x, self.target.position.z),
+            executor= self.executor,
+            enemies=self.attacker.units,
         )
         self.attacker.setEnemies(self.defender.units)
         self.target.enemies = self.attacker.units
@@ -120,3 +123,6 @@ class Simulation:
         return self.stepCount - overBudget
         """
         return self.stepCount
+    
+    def shutdown(self):
+        self.executor.shutdown(wait=False)
