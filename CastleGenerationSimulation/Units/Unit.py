@@ -138,21 +138,21 @@ class Unit:
             state0= State.MOVETO,
             state1= State.WAIT,
             transition=self.isBlocked,
-            onEnter= (self.setTimer, (15,), {}),
+            onEnter= (self.setTimer, (5,), {}),
             onExit= (self.unBlock, (), {}), 
         )
         goToGoalFSM.addTransition(
             state0= State.MOVETO,
             state1= State.WAIT,
             transition=self.notHasPlan,
-            onEnter= (self.setTimer, (10,), {}),
+            onEnter= (self.setTimer, (5,), {}),
             onExit= (self.unBlock, (), {}), 
         )
         goToGoalFSM.addTransition(
             state0= State.MOVETO,
             state1= State.WAIT,
             transition=self.closeEnough,
-            onEnter= (self.setTimer, (10,), {}),
+            onEnter= (self.setTimer, (5,), {}),
         )
         
         self.fsms[goToGoalFSM.name] = goToGoalFSM

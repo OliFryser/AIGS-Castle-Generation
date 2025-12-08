@@ -59,7 +59,7 @@ class AxeMan(Unit):
              (self.planPath, (MaterialType.DOOR,), {}), (self.setTimer, (1,),{}),
         )
         fsm.addTransition(
-            demolishFsm, State.WAIT, self.targetBlockDemolished, (self.setTimer, (4,),{})
+            demolishFsm, State.WAIT, self.targetBlockDemolished, (self.setTimer, (1,),{})
         )
         fsm.addTransition(
             state0=goToGoalFSM,
@@ -185,9 +185,8 @@ class AxeMan(Unit):
         if edge.node.unit is not None and edge.node.unit is not self and edge.node.unit in self.teamMates:
             cost += 10
         """
-        if edge.node.materialBlock is not None:
-            cost += edge.node.materialBlock.health/10
-            print(cost)
         """
+        if edge.node.materialBlock is not None:
+            cost += edge.node.materialBlock.health
         return cost
         

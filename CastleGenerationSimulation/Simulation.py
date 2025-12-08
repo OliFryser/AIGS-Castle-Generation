@@ -24,7 +24,8 @@ class Simulation:
             initParams.castleInstructionTree,
             initParams.tileMap,
         )
-        self.executor = ThreadPoolExecutor(max_workers=4)#ProcessPoolExecutor()
+        self.executor = ThreadPoolExecutor(max_workers=4)
+        #ProcessPoolExecutor()
 
         self.attacker = Team(
             name="attacker",
@@ -97,6 +98,7 @@ class Simulation:
         self.kills = - (len(self.attacker.units) - self.noAttackers)
         # units might hold on to eachother and dodge the garbage collector along with nodes and level and all that jazz
         self.clearUnits()
+        self.shutdown()
 
     def clearUnits(self):
         for unit in self.getUnits():
