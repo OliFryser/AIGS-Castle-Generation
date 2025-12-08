@@ -86,13 +86,14 @@ class MapElites:
             other = copy.deepcopy(self.sampleRandomSolution(pool).individual)
             crossover(individual, other)
 
+    #this is minor, but creating an object with multiple pieces of information on it each time is suboptimal 
     def getBehavior(self, simulation: Simulation) -> Behaviors:
         behaviorX = Behavior(simulation.getState().cost, "Cost")
         behaviorY = Behavior(simulation.getState().area, "Area")
         return Behaviors(behaviorX, behaviorY)
 
     def getFitness(self, simulation: Simulation) -> int:
-        return simulation.getState().fitness
+        return simulation.getState().stepCount
 
     def getKey(self, behaviors: Behaviors):
         key = []
@@ -125,9 +126,15 @@ class MapElites:
     def run(self, iterations: int, populationSize: int):
         outerTimer = Timer(f"MapElites for {iterations} iterations", forcePrint=True)
         outerTimer.start()
+        initParams: InitializationParameters = InitializationParameters(
+            self.terrainMap, self.tileMap, None
+        )
+        simulation = Simulation(initParams)
+
         for i in range(iterations):
             if i % 10 == 0:
                 print("MapElites iteration:", i)
+                #print(f"nodeGraph sanity {len(simulation.level.nodeGraph.graph.keys())}")
                 print(f"Archive size: {len(self.archive.keys())}")
             if i < populationSize:
                 individual: InstructionTree = self.generateRandomSolution()
@@ -136,10 +143,7 @@ class MapElites:
                 individual: InstructionTree = copy.deepcopy(entry.individual)
                 self.randomVariation(individual, entry)
 
-            initParams: InitializationParameters = InitializationParameters(
-                self.terrainMap, self.tileMap, individual
-            )
-            simulation = Simulation(initParams)
+            simulation.prepare(individual)
 
             timer = Timer("Run simulation")
             timer.start()
@@ -148,6 +152,7 @@ class MapElites:
 
             behavior: Behaviors = self.getBehavior(simulation)
             fitness: int = self.getFitness(simulation)
+
             key = self.getKey(behavior)
             if key is False:
                 continue
@@ -161,10 +166,11 @@ class MapElites:
                 )
             )
 
+            simulation.reset()
             # Garbage Issue!
-            simulation = None
-            # gc.collect()
             """
+            #simulation = None
+            # gc.collect()
             types = Counter(type(obj) for obj in gc.get_objects())
             print(types.most_common(20))
 
@@ -209,3 +215,15 @@ class MapElites:
 
     def getCoverage(self):
         return len(self.archive.keys())
+
+    """
+    def getFitness(self):
+        castleCost = self.level.castleCost
+        castleBudget = 100
+        overBudget = 0
+        if castleCost > castleBudget:
+            overBudget = (castleCost - castleBudget) * 20
+            #overBudget = overBudget*overBudget
+            #print(overBudget)
+        return self.stepCount - overBudget
+    """

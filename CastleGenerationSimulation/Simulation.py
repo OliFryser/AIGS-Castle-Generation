@@ -14,18 +14,23 @@ class State:
     towerRatio: float
     kills: int
     gates: int
-    fitness: int
+    stepCount: int
 
 
 class Simulation:
     def __init__(self, initParams: InitializationParameters):
         self.level = Level(
             initParams.terrainMap,
-            initParams.castleInstructionTree,
             initParams.tileMap,
         )
-        self.executor = ThreadPoolExecutor(max_workers=4)
+        self.target = Target(self.level)
+        if initParams.castleInstructionTree is not None:
+            self.prepare(initParams.castleInstructionTree)
+
+    def prepare(self, castleInstructionTree):
+        self.executor = ThreadPoolExecutor(max_workers=16)
         #ProcessPoolExecutor()
+        self.level.mkCastle(castleInstructionTree)
 
         self.attacker = Team(
             name="attacker",
@@ -36,7 +41,6 @@ class Simulation:
             ),
             executor=self.executor
         )
-        self.target = Target(self.level)
         self.defender = Team(
             name="defeder",
             level=self.level,
@@ -46,6 +50,8 @@ class Simulation:
         )
         self.attacker.setEnemies(self.defender.units)
         self.target.enemies = self.attacker.units
+        
+
         self.defender.addArchersToTowers()
         for n in range(8 + len(self.defender.units)):
             self.attacker.addAxeman()
@@ -80,7 +86,7 @@ class Simulation:
             towerRatio= self.level.towerRatio,
             kills= self.kills,
             gates= self.level.gates,
-            fitness=self.getFitness(),
+            stepCount=self.getStepCount(),
             )
         return state
 
@@ -96,13 +102,6 @@ class Simulation:
                 print("step Break")
                 break
         self.kills = - (len(self.attacker.units) - self.noAttackers)
-        # units might hold on to eachother and dodge the garbage collector along with nodes and level and all that jazz
-        self.clearUnits()
-        self.shutdown()
-
-    def clearUnits(self):
-        for unit in self.getUnits():
-            unit.die()
 
     def getMaxBlocks(self):
         return self.level.maxBlocks
@@ -113,18 +112,18 @@ class Simulation:
     def getCost(self):
         return self.level.castleCost
     
-    def getFitness(self):
-        """
-        castleCost = self.level.castleCost
-        castleBudget = 100
-        overBudget = 0
-        if castleCost > castleBudget:
-            overBudget = (castleCost - castleBudget) * 20
-            #overBudget = overBudget*overBudget
-            #print(overBudget)
-        return self.stepCount - overBudget
-        """
+    def getStepCount(self):
         return self.stepCount
     
     def shutdown(self):
         self.executor.shutdown(wait=False)
+
+    def clearUnits(self):
+        for unit in self.getUnits():
+            unit.die()
+
+    def reset(self):
+        # units might hold on to eachother and dodge the garbage collector along with nodes and level and all that jazz
+        self.shutdown()
+        self.clearUnits()
+        self.level.clearCastle()

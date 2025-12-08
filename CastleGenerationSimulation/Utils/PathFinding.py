@@ -27,7 +27,6 @@ def getAsNodeOnGraph2(
     tmpNodes.append(node)
     return node
 
-
 # get as node on graph gets the four closest nodes directly from the graph
 def getAsNodeOnGraph(startPosition: Vector3, graph: Graph, tmpNodes, unit, ignoreNodes):
     node = Node(startPosition)

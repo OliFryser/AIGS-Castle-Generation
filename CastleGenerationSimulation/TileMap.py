@@ -13,3 +13,4 @@ class TileMap:
                 ]
                 self.tileMap[element] = tiles
             f.close()
+        self.scale = len(list(self.tileMap.values())[0][0])

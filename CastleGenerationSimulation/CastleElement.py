@@ -1,7 +1,5 @@
 from enum import Enum
 from CastleInstructions.InstructionToken import InstructionToken
-from Utils.Node import Node
-
 
 class ElementType(Enum):
     KEEP = "keep"
@@ -72,7 +70,7 @@ class MaterialBlock:
     ) -> None:
         self.materialType = materialType
         self.castleElement = castleElement
-        self.node: Node | None = None
+        self.node = None
         self.blocking = True
         self.linked = []
         self.resetParameters()

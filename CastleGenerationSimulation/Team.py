@@ -26,12 +26,15 @@ class Team:
         self.units.append(Archer(self.level, position,self.executor, goal= self.goal, teamName = self.name, teamMates = self.units, enemies = self.enemies))
 
     def addArchersToTowers(self):
+        #n = 0
         for row in self.level.castleMapDuplo:
             for cell in row:
                 if cell is not None and cell.elementType is ElementType.TOWER:
                     position = Vector2(cell.row + self.level.scale/2, cell.column + self.level.scale /2)
                     self.units.append(Archer(self.level, position, goal= self.goal, teamName = self.name, teamMates = self.units, enemies = self.enemies))
-
+                    #n += 1
+        #print(f"archers {n}")
+       
     def getNextPosition(self, plus = 0):
         index = len(self.units) + plus
         if index == 0:
