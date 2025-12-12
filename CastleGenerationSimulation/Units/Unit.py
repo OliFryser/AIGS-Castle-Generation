@@ -6,6 +6,8 @@ from Utils.PathFinding import aStar
 from Utils.Node import Node, Edge, Graph
 from CastleElement import MaterialType
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
+import time
+import uuid
 
 
 class Unit:
@@ -13,7 +15,7 @@ class Unit:
         self,
         level: Level,
         position: Vector2,
-        executor: ThreadPoolExecutor,
+        executor,
         health: int = 100,
         speed: float = 0.2,
         size =0.1,
@@ -50,7 +52,8 @@ class Unit:
         self.attackCoolDown = False
         self.future = None
         self.executor = executor
-
+        self.id = uuid.uuid1()
+        self.navGraph = level.navigationGraph
         #place on grid
         self.nodeGraph.getNodeFromPosition(self.position).unit = self
 
@@ -59,9 +62,10 @@ class Unit:
 
     def step(self):
         if self.future and self.future.done():
-            #self.path = self.future.result()
+            #path = self.future.result()
+            #self.path = list(self.nodeGraph.nodes[pos2] for pos2 in path)
             self.future = None
-
+        
         if self.future is not None:
             return
 
@@ -211,7 +215,7 @@ class Unit:
 
     def isBlocked(self):
         if not self.blocked:
-            self.count = 50
+            self.count = 10
             return False
         self.count -= 1
         if self.count < 1:
@@ -300,7 +304,17 @@ class Unit:
 
     def planPath(self, target):
         if self.future is None:
-            self.future = self.executor.submit(self.planPathInner, target)
+            self.future = self.executor(self.planPathInner, target)
+            
+    
+    def cpu_work(self,n=10_000_000):
+        s = 0
+        for i in range(n):
+            s += i  # CPU-bound, holds GIL
+        
+
+    def sleep_work(self,sec=0.05):
+        time.sleep(sec)  # releases GIL
 
     def goToTarget(self):
         if self.notHasPlan():
@@ -426,3 +440,6 @@ class Unit:
         if node.unit is not None and node.unit is not self and node.unit not in self.enemies:
             return 10
         return 0
+    
+    def getAsData(self):
+        return str(self.id)

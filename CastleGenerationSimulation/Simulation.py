@@ -5,6 +5,7 @@ from Level import Level
 from InitializationParameters import InitializationParameters
 from Team import Team
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
+from threading import Semaphore
 
 @dataclass
 class State:
@@ -28,8 +29,12 @@ class Simulation:
             self.prepare(initParams.castleInstructionTree)
 
     def prepare(self, castleInstructionTree):
-        self.executor = ThreadPoolExecutor(max_workers=16)
-        #ProcessPoolExecutor()
+        #MAX_PLANNERS = 4
+
+        #self.planner_limit = Semaphore(MAX_PLANNERS)
+
+        self.executor = ThreadPoolExecutor(max_workers=4)
+        #ProcessPoolExecutor(4)
         self.level.mkCastle(castleInstructionTree)
 
         self.attacker = Team(
@@ -39,12 +44,14 @@ class Simulation:
                 self.level.width / 2,
                 self.level.height - 6,
             ),
-            executor=self.executor
+            #executor=self.submitPlan
+            executor=self.executor,
         )
         self.defender = Team(
             name="defeder",
             level=self.level,
             startPosition=Vector2(self.target.position.x, self.target.position.z),
+            #executor= self.submitPlan,
             executor= self.executor,
             enemies=self.attacker.units,
         )
@@ -53,9 +60,11 @@ class Simulation:
         
 
         self.defender.addArchersToTowers()
+        """
+        """
         for n in range(8 + len(self.defender.units)):
             self.attacker.addAxeman()
-
+        
 
         self.attacker.updateGoal(self.target.position)
         self.defender.updateGoal(self.target.position)
@@ -63,6 +72,14 @@ class Simulation:
         self.noAttackers = len(self.attacker.units)
 
     def step(self):
+        # step accomodating the threading
+        # should be run specifically for the non-rendered runs as it doesn't really matter with the render slow-down
+        """
+        if self.attackersAreAllPlanning():
+            print("all planning")
+            return
+        """
+        
         for unit in self.getUnits():
             unit.step()
         # Node unit sanity check, should not be run, it is expensive
@@ -93,15 +110,36 @@ class Simulation:
     def runSimulation(self):
         self.stepCount = 0
         while not self.target.isOccupied():
-            self.step()
-            self.stepCount += 1
+            # if all attackers are planning... the game can run "amok" while they are waiting for threads
+            # this should make the simulation slightly more deterministic
+            if not self.attackersAreAllPlanning():
+                self.step()
+                self.stepCount += 1
+            else:
+                print("all planning")
+
             if self.attacker.units == []:
                 self.stepCount = 20000
                 break
-            if self.stepCount > 20000:
+            if self.stepCount > 40000:
+                self.stepCount = 10000
                 print("step Break")
                 break
         self.kills = - (len(self.attacker.units) - self.noAttackers)
+
+    def attackersAreAllPlanning(self):
+        for u in self.attacker.units:
+            f = u.future
+            if f is None or f.done():
+                # this unit is NOT planning
+                return False
+        return True
+    
+    def submitPlan(self, fn, *args, **kwargs):
+        def wrapper():
+            with self.planner_limit:
+                return fn(*args, **kwargs)
+        return self.executor.submit(wrapper)
 
     def getMaxBlocks(self):
         return self.level.maxBlocks
@@ -116,7 +154,8 @@ class Simulation:
         return self.stepCount
     
     def shutdown(self):
-        self.executor.shutdown(wait=False)
+        #self.executor.shutdown(wait=False)
+        self.executor.shutdown(wait=False, cancel_futures=True)
 
     def clearUnits(self):
         for unit in self.getUnits():

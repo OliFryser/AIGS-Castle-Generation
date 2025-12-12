@@ -2,18 +2,20 @@ from pygame import Vector3
 import numpy as np
 from CastleElement import MaterialType
 
-class Edge:
-    def __init__(self, node, cost) -> None:
-        self.node = node
-        self.cost = cost
-
 class Node:
     def __init__(self, position: Vector3) -> None:
-        self.neighbours = {}
         self.position = position
         self.position2 = (position.x,position.z)
         self.materialBlock = None
         self.unit = None
+
+    def getAsData(self):
+        return {
+            "position" : (self.position.x, self.position.y, self.position.z),
+            "position2" : self.position2,
+            "materialBlock" : None if self.materialBlock is None else self.materialBlock.getAsData(),
+            "unit" : None if self.unit is None else self.unit.getAsData(),
+        }
 
     def setMaterialBlock(self, materialBlock):
         if materialBlock is None:
@@ -28,11 +30,29 @@ class Node:
         if not isinstance(value, Node):
             return False
         return (self.position2 == value.position2)
+
+class Edge:
+    def __init__(self, node: Node, cost) -> None:
+        self.node = node
+        self.cost = cost
+    
+    def getAsData(self):
+        return {
+            "node": self.node.getAsData(), 
+            "cost": self.cost}
     
 class Graph:
     def __init__(self) -> None:
         self.graph: dict[Node, list[Edge]] = {}
         self.nodes: dict[tuple[float,float], Node] = {}
+
+    def getAsData(self):
+        nodes = {key: node.getAsData() for key,node in self.nodes.items()}
+        graph = {node.position2: list(e.getAsData() for e in edge) for node,edge in self.graph.items()}
+        return {
+            "graph" : graph,
+            "nodes" : nodes,
+        }
 
     def removeNode(self, toBeRemoved: Node):
         graph = self.graph

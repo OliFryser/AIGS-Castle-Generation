@@ -4,6 +4,7 @@ from Units.Unit import Unit
 from Utils.FSM import FSM,State
 from Utils.Node import Edge, Node, Graph
 from CastleElement import MaterialType
+from Utils.PathFindingData import aStar2
 from Utils.PathFinding import aStar
 
 class AxeMan(Unit):
@@ -56,7 +57,7 @@ class AxeMan(Unit):
         )
         fsm.addTransition(
             State.WAIT, goToGoalFSM, self.hasCounted,
-             (self.planPath, (MaterialType.DOOR,), {}), (self.setTimer, (1,),{}),
+             (self.planPath, (), {}), (self.setTimer, (1,),{}),
         )
         fsm.addTransition(
             demolishFsm, State.WAIT, self.targetBlockDemolished, (self.setTimer, (1,),{})
@@ -160,15 +161,40 @@ class AxeMan(Unit):
                 self.attackCoolDown = True
     
     #this should maybe be somewhere else and handled on a different level
-    # it removes the material block from the node, and removes the block from the 
+    # it removes the material block from the node, and removes the block from the
     def destroyCastleElement(self, node: Node):
         node.materialBlock = None
         self.level.castleMap[int(node.position.z - 0.5)][int(node.position.x - 0.5)] = None
         self.nodeTarget = None
 
-    def planPath(self, toType = MaterialType.DOOR):
+    def planPath(self, toType = MaterialType.DOOR.value):
         if self.future is None:
-            self.future = self.executor.submit(self.planPathInner, toType)
+            """
+            startPosition= (self.position.x,self.position.y,self.position.z)
+            targetPosition= (self.target.x,self.target.y,self.target.z)
+            budget= self.level.height*2 + 100
+            getFirstofType=toType
+            unit=self.getAsData()
+
+            print(startPosition,targetPosition,budget,getFirstofType,unit)
+            print(type(startPosition),type(targetPosition),type(budget),type(getFirstofType),type(unit))
+
+        
+            self.future = self.executor.submit(aStar2, 
+                                                startPosition= startPosition, 
+                                                targetPosition= targetPosition,
+                                                nodeGraph=self.navGraph,
+                                                #costAdjustFunc= self.moveCostAdjust3, 
+                                                budget= budget,
+                                                unit=unit,
+                                                getFirstofType=getFirstofType,)
+            """
+            
+            #self.future = self.executor.submit(self.ProcessplanPathInner, toType)
+            #print(f"{self.getAsData()} started planning")
+            self.future = self.executor.submit(self.planPathInner)
+            #self.future = self.executor(self.planPathInner)
+            #self.future = self.sleep_work()
 
     def planPathInner(self, toType = MaterialType.DOOR):
         self.path = aStar(
@@ -179,6 +205,19 @@ class AxeMan(Unit):
                 budget= self.level.height*2 + 100,
                 getFirstofType=toType
             )
+        
+    def ProcessplanPathInner(self, toType = MaterialType.DOOR.value):
+        path = aStar2(
+                startPosition= (self.position.x,self.position.y,self.position.z), 
+                targetPosition= (self.target.x,self.target.y,self.target.z),
+                nodeGraph=self.navGraph,
+                costAdjustFunc= self.moveCostAdjust3, 
+                budget= self.level.height*2 + 100,
+                unit=self.getAsData(),
+                getFirstofType=toType,
+
+            )
+        return path
 
     def moveCostAdjust2(self, node: Node, edge: Edge):
         cost = edge.cost
@@ -187,6 +226,16 @@ class AxeMan(Unit):
         """
         """
         if edge.node.materialBlock is not None:
-            cost += edge.node.materialBlock.health
+            cost += edge.node.materialBlock.health/5
+        return cost
+        
+    def moveCostAdjust3(self, node, edge):
+        cost = edge["cost"]
+        if edge["node"]["unit"] is not None and edge["node"]["unit"] is not self.getAsData() and edge["node"]["unit"] in list(u.getAsData() for u in self.teamMates):
+            cost += 10
+        """
+        """
+        if edge["node"]["materialBlock"] is not None:
+            cost += edge["node"]["materialBlock"]["health"]/5
         return cost
         

@@ -14,10 +14,10 @@ class CastleGenerationAgent:
         padding: int,
         fromDirection: Direction | None = None,
         lastElement: CastleElement | None = None,
-        tabuCells: list[tuple[int,int]] = []
+        tabooCells: list[tuple[int,int]] = []
     ):
         self.treeNode = treeNode
-        self.tabuCells = tabuCells
+        self.tabuCells = tabooCells
         self.directionToOffset = {
             Direction.UP: (0, -1),
             Direction.DOWN: (0, 1),

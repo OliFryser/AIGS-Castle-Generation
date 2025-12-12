@@ -24,22 +24,23 @@ class Level:
         self.maxHeight = terrainMap.maxHeight
         targetPosition = terrainMap.target
         self.castleMap = None
+        self.tileMap = tileMap
+        
+        self.scale = tileMap.scale
 
-
+        #the scale division multiplication adjusts the target to be in line with the castlemap
         if targetPosition is None:
-            x = int(self.width / 2)
-            z = int(self.height / 3)
+            x = int(self.width / 2)// self.scale * self.scale
+            z = int(self.height / 3)// self.scale * self.scale
         else:
-            x = targetPosition[0]//5 * 5
-            z = targetPosition[1]//5 * 5
+            x = targetPosition[0]//self.scale * self.scale
+            z = targetPosition[1]//self.scale * self.scale
         self.targetPosition = Vector3(
             x,
             self.getBilinearHeight(x, z),
             z,
         )
-        self.tileMap = tileMap
         
-        self.scale = tileMap.scale
         self.path = terrainMap.path
         self.inferPathOrder()
 
@@ -90,12 +91,12 @@ class Level:
 
         self.castleMap = castleGenerator.getCastleMapInTerrainScale(self.path)
 
-
-        #TODO update the graph instead of making a duplicate
         timer = Timer("Adding castle to Node Graph")
         timer.start()
         self.addCastleNodes(self.nodeToNodeDistance)
+        self.navigationGraph = self.nodeGraph.getAsData()
         timer.stop()
+
         # gather data
         self.instructionCost = castleGenerator.cost
         self.gates = castleGenerator.getGateCount()

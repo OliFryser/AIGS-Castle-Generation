@@ -59,7 +59,7 @@ class CastleGenerator:
                 self.instructionTree.root,
                 self.grid,
                 self.padding,
-                tabuCells= [self.courtYard],
+                tabooCells= [self.courtYard,self.center],
                 lastElement= keep
             )
         )
@@ -131,7 +131,7 @@ class CastleGenerator:
                             self.padding,
                             agent.fromDirection,
                             agent.lastElement,
-                            tabuCells=[self.courtYard],
+                            tabooCells=[self.courtYard],
                         )
                     )
             else:
@@ -145,7 +145,7 @@ class CastleGenerator:
 
     def getCastleMapInTerrainScale(self, path):
         grid = self.grid.copy()
-        self.clearCourtyard(grid)
+        #self.clearCourtyard(grid)
         gridToScale = np.full((self.height, self.width), None)
         for row in range(len(grid)):
             for column in range(len(grid[0])):
@@ -183,6 +183,7 @@ class CastleGenerator:
 
     def addGates(self, gridToScale, path):
         # path, pos = pathAndPos
+        path.reverse()
         self.gateCount = 0
         directionFrom = []
         directionTo = []
@@ -194,6 +195,7 @@ class CastleGenerator:
                 path.remove(p)
 
         for n in range(len(path) - 1):
+            nudge = 0
             step = path[n]
 
             def travelDirections(pos0, pos1, inverse=False):
@@ -242,6 +244,7 @@ class CastleGenerator:
 
             # going towards a direction should check if that movement is blocked
             for moveDirection in directionTo:
+                nudge = 0
                 # if the direction of movement is the same as the side of the wall you are on, no worries
                 if moveDirection not in onSide:
                     # however when moving to the side it isn't on a perpindicular wall on the on the same perpindicular side can block
@@ -256,11 +259,13 @@ class CastleGenerator:
                     cellElement = self.grid[step[1]][step[0]]
                     # if a castleElement is present
                     if cellElement is not None:
+                        nudge = 0.5
                         # if there is only one connection, it can be sidestepped
                         if len(cellElement.directions) <= 1:
                             """
                             print("move around")
                             """
+                            nudge = 0.5
                             continue
                         # otherwise the wall in that direction will need a door
                         if side in cellElement.directions:
@@ -272,6 +277,7 @@ class CastleGenerator:
                             ) or set(cellElement.directions) == set(
                                 [Direction.LEFT, Direction.RIGHT]
                             ):
+                                nudge = 0
                                 connections = cellElement.directions
                                 castleElement = CastleElement(
                                     ElementType.GATE, position[1], position[0]
@@ -283,6 +289,7 @@ class CastleGenerator:
                                 self.grid[step[1]][step[0]] = None
                             # otherwise the gate needs to be pushed a bit, place half, and then force the neighbor to take the other half
                             else:
+                                nudge = 0.5
                                 position2 = (
                                     step[0] * self.scale
                                     + directionToOffset[Direction(side)][0]
@@ -330,6 +337,11 @@ class CastleGenerator:
                             """
                 # eventually
                 onSide = switchSide(moveDirection, onSide)
+                #nudge = 0
+                if nudge:
+                    for d in onSide:
+                        #path[n] = (path[n][0] + directionToOffset[d][0]/2, path[n][1] + directionToOffset[d][1]/2)
+                        path[n] = (path[n][0] + directionToOffset[d][0]*nudge, path[n][1] + directionToOffset[d][1]*nudge)
                 """
                 print(f"switching side from {moveDirection.name} {onSide}")
                 print(directionTo)

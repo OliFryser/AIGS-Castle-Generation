@@ -127,3 +127,9 @@ class MaterialBlock:
     def destroy(self):
         if self.node is not None:
             self.node.materialBlock = None
+
+    def getAsData(self):
+        return {
+            "materialType": self.materialType.value,
+            "health" : self.health
+            }

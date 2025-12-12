@@ -27,6 +27,8 @@ def main(ctx: mlxp.Context) -> None:
             runInteractiveMode(cfg, terrainMap, tileMap)
         case "mapElites":
             runMapElites(cfg, terrainMap, tileMap)
+        case "conventionalEA":
+            runConventionalEA(cfg, terrainMap, tileMap)
         case "terrainBuilder":
             runTerrainBuilder(cfg, terrainMap)
     sys.exit()
@@ -41,6 +43,13 @@ def runMapElites(cfg, terrainMap, tileMap):
     os.environ["SDL_VIDEODRIVER"] = "dummy"
     mapElites = MapElites(terrainMap, tileMap, cfg.archiveSavepath, cfg.resolution)
     mapElites.run(cfg.iterations, cfg.population)
+
+def runConventionalEA(cfg, terrainMap, tileMap):
+    # Disable visual for pygame
+    os.environ["SDL_VIDEODRIVER"] = "dummy"
+    mapElites = MapElites(terrainMap, tileMap, cfg.archiveSavepath, cfg.resolution)
+    mapElites.runCE(cfg.iterations, cfg.population)
+
 
 
 def runInteractiveMode(cfg, terrainMap, tileMap):
