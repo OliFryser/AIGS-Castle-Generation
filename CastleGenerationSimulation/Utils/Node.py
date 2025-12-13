@@ -1,6 +1,7 @@
 from pygame import Vector3
 import numpy as np
 from CastleElement import MaterialType
+import gc
 
 class Node:
     def __init__(self, position: Vector3) -> None:
@@ -8,20 +9,54 @@ class Node:
         self.position2 = (position.x,position.z)
         self.materialBlock = None
         self.unit = None
-
-    def getAsData(self):
+        self.asData = None #self.createData()
+        
+    def createData(self):
         return {
             "position" : (self.position.x, self.position.y, self.position.z),
             "position2" : self.position2,
             "materialBlock" : None if self.materialBlock is None else self.materialBlock.getAsData(),
             "unit" : None if self.unit is None else self.unit.getAsData(),
         }
+    
+    def destroy(self):
+        self.position = None
+        self.position2 = None
+        self.unit = None
+        if self.asData:
+            self.asData = None
+        
+        if self.materialBlock is None:
+            return
+        self.materialBlock.nodeDeath()
+        self.materialBlock = None
+        #self.printRefs()
+            
+    def printRefs(self):
+        gc.collect()
+        refs = gc.get_referrers(self)
+        for r in refs:
+            #if type(r) is not dict:
+                print(type(r))
+       
+    def getAsData(self):
+        return self.asData
 
     def setMaterialBlock(self, materialBlock):
         if materialBlock is None:
             return
         self.materialBlock = materialBlock
         materialBlock.node = self
+
+    def setUnit(self, unit):
+        self.unit = unit
+        if self.asData:
+            self.asData["unit"] = unit.getAsData()
+
+    def clearUnit(self):
+        self.unit = None
+        if self.asData:
+            self.asData["unit"] = None
 
     def __hash__(self) -> int:
         return hash((self.position.x,self.position.z))
@@ -40,7 +75,10 @@ class Edge:
         return {
             "node": self.node.getAsData(), 
             "cost": self.cost}
-    
+
+    def purge(self):
+        self.node = None
+
 class Graph:
     def __init__(self) -> None:
         self.graph: dict[Node, list[Edge]] = {}
@@ -61,11 +99,15 @@ class Graph:
             return
         edges = graph[toBeRemoved]
         for edge in edges:
-            for nedge in graph[edge.node]:
-                if nedge.node == toBeRemoved:
-                    graph[edge.node].remove(nedge)
+            for neighbourEdge in graph[edge.node]:
+                if neighbourEdge.node == toBeRemoved:
+                    graph[edge.node].remove(neighbourEdge)
+                    neighbourEdge.purge()
         del graph[toBeRemoved]
+        tmp = self.nodes[toBeRemoved.position2]
+        tmp.destroy()
         del self.nodes[toBeRemoved.position2]
+        #tmp.printRefs()
 
     def getNodeFromPosition(self, position: Vector3):
         nodeid = (np.floor(position.x)+0.5, np.floor(position.z) +0.5)

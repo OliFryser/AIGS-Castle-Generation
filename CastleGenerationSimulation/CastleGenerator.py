@@ -183,7 +183,7 @@ class CastleGenerator:
 
     def addGates(self, gridToScale, path):
         # path, pos = pathAndPos
-        path.reverse()
+        #path.reverse()
         self.gateCount = 0
         directionFrom = []
         directionTo = []
@@ -194,8 +194,8 @@ class CastleGenerator:
             if path.count(p) > 1:
                 path.remove(p)
 
+        nudge = 0
         for n in range(len(path) - 1):
-            nudge = 0
             step = path[n]
 
             def travelDirections(pos0, pos1, inverse=False):
@@ -241,13 +241,13 @@ class CastleGenerator:
             print()
             print(f"{step} move towards {directionTo}, on side{onSide}")
             """
+            nudge = 0.5
 
             # going towards a direction should check if that movement is blocked
             for moveDirection in directionTo:
-                nudge = 0
                 # if the direction of movement is the same as the side of the wall you are on, no worries
+                # however when moving to the side it isn't on a perpindicular wall on the on the same perpindicular side can block
                 if moveDirection not in onSide:
-                    # however when moving to the side it isn't on a perpindicular wall on the on the same perpindicular side can block
                     if moveDirection in [Direction.UP, Direction.DOWN]:
                         side = onSide[1]
                     else:
@@ -259,13 +259,11 @@ class CastleGenerator:
                     cellElement = self.grid[step[1]][step[0]]
                     # if a castleElement is present
                     if cellElement is not None:
-                        nudge = 0.5
                         # if there is only one connection, it can be sidestepped
                         if len(cellElement.directions) <= 1:
                             """
                             print("move around")
                             """
-                            nudge = 0.5
                             continue
                         # otherwise the wall in that direction will need a door
                         if side in cellElement.directions:
@@ -335,6 +333,8 @@ class CastleGenerator:
                                 print(k,mb.materialType)
                             print(f"built gate {side.name}")
                             """
+                    else:
+                        nudge = 0
                 # eventually
                 onSide = switchSide(moveDirection, onSide)
                 #nudge = 0

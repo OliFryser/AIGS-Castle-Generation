@@ -37,23 +37,29 @@ class Renderer:
         level = self.simulation.level
         for y in range(level.height):
             for x in range(level.width):
-                """
-                castleElement = level.castleMap[y][x]
-                if castleElement is not None:
-                    color = self.materialTypeToColor[castleElement.material.materialType]
-                    rect = pygame.Rect(x * cellSize, y * cellSize, cellSize, cellSize)
-                    pygame.draw.rect(self.screen, color, rect)
-                """
+
                 node = level.nodeGraph.nodes[(x + 0.5, y + 0.5)]
                 if node.materialBlock is not None and node.materialBlock.materialType is not MaterialType.WATER:
+
                     color = self.materialTypeToColor[node.materialBlock.materialType]
+
                     rect = pygame.Rect(x * cellSize, y * cellSize, cellSize, cellSize)
                     pygame.draw.rect(self.screen, color, rect)
-
+                    
+                    """
+                    if node.materialBlock.materialType is MaterialType.SANDSTONE:
+                        rect0 = pygame.Rect(x * cellSize, y * cellSize, cellSize, cellSize)
+                        pygame.draw.rect(self.screen, (53, 46, 33), rect0, 1)
+                    """
+                        
+                
+                """
+                #for unit debugging
                 if node.unit is not None:
                     color = (255, 0, 0)
                     rect = pygame.Rect(x * cellSize, y * cellSize, cellSize, cellSize)
                     pygame.draw.rect(self.screen, color, rect)
+                """
 
     def renderPath(self):
         path = self.simulation.level.path

@@ -62,12 +62,23 @@ class CastleElement:
         if key not in self.materialBlocks:
             return None
         return self.materialBlocks[key]
+    
+    def destroyMaterialBlock(self, materialBlock):
+        toBeDestroyed = []
+        for key,v in self.materialBlocks.items():
+            if v == materialBlock:
+                toBeDestroyed.append(key)    
+                
+        for k in toBeDestroyed:
+            del self.materialBlocks[k]
+            
+        if materialBlock in self.linked:
+            self.linked.remove(materialBlock)
 
 
 class MaterialBlock:
     def __init__(
-        self, materialType: MaterialType, castleElement: CastleElement | None = None
-    ) -> None:
+        self, materialType: MaterialType, castleElement: CastleElement | None = None):
         self.materialType = materialType
         self.castleElement = castleElement
         self.node = None
@@ -127,6 +138,13 @@ class MaterialBlock:
     def destroy(self):
         if self.node is not None:
             self.node.materialBlock = None
+
+    def nodeDeath(self):
+        self.node = None
+        self.linked = None
+        if self.castleElement:
+            self.castleElement.destroyMaterialBlock(self)
+            self.castleElement = None
 
     def getAsData(self):
         return {

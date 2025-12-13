@@ -40,36 +40,14 @@ class Level:
             self.getBilinearHeight(x, z),
             z,
         )
-        
-        self.path = terrainMap.path
-        self.inferPathOrder()
+
 
         timer = Timer("Node Graph")
         timer.start()
         self.nodeGraph: Graph = self.makeGraph(self.nodeToNodeDistance)
         timer.stop()
 
-        # Debug print for path
-        """
-        for pos in self.path:
-            v3 = Vector3(
-                pos[0]*castleGenerator.scale+castleGenerator.scale/2 - int(castleGenerator.scale/2), 
-                0, 
-                pos[1]*castleGenerator.scale+castleGenerator.scale/2  - int(castleGenerator.scale/2)
-            )
-            n = self.nodeGraph.getNodeFromPosition(v3)
-            if n is not None:
-                n.unit=1 #type: ignore
-            else:
-                v3 = Vector3(
-                    pos[0],
-                    0, 
-                    pos[1]
-                )
-                n = self.nodeGraph.getNodeFromPosition(v3)
-                if n is not None:
-                    n.unit=1 #type: ignore 
-        """
+        self.pathZero = terrainMap.path
 
 
     def mkCastle(self, castleInstructionTree):
@@ -89,12 +67,14 @@ class Level:
         self.castleMapDuplo = castleGenerator.grid
         self.scale = castleGenerator.scale
 
+        self.path = self.inferPathOrder(self.pathZero)
+
         self.castleMap = castleGenerator.getCastleMapInTerrainScale(self.path)
 
         timer = Timer("Adding castle to Node Graph")
         timer.start()
         self.addCastleNodes(self.nodeToNodeDistance)
-        self.navigationGraph = self.nodeGraph.getAsData()
+        #self.navigationGraph = self.nodeGraph.getAsData()
         timer.stop()
 
         # gather data
@@ -206,13 +186,14 @@ class Level:
             for x in range(self.width // scale):
                 node = Node(Vector3(x + 0.5, self.getCell(x, y), y + 0.5))
                 nodes[node.position2] = node
+                """
                 if self.castleMap is not None:
                     castleCell = self.castleMap[y][x]
                     if castleCell is not None:
                         material = castleCell.getMaterialBlockGlobal(x, y)
                         node.setMaterialBlock(material)
                 """
-                """
+                
                 if (x,y) in self.waterMap:
                     node.setMaterialBlock(MaterialBlock(MaterialType.WATER))
 
@@ -278,16 +259,16 @@ class Level:
             (self.targetPosition.x, self.targetPosition.z)
         ]
     
-    def inferPathOrder(self):
+    def inferPathOrder(self, path):
         point = Vector2(self.targetPosition.x,self.targetPosition.z)
         newPath = [point]
-        tmpPath = [Vector2(p) for p in self.path]
+        tmpPath = [Vector2(p) for p in path]
         while tmpPath != []:
             point = min(tmpPath, key=lambda x: point.distance_to(x))
             newPath.append(point)
             tmpPath.remove(point)
 
-        self.path = [(int(p.x//self.scale),int(p.y//self.scale)) for p in newPath]
+        return [(int(p.x//self.scale),int(p.y//self.scale)) for p in newPath]
 
     ##############################################################
     # Behaviour

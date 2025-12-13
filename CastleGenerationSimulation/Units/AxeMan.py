@@ -197,7 +197,7 @@ class AxeMan(Unit):
             #self.future = self.sleep_work()
 
     def planPathInner(self, toType = MaterialType.DOOR):
-        self.path = aStar(
+        return aStar(
                 self.position, self.target, self.nodeGraph,
                 costAdjustFunc= self.moveCostAdjust2, 
                 ignoreNodes=self.nodesToSkip,

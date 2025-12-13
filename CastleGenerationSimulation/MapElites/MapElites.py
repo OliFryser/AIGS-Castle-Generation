@@ -25,6 +25,13 @@ from InitializationParameters import InitializationParameters
 from Simulation import Simulation
 from TerrainMap import TerrainMap
 
+#for gc debug
+"""
+import gc
+from collections import Counter
+from Utils.Node import Graph, Node
+from CastleElement import CastleElement, MaterialBlock
+"""
 
 class MapElites:
     def __init__(
@@ -123,12 +130,14 @@ class MapElites:
                 self.reShiftArchive(i)
                 pass
             keyValue = dynamicCeiling.calcValue(behavior.value)
-            if keyValue <= 10:
-                key.append(keyValue)
+            #this is dangerous
+            #if keyValue <= 10:
+            key.append(keyValue)
         return tuple(key)
 
     def reShiftArchive(self, keyIndex):
         newArchive: dict[tuple[int, int], ArchiveEntry] = {}
+        
         for k, v in self.archive.items():
             newKeyList = list(k)
             newKeyList[keyIndex] = self.dynamicKeys[keyIndex].calcValue(
@@ -157,6 +166,10 @@ class MapElites:
             individual: InstructionTree = self.generateRandomSolution()
 
             self.runSimulationME(simulation, individual)
+            """
+            count = sum(1 for o in gc.get_objects() if isinstance(o, CastleElement))
+            print(f"Iteration {i+1}: {count} instances of CE")
+            """
 
         
         for i in range(iterations):
@@ -173,25 +186,52 @@ class MapElites:
 
 
             # Garbage Issue!
-            """
             #simulation = None
-            # gc.collect()
+            """
+            gc.collect()
             types = Counter(type(obj) for obj in gc.get_objects())
-            print(types.most_common(20))
+            print(types.most_common(5))
 
-            all_objects = gc.get_objects()
-            count = sum(1 for o in all_objects if isinstance(o, Simulation))
-            print(f"Iteration {i+1}: {count} instances of Simulation")
+            count = sum(1 for o in gc.get_objects() if isinstance(o, MaterialBlock))
+            print(f"Iteration {i+1}: {count} instances of MaterialBlock")
             """
         
         simulation.reset()
-        simulation = None
+
+        ######
+        # prepare Archive for printing
+        ######
+        print(f"Preparing Archive of size: {len(self.archive.keys())} for visualisation")
+
+        highestBehaviourValues = []
+
+        sample:ArchiveEntry = next(iter(self.archive.values()))
+        for i in range(len(sample.behavior.getBehaviors())):
+            tmpValue = 0
+            for v in self.archive.values():
+                value = v.behavior.getBehaviors()[i].value
+                
+                if value > tmpValue:
+                    tmpValue = value
+
+            highestBehaviourValues.append(tmpValue)
+
+        #self.dynamicKeys[0].floor = 40
+        for i in range(len(highestBehaviourValues)):
+            dynamicValue = self.dynamicKeys[i]
+            dynamicValue.indecies = 9
+            dynamicValue.redefineCeiling(highestBehaviourValues[i])
+            self.reShiftArchive(i)
+
+        print(f"New Archive size: {len(self.archive.keys())}")
+        
         
         outerTimer.stop()
         self.plotter.plotMaxFitnessAndQDScore()
         self.plotter.plotCoverage()
         # self.saveArchiveToJSON()
-        self.saveArchiveVisualization()
+        self.saveArchiveVisualization(simulation)
+        simulation = None
 
 
     def runSimulationME(self, simulation:Simulation, individual: InstructionTree):
@@ -218,7 +258,7 @@ class MapElites:
                 self.getMaxFitness(), self.getAverageFitness(), self.getCoverage()
             )
         )
-
+ 
         simulation.reset()
 
     def runCE(self, generations: int, populationSize: int):
@@ -277,7 +317,7 @@ class MapElites:
         #self.plotter.plotMaxFitnessAndQDScore()
         #self.plotter.plotCoverage()
         # self.saveArchiveToJSON()
-        self.saveArchiveVisualization()
+        self.saveArchiveVisualization(simulation)
         
 
   
@@ -298,7 +338,7 @@ class MapElites:
 
 
 
-    def saveArchiveVisualization(self):
+    def saveArchiveVisualization(self, simulation):
         renderArchive(
             self.visualizationPath + "visual_" + self.dateString + ".png",
             10,
@@ -306,6 +346,7 @@ class MapElites:
             self.tileMap,
             self.terrainMap,
             self.resolution,
+            simulation=simulation
         )
 
     def saveArchiveToJSON(self):

@@ -116,7 +116,8 @@ class Simulation:
                 self.step()
                 self.stepCount += 1
             else:
-                print("all planning")
+                pass
+                #print("all planning")
 
             if self.attacker.units == []:
                 self.stepCount = 20000
@@ -155,7 +156,7 @@ class Simulation:
     
     def shutdown(self):
         #self.executor.shutdown(wait=False)
-        self.executor.shutdown(wait=False, cancel_futures=True)
+        self.executor.shutdown(wait=True, cancel_futures=True)
 
     def clearUnits(self):
         for unit in self.getUnits():
@@ -165,4 +166,5 @@ class Simulation:
         # units might hold on to eachother and dodge the garbage collector along with nodes and level and all that jazz
         self.shutdown()
         self.clearUnits()
+        self.shutdown()
         self.level.clearCastle()

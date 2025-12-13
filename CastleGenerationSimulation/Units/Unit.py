@@ -53,17 +53,20 @@ class Unit:
         self.future = None
         self.executor = executor
         self.id = uuid.uuid1()
-        self.navGraph = level.navigationGraph
+        #self.navGraph = level.navigationGraph
         #place on grid
         self.nodeGraph.getNodeFromPosition(self.position).unit = self
+        self.alive = True
 
         self.initFSMs()
         self.initFSM()
 
     def step(self):
         if self.future and self.future.done():
-            #path = self.future.result()
+            path = self.future.result()
             #self.path = list(self.nodeGraph.nodes[pos2] for pos2 in path)
+            if self.alive:
+                self.path = path
             self.future = None
         
         if self.future is not None:
@@ -85,11 +88,20 @@ class Unit:
 
     def die(self):
         #print(f"unit {self} died:")
+        self.alive = False
         self.nodeGraph.getNodeFromPosition(self.position).unit = None
         self.nodeGraph = None
         self.level = None
+        self.position = None
+        self.future = None
+        self.executor = None
+        self.fsm = None
+        self.navGraph = None
+        self.path = None
+        self.inMelee = None
         if self in self.teamMates:
             self.teamMates.remove(self)
+        self.teamMates = None
         
 
     def targetGoal(self):
@@ -294,7 +306,7 @@ class Unit:
         pass
 
     def planPathInner(self, toType = None):
-        self.path = aStar(
+        return aStar(
                 self.position, self.target, self.nodeGraph,
                 costAdjustFunc= self.moveCostAdjust, ignoreNodes=self.nodesToSkip,
                 unit=self,
@@ -373,8 +385,8 @@ class Unit:
 
         if node0 is not None and node1 is not None:
             if node0 is not node1 and (node1.materialBlock is None or not node1.materialBlock.blocking):
-                node0.unit = None
-                node1.unit = self
+                node0.clearUnit()
+                node1.setUnit(self)
 
         self.position = newPosition
         

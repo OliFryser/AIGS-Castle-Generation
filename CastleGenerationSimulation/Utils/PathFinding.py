@@ -176,7 +176,7 @@ def aStar(
 
             if edge.node in ignoreNodes or edge.node not in graph:
                 print(
-                    f"Error node not in graph {edge.node.position}, start Node: {startNode.position}"
+                    f"Error: node not in graph {edge.node.position}, start Node: {startNode.position} Likely a ghost thread"
                 )
                 continue
             if edge.node not in distances or new_distance < distances[edge.node]:
