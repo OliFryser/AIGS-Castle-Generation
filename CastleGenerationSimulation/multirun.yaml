@@ -140,7 +140,7 @@ interactive:
 mapElites:
   levelFilepath: resources/terrainMaps/perlinBy4 - test.txt
   archiveSavepath: resources/archives/
-  iterations: 1000
+  iterations: 200
   population: 50
   resolution: 4
 terrainBuilder:

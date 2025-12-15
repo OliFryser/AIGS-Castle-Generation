@@ -216,6 +216,7 @@ class MapElites:
 
             highestBehaviourValues.append(tmpValue)
 
+        """
         #self.dynamicKeys[0].floor = 40
         for i in range(len(highestBehaviourValues)):
             dynamicValue = self.dynamicKeys[i]
@@ -224,13 +225,14 @@ class MapElites:
             self.reShiftArchive(i)
 
         print(f"New Archive size: {len(self.archive.keys())}")
+        """
         
         
         outerTimer.stop()
         self.plotter.plotMaxFitnessAndQDScore()
         self.plotter.plotCoverage()
         # self.saveArchiveToJSON()
-        self.saveArchiveVisualization(simulation)
+        self.saveArchiveVisualization()
         simulation = None
 
 
@@ -338,7 +340,7 @@ class MapElites:
 
 
 
-    def saveArchiveVisualization(self, simulation):
+    def saveArchiveVisualization(self,):
         renderArchive(
             self.visualizationPath + "visual_" + self.dateString + ".png",
             10,
@@ -346,7 +348,7 @@ class MapElites:
             self.tileMap,
             self.terrainMap,
             self.resolution,
-            simulation=simulation
+            #simulation=simulation
         )
 
     def saveArchiveToJSON(self):
