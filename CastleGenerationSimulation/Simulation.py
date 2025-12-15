@@ -117,7 +117,7 @@ class Simulation:
                 self.stepCount += 1
             else:
                 pass
-                #print("all planning")
+                print("all planning")
 
             if self.attacker.units == []:
                 self.stepCount = 20000
