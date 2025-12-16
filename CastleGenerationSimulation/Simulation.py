@@ -16,6 +16,7 @@ class State:
     kills: int
     gates: int
     stepCount: int
+    towers : int
 
 
 class Simulation:
@@ -104,23 +105,33 @@ class Simulation:
             kills= self.kills,
             gates= self.level.gates,
             stepCount=self.getStepCount(),
+            towers= self.getTowerAmount(),
             )
         return state
 
     def runSimulation(self):
         self.stepCount = 0
+        n = 0
         while not self.target.isOccupied():
             # if all attackers are planning... the game can run "amok" while they are waiting for threads
             # this should make the simulation slightly more deterministic
-            if not self.attackersAreAllPlanning():
-                self.step()
-                self.stepCount += 1
-            else:
-                pass
-                print("all planning")
-
+            if self.attackersAreAllPlanning():
+                #print(f"all planning consecutive: {n}")
+                n += 1
+                #usually pathfinding shouldnt be stuck for more than 10 consecutive steps processor dependant
+                if n > 10000:
+                    print("no one could find a path")
+                    self.stepCount = 0
+                    self.kills = - (len(self.attacker.units) - self.noAttackers)
+                    self.shutdown()
+                    return
+                continue
+            self.step()
+            self.stepCount += 1
+            n = 0
             if self.attacker.units == []:
-                self.stepCount = 20000
+                #self.stepCount = 20000
+                print("wipeout")
                 break
             if self.stepCount > 40000:
                 self.stepCount = 10000
@@ -168,3 +179,6 @@ class Simulation:
         self.clearUnits()
         self.shutdown()
         self.level.clearCastle()
+
+    def getTowerAmount(self):
+        return self.level.getTowers()

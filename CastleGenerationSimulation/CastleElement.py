@@ -127,9 +127,11 @@ class MaterialBlock:
 
     def hit(self, incommingDamage):
         damage = incommingDamage - self.damageThreshold
+        if self.health <= 0:
+            return
         if damage <= 0:
             return
-        if len(self.linked) == 0:
+        if self.linked:
             self.takeDamage(damage)
             return
         for link in self.linked:
@@ -138,6 +140,7 @@ class MaterialBlock:
     def destroy(self):
         if self.node is not None:
             self.node.materialBlock = None
+        self.nodeDeath()
 
     def nodeDeath(self):
         self.node = None

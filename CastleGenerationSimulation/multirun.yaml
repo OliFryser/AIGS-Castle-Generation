@@ -138,13 +138,13 @@ interactive:
   resolution: 4
   levelFilepath: resources/terrainMaps/perlinBy4 - test.txt
 mapElites:
-  levelFilepath: resources/terrainMaps/perlinBy4 - test.txt
+  levelFilepath: resources/terrainMaps/onAHill.txt
   archiveSavepath: resources/archives/
   iterations: 2000
-  population: 50
+  population: 100
   resolution: 4
 terrainBuilder:
-  levelFilepath: resources/terrainMaps/perlinBy4 - test.txt
+  levelFilepath: resources/terrainMaps/perlinBy30.txt
   resolution: 4
   maxHeightMultiplier: 5
 conventionalEA:

@@ -97,6 +97,11 @@ class Level:
             count += value
         return count
     
+    def getTowers(self):
+        if ElementType.TOWER in self.blocks:
+            return self.blocks[ElementType.TOWER]
+        return 0
+    
     def getTowerRatio(self):
         if ElementType.TOWER not in self.blocks:
             return 0

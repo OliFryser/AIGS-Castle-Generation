@@ -3,6 +3,7 @@ import numpy as np
 from CastleElement import MaterialType
 import gc
 
+
 class Node:
     def __init__(self, position: Vector3) -> None:
         self.position = position
@@ -30,13 +31,12 @@ class Node:
             return
         self.materialBlock.nodeDeath()
         self.materialBlock = None
-        #self.printRefs()
             
     def printRefs(self):
         gc.collect()
         refs = gc.get_referrers(self)
         for r in refs:
-            #if type(r) is not dict:
+            if type(r) is not dict:
                 print(type(r))
        
     def getAsData(self):

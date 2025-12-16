@@ -89,7 +89,7 @@ class Unit:
     def die(self):
         #print(f"unit {self} died:")
         self.alive = False
-        self.nodeGraph.getNodeFromPosition(self.position).unit = None
+        self.nodeGraph.getNodeFromPosition(self.position).clearUnit()
         self.nodeGraph = None
         self.level = None
         self.position = None
@@ -99,6 +99,12 @@ class Unit:
         self.navGraph = None
         self.path = None
         self.inMelee = None
+        self.target = None
+        self.enemies = None
+        self.goal = None
+        self.fsms = None
+        self.fsm = None
+        self.navGraph = None
         if self in self.teamMates:
             self.teamMates.remove(self)
         self.teamMates = None

@@ -22,13 +22,13 @@ from CastleInstructions.InstructionTreeVariation import (
 from CastleInstructions.MutationWeights import MutationWeights
 
 from InitializationParameters import InitializationParameters
-from Simulation import Simulation
+from Simulation import Simulation, State
 from TerrainMap import TerrainMap
 
 #for gc debug
-"""
 import gc
 from collections import Counter
+"""
 from Utils.Node import Graph, Node
 from CastleElement import CastleElement, MaterialBlock
 """
@@ -111,13 +111,13 @@ class MapElites:
             self.randomVariationCE(individual,other, budget-cost)
 
     #this is minor, but creating an object with multiple pieces of information on it each time is suboptimal 
-    def getBehavior(self, simulation: Simulation) -> Behaviors:
-        behaviorX = Behavior(simulation.getState().cost, "Cost")
-        behaviorY = Behavior(simulation.getState().area, "Area")
+    def getBehavior(self, state: State) -> Behaviors:
+        behaviorX = Behavior(state.cost, "cost")
+        behaviorY = Behavior(state.area, "area")
         return Behaviors(behaviorX, behaviorY)
 
-    def getFitness(self, simulation: Simulation) -> int:
-        return simulation.getState().stepCount
+    def getFitness(self, state: State) -> int:
+        return self.getFitness2(state)
 
     def getKey(self, behaviors: Behaviors):
         key = []
@@ -171,7 +171,6 @@ class MapElites:
             print(f"Iteration {i+1}: {count} instances of CE")
             """
 
-        
         for i in range(iterations):
             if i % 10 == 0:
                 print("MapElites iteration:", i)
@@ -184,8 +183,7 @@ class MapElites:
 
             self.runSimulationME(simulation, individual)
 
-
-            # Garbage Issue!
+            # Garbage check!
             #simulation = None
             """
             gc.collect()
@@ -201,6 +199,7 @@ class MapElites:
         ######
         # prepare Archive for printing
         ######
+        """
         print(f"Preparing Archive of size: {len(self.archive.keys())} for visualisation")
 
         highestBehaviourValues = []
@@ -216,7 +215,6 @@ class MapElites:
 
             highestBehaviourValues.append(tmpValue)
 
-        """
         #self.dynamicKeys[0].floor = 40
         for i in range(len(highestBehaviourValues)):
             dynamicValue = self.dynamicKeys[i]
@@ -233,6 +231,7 @@ class MapElites:
         self.plotter.plotCoverage()
         # self.saveArchiveToJSON()
         self.saveArchiveVisualization()
+        print("run over")
         simulation = None
 
 
@@ -245,8 +244,10 @@ class MapElites:
         simulation.runSimulation()
         timer.stop()
 
-        behavior: Behaviors = self.getBehavior(simulation)
-        fitness: int = self.getFitness(simulation)
+        state = simulation.getState()
+
+        behavior: Behaviors = self.getBehavior(state)
+        fitness: int = self.getFitness(state)
 
         key = self.getKey(behavior)
         if key is False:
@@ -373,14 +374,18 @@ class MapElites:
     def getCoverage(self):
         return len(self.archive.keys())
 
-    """
-    def getFitness(self):
-        castleCost = self.level.castleCost
+    def getFitness2(self, state: State):
+        castleCost = state.cost
         castleBudget = 100
         overBudget = 0
+
+        killpercentage = state.kills /(8 + state.towers)
+
+
         if castleCost > castleBudget:
-            overBudget = (castleCost - castleBudget) * 20
+            overBudget = (castleCost - castleBudget) * 5
             #overBudget = overBudget*overBudget
             #print(overBudget)
-        return self.stepCount - overBudget
+        return state.stepCount/10 - overBudget + 1000*killpercentage + state.area*10
+    """
     """
