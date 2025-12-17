@@ -52,7 +52,7 @@ class TreeNode:
 class InstructionTree:
     def __init__(self, root: InstructionLine):
         self.root = TreeNode(root)
-        self.nodes: list[TreeNode] = [self.root]  # flat list for sampling ...wait does this THEN find a node recursively? so this is for random choice???
+        self.nodes: list[TreeNode] = [self.root]  # flat list for sampling
 
     def addChild(self, parent: TreeNode, childLine: InstructionLine):
         childNode = TreeNode(childLine)

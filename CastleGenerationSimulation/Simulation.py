@@ -34,9 +34,9 @@ class Simulation:
 
         #self.planner_limit = Semaphore(MAX_PLANNERS)
 
-        self.executor = ThreadPoolExecutor(max_workers=4)
+        self.executor = ThreadPoolExecutor(max_workers=8)
         #ProcessPoolExecutor(4)
-        self.level.mkCastle(castleInstructionTree)
+        self.level.makeCastle(castleInstructionTree)
 
         self.attacker = Team(
             name="attacker",
@@ -177,7 +177,7 @@ class Simulation:
         # units might hold on to eachother and dodge the garbage collector along with nodes and level and all that jazz
         self.shutdown()
         self.clearUnits()
-        self.shutdown()
+        #self.shutdown()
         self.level.clearCastle()
 
     def getTowerAmount(self):

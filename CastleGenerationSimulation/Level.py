@@ -50,7 +50,7 @@ class Level:
         self.pathZero = terrainMap.path
 
 
-    def mkCastle(self, castleInstructionTree):
+    def makeCastle(self, castleInstructionTree):
 
         timer = Timer("Castle generator")
         timer.start()

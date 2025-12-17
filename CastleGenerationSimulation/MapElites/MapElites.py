@@ -339,8 +339,6 @@ class MapElites:
 
         return fitness
 
-
-
     def saveArchiveVisualization(self,):
         renderArchive(
             self.visualizationPath + "visual_" + self.dateString + ".png",
@@ -380,7 +378,6 @@ class MapElites:
         overBudget = 0
 
         killpercentage = state.kills /(8 + state.towers)
-
 
         if castleCost > castleBudget:
             overBudget = (castleCost - castleBudget) * 5

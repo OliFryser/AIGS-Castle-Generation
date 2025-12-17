@@ -10,7 +10,7 @@ interactive:
 mapElites:
     levelFilepath: "resources/terrainMaps/onAHill.txt"
     archiveSavepath: "resources/archives/"
-    iterations: 2000
+    iterations: 1000
     population: 100
     resolution: 4
 
