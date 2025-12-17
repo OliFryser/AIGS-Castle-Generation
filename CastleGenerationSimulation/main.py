@@ -12,6 +12,7 @@ from Renderer import Renderer
 from TerrainBuilder.TerrainBuilder import TerrainBuilder
 from TerrainMap import TerrainMap
 from TileMap import TileMap
+from MapElites.ConventionalEvolution import ConventionalEvolution
 import Utils.Timer
 
 
@@ -51,7 +52,7 @@ def runMapElites(cfg, terrainMap, tileMap):
 def runConventionalEA(cfg, terrainMap, tileMap):
     # Disable visual for pygame
     os.environ["SDL_VIDEODRIVER"] = "dummy"
-    mapElites = MapElites(terrainMap, tileMap, cfg.archiveSavepath, cfg.resolution)
+    mapElites = ConventionalEvolution(terrainMap, tileMap, cfg.archiveSavepath, cfg.resolution)
     mapElites.runCE(cfg.iterations, cfg.population)
 
 def runInteractiveMode(cfg, terrainMap, tileMap):
