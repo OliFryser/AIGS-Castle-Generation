@@ -6,3 +6,4 @@ resources/archives/plots/*
 !resources/archives/plots/.gitkeep
 resources/archives/visualizations/*
 !resources/archives/visualizations/.gitkeep
+multirun.yaml
