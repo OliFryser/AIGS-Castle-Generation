@@ -104,9 +104,10 @@ class Graph:
                     graph[edge.node].remove(neighbourEdge)
                     neighbourEdge.purge()
         del graph[toBeRemoved]
-        tmp = self.nodes[toBeRemoved.position2]
-        tmp.destroy()
-        del self.nodes[toBeRemoved.position2]
+        if toBeRemoved.position2 in self.nodes:
+            tmp = self.nodes[toBeRemoved.position2]
+            tmp.destroy()
+            del self.nodes[toBeRemoved.position2]
         #tmp.printRefs()
 
     def getNodeFromPosition(self, position: Vector3):

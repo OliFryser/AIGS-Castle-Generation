@@ -168,6 +168,8 @@ class AxeMan(Unit):
         self.nodeTarget = None
 
     def planPath(self, toType = MaterialType.DOOR.value):
+        self.path = self.planPathInner()
+        return
         if self.future is None:
             """
             startPosition= (self.position.x,self.position.y,self.position.z)

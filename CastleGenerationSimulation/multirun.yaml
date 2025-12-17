@@ -130,7 +130,7 @@ hydra:
       hydra/launcher: basic
       hydra/output: default
   verbose: false
-mode: mapElites
+mode: interactive
 printTimer: false
 castleTilesFilepath: resources/castleTiles/
 interactive:

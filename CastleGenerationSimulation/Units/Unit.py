@@ -55,13 +55,16 @@ class Unit:
         self.id = uuid.uuid1()
         #self.navGraph = level.navigationGraph
         #place on grid
-        self.nodeGraph.getNodeFromPosition(self.position).unit = self
+        self.node = self.nodeGraph.getNodeFromPosition(self.position)
+        if self.node is not None:
+            self.node.setUnit(self)
         self.alive = True
 
         self.initFSMs()
         self.initFSM()
 
     def step(self):
+        """
         if self.future and self.future.done():
             path = self.future.result()
             #self.path = list(self.nodeGraph.nodes[pos2] for pos2 in path)
@@ -71,6 +74,7 @@ class Unit:
         
         if self.future is not None:
             return
+        """
 
         self.fsm.updateState()
         state = self.fsm.getState()
@@ -157,24 +161,24 @@ class Unit:
             onEnter = (self.planPath, (), {}),
             )
         goToGoalFSM.addTransition(
-            state0= State.MOVETO,
+            state0= State.MOVETO,   
             state1= State.WAIT,
             transition=self.isBlocked,
-            onEnter= (self.setTimer, (5,), {}),
+            onEnter= (self.setTimer, (1,), {}),
             onExit= (self.unBlock, (), {}), 
         )
         goToGoalFSM.addTransition(
             state0= State.MOVETO,
             state1= State.WAIT,
             transition=self.notHasPlan,
-            onEnter= (self.setTimer, (5,), {}),
+            onEnter= (self.setTimer, (1,), {}),
             onExit= (self.unBlock, (), {}), 
         )
         goToGoalFSM.addTransition(
             state0= State.MOVETO,
             state1= State.WAIT,
             transition=self.closeEnough,
-            onEnter= (self.setTimer, (5,), {}),
+            onEnter= (self.setTimer, (1,), {}),
         )
         
         self.fsms[goToGoalFSM.name] = goToGoalFSM
@@ -208,9 +212,12 @@ class Unit:
     # Transition bools
     ######################
     def closeEnough(self):
+        result = (self.target is not None
+            and self.position.distance_to(self.target) < self.size * 3)
+        if result:
+            self.plan = []
         return (
-            self.target is not None
-            and self.position.distance_to(self.target) < self.size * 3
+            result
         )
 
     def outOfReach(self):
@@ -223,17 +230,17 @@ class Unit:
         return self.attackCoolDown
 
     def hasPlan(self):
-        return not (self.path == [] or self.path is None)
+        return not self.notHasPlan()
 
     def notHasPlan(self):
-        return not self.hasPlan()
+        return not self.path
 
     def hasCounted(self):
         return self.count < 1
 
     def isBlocked(self):
         if not self.blocked:
-            self.count = 10
+            self.count = 50
             return False
         self.count -= 1
         if self.count < 1:
@@ -352,7 +359,6 @@ class Unit:
         node0 = self.nodeGraph.getNodeFromPosition(self.position)
         node1 = self.nodeGraph.getNodeFromPosition(newPosition)
         # node is none shield
-
         ###
         # this is naive hit detection
         ###
@@ -371,7 +377,7 @@ class Unit:
             #clash with walls
             for tnode in frontNodes:
                 if tnode.materialBlock is not None and tnode.materialBlock.blocking:
-                    if newPosition.distance_to(tnode.position) < self.size *2:
+                    if newPosition.distance_to(tnode.position) < self.size *4:
                         newDirection = (direction + (self.position - tnode.position).normalize()).normalize()
                         self.move(newDirection, n+1)
                         return
@@ -393,8 +399,12 @@ class Unit:
             if node0 is not node1 and (node1.materialBlock is None or not node1.materialBlock.blocking):
                 node0.clearUnit()
                 node1.setUnit(self)
+                self.position = newPosition
+        if node0 is node1:
+            self.position = newPosition
 
-        self.position = newPosition
+        #if self.node != self.nodeGraph.getNodeFromPosition(self.position):
+
         
     def getFrontNodes(self, direction):
         node = self.nodeGraph.getNodeFromPosition(self.position)
