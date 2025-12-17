@@ -34,7 +34,7 @@ class Simulation:
 
         #self.planner_limit = Semaphore(MAX_PLANNERS)
 
-        self.executor = ThreadPoolExecutor(max_workers=8)
+        self.executor = None#ThreadPoolExecutor(max_workers=8)
         #ProcessPoolExecutor(4)
         self.level.makeCastle(castleInstructionTree)
 

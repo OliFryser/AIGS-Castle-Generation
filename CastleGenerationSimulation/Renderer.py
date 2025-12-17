@@ -54,12 +54,12 @@ class Renderer:
                         
                 
                 """
+                """
                 #for unit debugging
                 if node.unit is not None:
                     color = (255, 0, 0)
                     rect = pygame.Rect(x * cellSize, y * cellSize, cellSize, cellSize)
                     pygame.draw.rect(self.screen, color, rect)
-                """
 
     def renderPath(self):
         path = self.simulation.level.path

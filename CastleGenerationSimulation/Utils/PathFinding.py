@@ -99,15 +99,13 @@ def aStar(
     # pprint(graph.values())
     tmpNodes = []
 
-    """
     startNode = getAsNodeOnGraph(startPosition, nodeGraph, tmpNodes, unit, ignoreNodes)
-    targetNode = getAsNodeOnGraph(
-        targetPosition, nodeGraph, tmpNodes, unit, ignoreNodes
-    )
-    print(startPosition,startNode,targetNode)
+    targetNode = getAsNodeOnGraph(targetPosition, nodeGraph, tmpNodes, unit, ignoreNodes)
     """
+    print(startPosition,startNode,targetNode)
     startNode = nodeGraph.getNodeFromPosition(startPosition)
     targetNode = nodeGraph.getNodeFromPosition(targetPosition)
+    """
     # distances is for storing the shortest distance to node
     distances: dict[Node, float] = {startNode: 0.0}
     open_nodes = PriorityQueue()
