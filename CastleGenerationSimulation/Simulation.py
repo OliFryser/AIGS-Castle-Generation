@@ -7,6 +7,7 @@ from Team import Team
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 from threading import Semaphore
 
+
 @dataclass
 class State:
     blocks: int
@@ -16,7 +17,7 @@ class State:
     kills: int
     gates: int
     stepCount: int
-    towers : int
+    towers: int
 
 
 class Simulation:
@@ -30,12 +31,6 @@ class Simulation:
             self.prepare(initParams.castleInstructionTree)
 
     def prepare(self, castleInstructionTree):
-        #MAX_PLANNERS = 4
-
-        #self.planner_limit = Semaphore(MAX_PLANNERS)
-
-        self.executor = None#ThreadPoolExecutor(max_workers=8)
-        #ProcessPoolExecutor(4)
         self.level.makeCastle(castleInstructionTree)
 
         self.attacker = Team(
@@ -45,27 +40,21 @@ class Simulation:
                 self.level.width / 2,
                 self.level.height - 6,
             ),
-            #executor=self.submitPlan
-            executor=self.executor,
         )
         self.defender = Team(
             name="defeder",
             level=self.level,
             startPosition=Vector2(self.target.position.x, self.target.position.z),
-            #executor= self.submitPlan,
-            executor= self.executor,
             enemies=self.attacker.units,
         )
         self.attacker.setEnemies(self.defender.units)
         self.target.enemies = self.attacker.units
-        
 
         self.defender.addArchersToTowers()
         """
         """
         for n in range(8 + len(self.defender.units)):
             self.attacker.addAxeman()
-        
 
         self.attacker.updateGoal(self.target.position)
         self.defender.updateGoal(self.target.position)
@@ -80,7 +69,7 @@ class Simulation:
             print("all planning")
             return
         """
-        
+
         for unit in self.getUnits():
             unit.step()
         # Node unit sanity check, should not be run, it is expensive
@@ -98,15 +87,15 @@ class Simulation:
 
     def getState(self):
         state = State(
-            blocks= self.level.blockCount,
-            area= self.level.protectedArea,
-            cost= self.getCost(),
-            towerRatio= self.level.towerRatio,
-            kills= self.kills,
-            gates= self.level.gates,
+            blocks=self.level.blockCount,
+            area=self.level.protectedArea,
+            cost=self.getCost(),
+            towerRatio=self.level.towerRatio,
+            kills=self.kills,
+            gates=self.level.gates,
             stepCount=self.getStepCount(),
-            towers= self.getTowerAmount(),
-            )
+            towers=self.getTowerAmount(),
+        )
         return state
 
     def runSimulation(self):
@@ -116,28 +105,27 @@ class Simulation:
             # if all attackers are planning... the game can run "amok" while they are waiting for threads
             # this should make the simulation slightly more deterministic
             if self.attackersAreAllPlanning():
-                #print(f"all planning consecutive: {n}")
+                # print(f"all planning consecutive: {n}")
                 n += 1
-                #usually pathfinding shouldnt be stuck for more than 10 consecutive steps processor dependant
+                # usually pathfinding shouldnt be stuck for more than 10 consecutive steps processor dependant
                 if n > 10000:
                     print("no one could find a path")
                     self.stepCount = 0
-                    self.kills = - (len(self.attacker.units) - self.noAttackers)
-                    self.shutdown()
+                    self.kills = -(len(self.attacker.units) - self.noAttackers)
                     return
                 continue
             self.step()
             self.stepCount += 1
             n = 0
             if self.attacker.units == []:
-                #self.stepCount = 20000
+                # self.stepCount = 20000
                 print("wipeout")
                 break
             if self.stepCount > 40000:
                 self.stepCount = 10000
                 print("step Break")
                 break
-        self.kills = - (len(self.attacker.units) - self.noAttackers)
+        self.kills = -(len(self.attacker.units) - self.noAttackers)
 
     def attackersAreAllPlanning(self):
         for u in self.attacker.units:
@@ -146,28 +134,18 @@ class Simulation:
                 # this unit is NOT planning
                 return False
         return True
-    
-    def submitPlan(self, fn, *args, **kwargs):
-        def wrapper():
-            with self.planner_limit:
-                return fn(*args, **kwargs)
-        return self.executor.submit(wrapper)
 
     def getMaxBlocks(self):
         return self.level.maxBlocks
 
     def getMaxArea(self):
         return self.level.maxArea
-    
+
     def getCost(self):
         return self.level.castleCost
-    
+
     def getStepCount(self):
         return self.stepCount
-    
-    def shutdown(self):
-        #self.executor.shutdown(wait=False)
-        self.executor.shutdown(wait=True, cancel_futures=True)
 
     def clearUnits(self):
         for unit in self.getUnits():
@@ -175,9 +153,7 @@ class Simulation:
 
     def reset(self):
         # units might hold on to eachother and dodge the garbage collector along with nodes and level and all that jazz
-        self.shutdown()
         self.clearUnits()
-        #self.shutdown()
         self.level.clearCastle()
 
     def getTowerAmount(self):
