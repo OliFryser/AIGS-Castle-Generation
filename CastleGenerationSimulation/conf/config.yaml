@@ -1,20 +1,27 @@
-mode: "interactive" # interactive | mapElites | terrainBuilder
+mode: "mapElites" # interactive | mapElites | terrainBuilder | conventionalEA
 printTimer: False
 castleTilesFilepath: "resources/castleTiles/"
 
 interactive:
-    castleGenerationFilepath: "resources/castleGenerationInstructions/test8 copy.txt"
+    castleGenerationFilepath: "resources/castleGenerationInstructions/test4.txt"
     resolution: 4
     levelFilepath: "resources/terrainMaps/perlinBy4 - test.txt"
 
 mapElites:
-    levelFilepath: "resources/terrainMaps/perlinBy4 - test.txt"
+    levelFilepath: "resources/terrainMaps/onAHill.txt"
     archiveSavepath: "resources/archives/"
-    iterations: 10
-    population: 5
+    iterations: 1000
+    population: 100
     resolution: 4
 
 terrainBuilder:
-    levelFilepath: "resources/terrainMaps/perlinBy4 - test.txt"
+    levelFilepath: "resources/terrainMaps/perlinBy30.txt"
     resolution: 4
     maxHeightMultiplier: 5
+
+conventionalEA:
+    levelFilepath: "resources/terrainMaps/perlinBy4 - test.txt"
+    archiveSavepath: "resources/archives/"
+    iterations: 250
+    population: 20
+    resolution: 4

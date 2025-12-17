@@ -12,7 +12,7 @@ class Renderer:
         self.resolution = resolution
         self.font = pygame.font.Font(None, 48)
         self.materialTypeToColor = {
-            MaterialType.SANDSTONE: (163, 145, 117),
+            MaterialType.SANDSTONE: (153, 145, 137),
             MaterialType.STONE: (91, 91, 91),
             MaterialType.PAVEMENT: (80, 80, 80),
             MaterialType.GRANITE: (160, 160, 160),
@@ -24,6 +24,7 @@ class Renderer:
         self.screen.fill((255, 0, 255))
 
         self.displayTerrainMap(self.screen)
+        self.renderPath()
         self.renderWaterMap()
         self.renderCastleMap()
         for unit in self.simulation.getUnits():
@@ -36,23 +37,40 @@ class Renderer:
         level = self.simulation.level
         for y in range(level.height):
             for x in range(level.width):
-                """
-                castleElement = level.castleMap[y][x]
-                if castleElement is not None:
-                    color = self.materialTypeToColor[castleElement.material.materialType]
-                    rect = pygame.Rect(x * cellSize, y * cellSize, cellSize, cellSize)
-                    pygame.draw.rect(self.screen, color, rect)
-                """
+
                 node = level.nodeGraph.nodes[(x + 0.5, y + 0.5)]
                 if node.materialBlock is not None and node.materialBlock.materialType is not MaterialType.WATER:
+
                     color = self.materialTypeToColor[node.materialBlock.materialType]
+
                     rect = pygame.Rect(x * cellSize, y * cellSize, cellSize, cellSize)
                     pygame.draw.rect(self.screen, color, rect)
-
+                    
+                    """
+                    if node.materialBlock.materialType is MaterialType.SANDSTONE:
+                        rect0 = pygame.Rect(x * cellSize, y * cellSize, cellSize, cellSize)
+                        pygame.draw.rect(self.screen, (53, 46, 33), rect0, 1)
+                    """
+                        
+                
+                """
+                #for unit debugging
                 if node.unit is not None:
                     color = (255, 0, 0)
                     rect = pygame.Rect(x * cellSize, y * cellSize, cellSize, cellSize)
                     pygame.draw.rect(self.screen, color, rect)
+                """
+
+    def renderPath(self):
+        path = self.simulation.level.path
+        scale = self.simulation.level.scale
+        pygame.draw.lines(
+            self.screen,
+            (150, 150, 90),
+            False,
+            [self.modelToViewSpace(pygame.Vector3(pos[0]*scale+0.5, 20, pos[1]*scale+0.5)) for pos in path],
+            scale,
+        )
 
     # this is fast and dirty first lvl renderer
     def displayTerrainMap(self, screen):
@@ -90,7 +108,7 @@ class Renderer:
             + 1,
             # 7,
         )
-        if len(unit.path) > 1:
+        if unit.path and len(unit.path) > 1:
             pygame.draw.lines(
                 self.screen,
                 (255, 255, 0),

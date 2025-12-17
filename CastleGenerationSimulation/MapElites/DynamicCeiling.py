@@ -1,19 +1,20 @@
 class DynamicCeiling:
-    def __init__(self, ceiling = 1, indices = 9, maximum = 30) -> None:
+    def __init__(self, ceiling = 1, indecies = 9, maximum = 30, floor =0) -> None:
         self.ceiling = ceiling
-        self.indices = indices
+        self.indecies = indecies
         self.maximum = maximum
+        self.floor = floor
 
 
     def calcValue(self, value):
-        return round((value / (self.ceiling)) * self.indices)
+        result = round(((value - self.floor)/ (self.ceiling)) * self.indecies)
+        return result
     
     def redefineCeiling(self, newCeiling):
-        if newCeiling < self.maximum and newCeiling > self.ceiling:
-            self.ceiling = newCeiling
+        if newCeiling - self.floor < self.maximum and newCeiling -self.floor> self.ceiling:
+            self.ceiling = newCeiling - self.floor
             return True
         return False
 
     def increaseCeiling(self, value):       
-        self.indices = (self.ceiling - value) * (self.indices/2)
-       
+        self.indecies = (self.ceiling - value) * (self.indecies/2)

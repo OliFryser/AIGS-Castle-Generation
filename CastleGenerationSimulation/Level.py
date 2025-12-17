@@ -10,40 +10,53 @@ from Utils.Node import Graph, Node, Edge
 from Utils.PathFinding import aStar
 from CastleElement import ElementType, MaterialType, MaterialBlock
 
-
 class Level:
     def __init__(
         self,
         terrainMap: TerrainMap,
-        castleInstructionTree: InstructionTree,
         tileMap: TileMap,
-        #targetPosition: Vector3 | None = None,
     ):
+
         self.terrainMap = terrainMap.map
         self.waterMap = terrainMap.waterMap
         self.width = terrainMap.width
         self.height = terrainMap.height
         self.maxHeight = terrainMap.maxHeight
-        self.castleMap = None
         targetPosition = terrainMap.target
+        self.castleMap = None
+        self.tileMap = tileMap
+        
+        self.scale = tileMap.scale
 
+        #the scale division multiplication adjusts the target to be in line with the castlemap
         if targetPosition is None:
-            x = int(self.width / 2)
-            z = int(self.height / 3)
+            x = int(self.width / 2)// self.scale * self.scale
+            z = int(self.height / 3)// self.scale * self.scale
         else:
-            x = targetPosition[0]//5 * 5
-            z = targetPosition[1]//5 * 5
+            x = targetPosition[0]//self.scale * self.scale
+            z = targetPosition[1]//self.scale * self.scale
         self.targetPosition = Vector3(
             x,
             self.getBilinearHeight(x, z),
             z,
         )
 
+
+        timer = Timer("Node Graph")
+        timer.start()
+        self.nodeGraph: Graph = self.makeGraph(self.nodeToNodeDistance)
+        timer.stop()
+
+        self.pathZero = terrainMap.path
+
+
+    def makeCastle(self, castleInstructionTree):
+
         timer = Timer("Castle generator")
         timer.start()
         castleGenerator = CastleGenerator(
             castleInstructionTree,
-            tileMap,
+            self.tileMap,
             self.width,
             self.height,
             self.targetPosition.x,
@@ -53,14 +66,15 @@ class Level:
 
         self.castleMapDuplo = castleGenerator.grid
         self.scale = castleGenerator.scale
-        self.path = terrainMap.path
-        self.inferPathOrder()
+
+        self.path = self.inferPathOrder(self.pathZero)
 
         self.castleMap = castleGenerator.getCastleMapInTerrainScale(self.path)
 
-        timer = Timer("Node Graph")
+        timer = Timer("Adding castle to Node Graph")
         timer.start()
-        self.nodeGraph: Graph = self.makeGraph(self.nodeToNodeDistance)
+        self.addCastleNodes(self.nodeToNodeDistance)
+        #self.navigationGraph = self.nodeGraph.getAsData()
         timer.stop()
 
         # gather data
@@ -75,32 +89,18 @@ class Level:
         self.maxBlocks = castleGenerator.getGridSize()
         self.maxArea = castleGenerator.getMaxArea()
 
-        # Debug print for path
-        """
-        for pos in self.path:
-            v3 = Vector3(
-                pos[0]*castleGenerator.scale+castleGenerator.scale/2 - int(castleGenerator.scale/2), 
-                0, 
-                pos[1]*castleGenerator.scale+castleGenerator.scale/2  - int(castleGenerator.scale/2)
-            )
-            n = self.nodeGraph.getNodeFromPosition(v3)
-            if n is not None:
-                n.unit=1 #type: ignore
-            else:
-                v3 = Vector3(
-                    pos[0],
-                    0, 
-                    pos[1]
-                )
-                n = self.nodeGraph.getNodeFromPosition(v3)
-                if n is not None:
-                    n.unit=1 #type: ignore 
-        """
+
+
     def countBlocks(self):
         count = 0
         for value in self.blocks.values():
             count += value
         return count
+    
+    def getTowers(self):
+        if ElementType.TOWER in self.blocks:
+            return self.blocks[ElementType.TOWER]
+        return 0
     
     def getTowerRatio(self):
         if ElementType.TOWER not in self.blocks:
@@ -174,65 +174,64 @@ class Level:
     #####################################################
 
     def makeGraph(self, edgeCostFunc, scale: int = 1):
-        nodeGraph = Graph()
-        nodeGraph.graph, nodeGraph.nodes = self.createNodeGraph(edgeCostFunc, scale)
+        #nodeGraph = Graph()
+        #nodeGraph.graph, nodeGraph.nodes = self.createNodeGraph(edgeCostFunc, scale)
+        nodeGraph = self.createNodeGraph(edgeCostFunc,scale)
         return nodeGraph
 
     #  in an alternate universe you can look up by a tuple of x,z coordinates-> dict[tuple[float,float], dict[Node,list[Edge]]]
     #  but the graph class was better in the end instead of a super nested dict T_T
     def createNodeGraph(self, edgeCostFunc, scale: int):
+        nodeGraph = Graph()
         nodes = {}
         graph = {}
+        nodeGraph.graph = graph
+        nodeGraph.nodes = nodes
         for y in range(self.height // scale):
             for x in range(self.width // scale):
                 node = Node(Vector3(x + 0.5, self.getCell(x, y), y + 0.5))
                 nodes[node.position2] = node
+                """
                 if self.castleMap is not None:
                     castleCell = self.castleMap[y][x]
                     if castleCell is not None:
                         material = castleCell.getMaterialBlockGlobal(x, y)
                         node.setMaterialBlock(material)
-                    elif (x,y) in self.waterMap:
-                        node.setMaterialBlock(MaterialBlock(MaterialType.WATER))
-                        
+                """
+                
+                if (x,y) in self.waterMap:
+                    node.setMaterialBlock(MaterialBlock(MaterialType.WATER))
+
+
         for node in nodes.values():
-            if node.materialBlock is not None and not (node.materialBlock.materialType is MaterialType.DOOR or node.materialBlock.materialType is MaterialType.PAVEMENT):
-                graph[node] = []
-                continue
-                pass
-            edges = []
-            east = (node.position.x + 1, node.position.z)
-            west = (node.position.x - 1, node.position.z)
-            south = (node.position.x, node.position.z + 1)
-            north = (node.position.x, node.position.z - 1)
-            #northEast = (east[0], north[1])
-            #northWest = (west[0], north[1])
-            #southEast = (east[0], south[1])
-            #southWest = (west[0], south[1])
-            for cardinalNode in [
-                east,
-                west,
-                north,
-                #northEast,
-                #northWest,
-                #southEast,
-                #southWest,
-                south,
-            ]:
-                if cardinalNode in nodes:
-                    tmpNode = nodes[cardinalNode]
-                    if tmpNode.materialBlock is not None and not (tmpNode.materialBlock.materialType is MaterialType.DOOR or tmpNode.materialBlock.materialType is MaterialType.PAVEMENT):
-                        continue
-                        pass
-                    tmpEdge = Edge(tmpNode, edgeCostFunc(node, tmpNode))
-                    edges.append(tmpEdge)
-            graph[node] = edges
-        """
-        print(
-            f"Initiating node graph; level : {len(self.getLevel())} * {len(self.getLevel()[0])}, graph nodes: {len(graph.keys())}"
-        )
-        """
-        return graph, nodes
+            nodeGraph.addNode(node,edgeCostFunc)
+
+        #print(f"Initiating node graph; level : {len(self.getLevel())} * {len(self.getLevel()[0])}, graph nodes: {len(graph.keys())}")
+        return nodeGraph
+    
+    def addCastleNodes(self, edgeCostFunc):
+        for y in range(self.height):
+            for x in range(self.width):
+                if self.castleMap is not None:
+                    castleCell = self.castleMap[y][x]
+                    if castleCell is not None:
+                        node = Node(Vector3(x + 0.5, self.getCell(x, y), y + 0.5))
+                        material = castleCell.getMaterialBlockGlobal(x, y)
+                        node.setMaterialBlock(material)
+                        self.nodeGraph.removeNode(node)
+                        self.nodeGraph.addNode(node, edgeCostFunc)
+
+    def clearCastle(self):
+        for y in range(self.height):
+            for x in range(self.width):
+                if self.castleMap is not None:
+                    castleCell = self.castleMap[y][x]
+                    if castleCell is not None:
+                        node = Node(Vector3(x + 0.5, self.getCell(x, y), y + 0.5))
+                        if (x,y) in self.waterMap:
+                            node.setMaterialBlock(MaterialBlock(MaterialType.WATER))
+                        self.nodeGraph.removeNode(node)
+                        self.nodeGraph.addNode(node, self.nodeToNodeDistance)
 
     def nodeToNodeDistance(self, node0, node1):
         return node0.position.distance_to(node1.position)
@@ -265,16 +264,16 @@ class Level:
             (self.targetPosition.x, self.targetPosition.z)
         ]
     
-    def inferPathOrder(self):
+    def inferPathOrder(self, path):
         point = Vector2(self.targetPosition.x,self.targetPosition.z)
         newPath = [point]
-        tmpPath = [Vector2(p) for p in self.path]
+        tmpPath = [Vector2(p) for p in path]
         while tmpPath != []:
             point = min(tmpPath, key=lambda x: point.distance_to(x))
             newPath.append(point)
             tmpPath.remove(point)
 
-        self.path = [(int(p.x//self.scale),int(p.y//self.scale)) for p in newPath]
+        return [(int(p.x//self.scale),int(p.y//self.scale)) for p in newPath]
 
     ##############################################################
     # Behaviour

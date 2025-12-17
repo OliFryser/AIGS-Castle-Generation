@@ -5,6 +5,9 @@ from Utils.FSM import State
 from Utils.PathFinding import aStar
 from Utils.Node import Node, Edge, Graph
 from CastleElement import MaterialType
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
+import time
+import uuid
 
 
 class Unit:
@@ -12,13 +15,14 @@ class Unit:
         self,
         level: Level,
         position: Vector2,
+        executor,
         health: int = 100,
         speed: float = 0.2,
         size =0.1,
         goal = Vector3(0,0,0),
         teamName = "blank",
         teamMates = [],
-        enemies = []
+        enemies = [],
     ):
         self.health = health
         self.speed = speed
@@ -32,7 +36,7 @@ class Unit:
         self.position: Vector3 = Vector3(
             position.x, level.getBilinearHeight(position.x, position.y), position.y
         )
-        self.path: list[Node] = []
+        self.path: list[Node]|None = None
         self.target = None
         self.goal: None | Vector3 = goal
         self.count = 0
@@ -46,14 +50,28 @@ class Unit:
         self.attackRange = 1
         self.inMelee = None
         self.attackCoolDown = False
-
+        self.future = None
+        self.executor = executor
+        self.id = uuid.uuid1()
+        #self.navGraph = level.navigationGraph
         #place on grid
         self.nodeGraph.getNodeFromPosition(self.position).unit = self
+        self.alive = True
 
         self.initFSMs()
         self.initFSM()
 
     def step(self):
+        if self.future and self.future.done():
+            path = self.future.result()
+            #self.path = list(self.nodeGraph.nodes[pos2] for pos2 in path)
+            if self.alive:
+                self.path = path
+            self.future = None
+        
+        if self.future is not None:
+            return
+
         self.fsm.updateState()
         state = self.fsm.getState()
         #self.fsm.printState()
@@ -70,11 +88,26 @@ class Unit:
 
     def die(self):
         #print(f"unit {self} died:")
-        self.nodeGraph.getNodeFromPosition(self.position).unit = None
+        self.alive = False
+        self.nodeGraph.getNodeFromPosition(self.position).clearUnit()
         self.nodeGraph = None
         self.level = None
+        self.position = None
+        self.future = None
+        self.executor = None
+        self.fsm = None
+        self.navGraph = None
+        self.path = None
+        self.inMelee = None
+        self.target = None
+        self.enemies = None
+        self.goal = None
+        self.fsms = None
+        self.fsm = None
+        self.navGraph = None
         if self in self.teamMates:
             self.teamMates.remove(self)
+        self.teamMates = None
         
 
     def targetGoal(self):
@@ -127,21 +160,21 @@ class Unit:
             state0= State.MOVETO,
             state1= State.WAIT,
             transition=self.isBlocked,
-            onEnter= (self.setTimer, (15,), {}),
+            onEnter= (self.setTimer, (5,), {}),
             onExit= (self.unBlock, (), {}), 
         )
         goToGoalFSM.addTransition(
             state0= State.MOVETO,
             state1= State.WAIT,
             transition=self.notHasPlan,
-            onEnter= (self.setTimer, (10,), {}),
+            onEnter= (self.setTimer, (5,), {}),
             onExit= (self.unBlock, (), {}), 
         )
         goToGoalFSM.addTransition(
             state0= State.MOVETO,
             state1= State.WAIT,
             transition=self.closeEnough,
-            onEnter= (self.setTimer, (10,), {}),
+            onEnter= (self.setTimer, (5,), {}),
         )
         
         self.fsms[goToGoalFSM.name] = goToGoalFSM
@@ -190,7 +223,7 @@ class Unit:
         return self.attackCoolDown
 
     def hasPlan(self):
-        return not self.path == []
+        return not (self.path == [] or self.path is None)
 
     def notHasPlan(self):
         return not self.hasPlan()
@@ -200,7 +233,7 @@ class Unit:
 
     def isBlocked(self):
         if not self.blocked:
-            self.count = 50
+            self.count = 10
             return False
         self.count -= 1
         if self.count < 1:
@@ -278,8 +311,8 @@ class Unit:
         #print(self.count)
         pass
 
-    def planPath(self, toType = None):
-        self.path = aStar(
+    def planPathInner(self, toType = None):
+        return aStar(
                 self.position, self.target, self.nodeGraph,
                 costAdjustFunc= self.moveCostAdjust, ignoreNodes=self.nodesToSkip,
                 unit=self,
@@ -287,6 +320,19 @@ class Unit:
                 getFirstofType=toType
             )
 
+    def planPath(self, target):
+        if self.future is None:
+            self.future = self.executor(self.planPathInner, target)
+            
+    
+    def cpu_work(self,n=10_000_000):
+        s = 0
+        for i in range(n):
+            s += i  # CPU-bound, holds GIL
+        
+
+    def sleep_work(self,sec=0.05):
+        time.sleep(sec)  # releases GIL
 
     def goToTarget(self):
         if self.notHasPlan():
@@ -345,8 +391,8 @@ class Unit:
 
         if node0 is not None and node1 is not None:
             if node0 is not node1 and (node1.materialBlock is None or not node1.materialBlock.blocking):
-                node0.unit = None
-                node1.unit = self
+                node0.clearUnit()
+                node1.setUnit(self)
 
         self.position = newPosition
         
@@ -412,3 +458,6 @@ class Unit:
         if node.unit is not None and node.unit is not self and node.unit not in self.enemies:
             return 10
         return 0
+    
+    def getAsData(self):
+        return str(self.id)

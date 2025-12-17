@@ -111,6 +111,7 @@ class InstructionTree:
     def sampleRandomNode(self):
         return random.choice(self.nodes)
 
+    # I need this explained
     def insertSubTree(self, newParent: TreeNode, subTreeRoot: TreeNode):
         replacedChild = newParent.replaceChild(subTreeRoot)
         if replacedChild:
@@ -118,6 +119,7 @@ class InstructionTree:
 
         self.addSubTree(subTreeRoot)
 
+    #WHAT?
     def addSubTree(self, subTree: TreeNode):
         stack = [subTree]
 

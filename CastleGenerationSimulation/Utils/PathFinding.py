@@ -27,7 +27,6 @@ def getAsNodeOnGraph2(
     tmpNodes.append(node)
     return node
 
-
 # get as node on graph gets the four closest nodes directly from the graph
 def getAsNodeOnGraph(startPosition: Vector3, graph: Graph, tmpNodes, unit, ignoreNodes):
     node = Node(startPosition)
@@ -81,7 +80,6 @@ def getAsNodeOnGraph3(position, b: Graph, l, a, h):
 def distanceCost(node: Node, edge: Edge):
     return edge.cost
 
-
 def euclidianDistance(node0: Node, node1: Node):
     return node0.position.distance_to(node1.position)
 
@@ -101,15 +99,15 @@ def aStar(
     # pprint(graph.values())
     tmpNodes = []
 
+    """
     startNode = getAsNodeOnGraph(startPosition, nodeGraph, tmpNodes, unit, ignoreNodes)
     targetNode = getAsNodeOnGraph(
         targetPosition, nodeGraph, tmpNodes, unit, ignoreNodes
     )
-    """
     print(startPosition,startNode,targetNode)
+    """
     startNode = nodeGraph.getNodeFromPosition(startPosition)
     targetNode = nodeGraph.getNodeFromPosition(targetPosition)
-    """
     # distances is for storing the shortest distance to node
     distances: dict[Node, float] = {startNode: 0.0}
     open_nodes = PriorityQueue()
@@ -140,7 +138,7 @@ def aStar(
 
         # if the next node is the target node the path has been set
         if distances[currentNode] > budget:
-            # print(f"could not find path within budget {distances[currentNode], len(distances.keys())}")
+            #print(f"could not find path within budget {distances[currentNode], len(distances.keys())}")
             # print(currentNode.unit, currentNode.materialBlock.materialType)
             break
 
@@ -150,7 +148,7 @@ def aStar(
             and getFirstofType == currentNode.materialBlock.materialType
         ):
             """
-            print(f"path cost {distances[currentNode]}")
+            print(f"{unit.getAsData()} found path, cost {distances[currentNode]}")
             """
 
             # backtrak to reconstruct path
@@ -164,7 +162,7 @@ def aStar(
             for node in tmpNodes:
                 nodeGraph.removeNode(node)
             return path
-        random.shuffle((graph[currentNode]))
+        #random.shuffle((graph[currentNode]))
         for edge in graph[currentNode]:
             # cost is calculated here
             cost = costAdjustFunc(currentNode, edge)
@@ -178,7 +176,7 @@ def aStar(
 
             if edge.node in ignoreNodes or edge.node not in graph:
                 print(
-                    f"Error node not in graph {edge.node.position}, start Node: {startNode.position}"
+                    f"Error: node not in graph {edge.node.position}, start Node: {startNode.position} Likely a ghost thread"
                 )
                 continue
             if edge.node not in distances or new_distance < distances[edge.node]:
@@ -194,3 +192,4 @@ def aStar(
 def slopeAnglePercentage(distance: float, height0: float, height1: float) -> float:
     deltaHeight = height0 - height1
     return distance / np.sqrt(distance * distance + deltaHeight * deltaHeight)
+

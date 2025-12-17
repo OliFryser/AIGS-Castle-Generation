@@ -84,6 +84,8 @@ def renderArchive(
                 padding + key[1] * (entryDimensions[1] + padding),
             ),
         )
+        simulation.reset()
+        simulation = None
 
     behaviors = list(archive.values())[0].behavior.getBehaviors()
 
