@@ -16,6 +16,7 @@ def renderArchive(
     tileMap: TileMap,
     terrainMap: TerrainMap,
     resolution: int,
+    simulation,
 ):
     pygame.init()
     entryDimensions = (terrainMap.width * resolution, terrainMap.height * resolution)
@@ -65,12 +66,11 @@ def renderArchive(
     #                 padding + y * (entryDimensions[1] + padding),
     #             ),
     #         )
-    initParams = InitializationParameters(terrainMap, tileMap)
-    simulation = Simulation(initParams)
+    #initParams = InitializationParameters(terrainMap, tileMap)
+    #simulation = Simulation(initParams)
 
     # Render real archive
     for key, entry in archive.items():
-        simulation.reset()
         simulation.prepare(entry.individual)
         entrySurface = pygame.Surface((entryDimensions[0], entryDimensions[1]))
         renderer = Renderer(simulation, entrySurface, resolution)
@@ -86,6 +86,7 @@ def renderArchive(
                 padding + key[1] * (entryDimensions[1] + padding),
             ),
         )
+        simulation.reset()
 
     behaviors = list(archive.values())[0].behavior.getBehaviors()
 

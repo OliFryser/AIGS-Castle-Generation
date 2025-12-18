@@ -106,8 +106,8 @@ class Graph:
         del graph[toBeRemoved]
         if toBeRemoved.position2 in self.nodes:
             tmp = self.nodes[toBeRemoved.position2]
-            tmp.destroy()
             del self.nodes[toBeRemoved.position2]
+            tmp.destroy()
         #tmp.printRefs()
 
     def getNodeFromPosition(self, position: Vector3):
@@ -120,9 +120,11 @@ class Graph:
         if toBeAdded in self.graph:
             print(f"node {toBeAdded.position2} already in Graph")
             return
+        
         if toBeAdded.position2 not in self.nodes:
             newNode = True
             self.nodes[toBeAdded.position2] = toBeAdded
+        
         if toBeAdded.materialBlock is not None and not (toBeAdded.materialBlock.materialType is MaterialType.DOOR or toBeAdded.materialBlock.materialType is MaterialType.PAVEMENT):
             self.graph[toBeAdded] = []
             return
@@ -149,12 +151,11 @@ class Graph:
                 tmpNode = self.nodes[cardinalNode]
                 if tmpNode.materialBlock is not None and not (tmpNode.materialBlock.materialType is MaterialType.DOOR or tmpNode.materialBlock.materialType is MaterialType.PAVEMENT):
                     continue
-                    pass
                 tmpEdge = Edge(tmpNode, edgeCostFunc(toBeAdded, tmpNode))
                 edges.append(tmpEdge)
                 #maybe there is no return edge, in which case
                 if newNode:
-                    goon = Edge(toBeAdded, edgeCostFunc(tmpNode, toBeAdded))
-                    self.graph[tmpNode].append(goon)
+                    edge = Edge(toBeAdded, edgeCostFunc(tmpNode, toBeAdded))
+                    self.graph[tmpNode].append(edge)
 
         self.graph[toBeAdded] = edges

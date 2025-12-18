@@ -6,4 +6,5 @@ class RandomLevelGenerator:
         self.maxHeight = maxHeight
 
     def getHeight(self, x, y):
+        return self.maxHeight/2
         return random.randint(0, self.maxHeight)

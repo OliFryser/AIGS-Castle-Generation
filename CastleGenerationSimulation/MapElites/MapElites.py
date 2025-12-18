@@ -17,7 +17,6 @@ from CastleInstructions.InstructionTreeVariation import (
     add,
     crossover,
     remove,
-    trueCrossover,
 )
 from CastleInstructions.MutationWeights import MutationWeights
 
@@ -28,10 +27,6 @@ from TerrainMap import TerrainMap
 #for gc debug
 import gc
 from collections import Counter
-"""
-from Utils.Node import Graph, Node
-from CastleElement import CastleElement, MaterialBlock
-"""
 
 class MapElites:
     def __init__(
@@ -137,7 +132,7 @@ class MapElites:
         outerTimer = Timer(f"MapElites for {iterations} iterations", forcePrint=True)
         outerTimer.start()
         initParams: InitializationParameters = InitializationParameters(
-            self.terrainMap, self.tileMap, None
+            self.terrainMap, self.tileMap
         )
         simulation = Simulation(initParams)
 
@@ -150,10 +145,6 @@ class MapElites:
             individual: InstructionTree = self.generateRandomSolution()
 
             self.runSimulation(simulation, individual)
-            """
-            count = sum(1 for o in gc.get_objects() if isinstance(o, CastleElement))
-            print(f"Iteration {i+1}: {count} instances of CE")
-            """
 
         for i in range(iterations):
             if i % 10 == 0:
@@ -167,16 +158,7 @@ class MapElites:
 
             self.runSimulation(simulation, individual)
 
-            # Garbage check!
-            #simulation = None
-            """
-            gc.collect()
-            types = Counter(type(obj) for obj in gc.get_objects())
-            print(types.most_common(5))
-
-            count = sum(1 for o in gc.get_objects() if isinstance(o, MaterialBlock))
-            print(f"Iteration {i+1}: {count} instances of MaterialBlock")
-            """
+            
         
         simulation.reset()
 
@@ -214,10 +196,21 @@ class MapElites:
         self.plotter.plotMaxFitnessAndQDScore()
         self.plotter.plotCoverage()
         # self.saveArchiveToJSON()
-        self.saveArchiveVisualization()
+        self.saveArchiveVisualization(simulation)
         print("run over")
         simulation = None
 
+    def garbageCheck(self):
+        # Garbage check!
+            gc.collect()
+            types = Counter(type(obj) for obj in gc.get_objects())
+            print(types.most_common(5))
+
+            """
+            count = sum(1 for o in gc.get_objects() if isinstance(o, Node))
+            print(f"Iteration {i+1}: {count} instances of Node")
+            """
+            
 
     def runSimulation(self, simulation:Simulation, individual: InstructionTree):
         
@@ -233,6 +226,7 @@ class MapElites:
         behavior: Behaviors = self.getBehavior(state)
         fitness: int = self.getFitness(state)
 
+        simulation.reset()
         key = self.getKey(behavior)
         if key is False:
             return
@@ -240,15 +234,15 @@ class MapElites:
         if key not in self.archive or fitness > self.archive[key].fitness:
             entry = ArchiveEntry(fitness, behavior, individual)
             self.archive[key] = entry
+        
         self.plotter.addRecord(
             PlotRecord(
                 self.getMaxFitness(), self.getAverageFitness(), self.getCoverage()
             )
         )
  
-        simulation.reset()
 
-    def saveArchiveVisualization(self,):
+    def saveArchiveVisualization(self,simulation):
         renderArchive(
             self.visualizationPath + "visual_" + self.dateString + ".png",
             10,
@@ -256,6 +250,7 @@ class MapElites:
             self.tileMap,
             self.terrainMap,
             self.resolution,
+            simulation
         )
 
     def saveArchiveToJSON(self):

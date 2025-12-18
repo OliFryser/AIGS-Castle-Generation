@@ -3,6 +3,7 @@ from pygame import Vector3
 from queue import PriorityQueue
 from Utils.Node import Node, Edge, Graph
 import numpy as np
+from CastleElement import MaterialType
 
 
 # get as node on Graph 2 gets the 3 closest nodes by distance
@@ -124,7 +125,7 @@ def aStar(
     while open_nodes.not_empty:
         # we only really need the next node
         _, r, currentNode = open_nodes.get()
-        # print(currentNode.position,graph[currentNode])
+        
         """
         if (currentNode.unit is not None and currentNode.unit is not unit):
             print(f" unit {currentNode.unit}, {unit}")
