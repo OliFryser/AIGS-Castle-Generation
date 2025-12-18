@@ -27,8 +27,6 @@ class Simulation:
             initParams.tileMap,
         )
         self.target = Target(self.level)
-        if initParams.castleInstructionTree is not None:
-            self.prepare(initParams.castleInstructionTree)
 
     def prepare(self, castleInstructionTree):
         self.level.makeCastle(castleInstructionTree)

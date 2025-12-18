@@ -1,4 +1,3 @@
-from CastleInstructions.InstructionTree import InstructionTree
 from TerrainMap import TerrainMap
 from TileMap import TileMap
 
@@ -8,8 +7,6 @@ class InitializationParameters:
         self,
         terrainMap: TerrainMap,
         tileMap: TileMap,
-        castleInstructionTree: InstructionTree,
     ):
         self.terrainMap = terrainMap
-        self.castleInstructionTree = castleInstructionTree
         self.tileMap = tileMap

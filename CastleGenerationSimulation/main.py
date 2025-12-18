@@ -48,17 +48,20 @@ def runMapElites(cfg, terrainMap, tileMap):
     os.environ["SDL_VIDEODRIVER"] = "dummy"
     mapElites = MapElites(terrainMap, tileMap, cfg.archiveSavepath, cfg.resolution)
     mapElites.run(cfg.iterations, cfg.population)
- 
+
+
 def runConventionalEA(cfg, terrainMap, tileMap):
     # Disable visual for pygame
     os.environ["SDL_VIDEODRIVER"] = "dummy"
     mapElites = ConventionalEvolution(terrainMap, tileMap, cfg.archiveSavepath, cfg.resolution)
     mapElites.runCE(cfg.iterations, cfg.population)
 
+
 def runInteractiveMode(cfg, terrainMap, tileMap):
     castleInstructionTree = parseInstructionTree(cfg.castleGenerationFilepath)
-    initParams = InitializationParameters(terrainMap, tileMap, castleInstructionTree)
+    initParams = InitializationParameters(terrainMap, tileMap)
     simulation = Simulation(initParams)
+    simulation.prepare(castleInstructionTree)
 
     pygame.init()
     pygame.display.set_caption("Fortify Simulation")
