@@ -9,7 +9,7 @@ def convert4SpacesToTab(instructions):
 
 def parseInstructionTree(filepath: str):
     with open(filepath, "r") as f:
-        instructions = [line.rstrip() for line in f]
+        instructions = [line for line in f]
         convert4SpacesToTab(instructions)
 
     root = InstructionLine(instructions[0])
