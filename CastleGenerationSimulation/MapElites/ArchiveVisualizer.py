@@ -65,12 +65,14 @@ def renderArchive(
     #                 padding + y * (entryDimensions[1] + padding),
     #             ),
     #         )
+    initParams = InitializationParameters(terrainMap, tileMap)
+    simulation = Simulation(initParams)
 
     # Render real archive
     for key, entry in archive.items():
+        simulation.reset()
+        simulation.prepare(entry.individual)
         entrySurface = pygame.Surface((entryDimensions[0], entryDimensions[1]))
-        initParams = InitializationParameters(terrainMap, tileMap, entry.individual)
-        simulation = Simulation(initParams)
         renderer = Renderer(simulation, entrySurface, resolution)
         entrySurface = renderer.render()
         fitnessText = fitnessFont.render(f"{entry.fitness:.1f}", True, (255, 255, 255))
@@ -84,8 +86,6 @@ def renderArchive(
                 padding + key[1] * (entryDimensions[1] + padding),
             ),
         )
-        simulation.reset()
-        simulation = None
 
     behaviors = list(archive.values())[0].behavior.getBehaviors()
 

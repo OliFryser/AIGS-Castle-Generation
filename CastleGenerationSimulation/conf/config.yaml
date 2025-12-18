@@ -3,15 +3,15 @@ printTimer: False
 castleTilesFilepath: "resources/castleTiles/"
 
 interactive:
-    castleGenerationFilepath: "resources/castleGenerationInstructions/test4.txt"
+    castleGenerationFilepath: "resources/castleGenerationInstructions/test9.txt"
     resolution: 4
     levelFilepath: "resources/terrainMaps/perlinBy4 - test.txt"
 
 mapElites:
-    levelFilepath: "resources/terrainMaps/onAHill.txt"
+    levelFilepath: "resources/terrainMaps/perlinBy4 - test.txt"
     archiveSavepath: "resources/archives/"
-    iterations: 1000
-    population: 100
+    iterations: 10
+    population: 5
     resolution: 4
 
 terrainBuilder:
