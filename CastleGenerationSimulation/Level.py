@@ -222,6 +222,13 @@ class Level:
                         self.nodeGraph.addNode(node, edgeCostFunc)
 
     def clearCastle(self):
+        for node in self.nodeGraph.nodes.values():
+            if node.position is not None and node.materialBlock is not None and node.materialBlock.materialType is not MaterialType.WATER:
+                newNode = Node(node.position)
+                self.nodeGraph.removeNode(node)
+                self.nodeGraph.addNode(newNode, self.nodeToNodeDistance)
+
+    """
         for y in range(self.height):
             for x in range(self.width):
                 if self.castleMap is not None:
@@ -232,6 +239,7 @@ class Level:
                             node.setMaterialBlock(MaterialBlock(MaterialType.WATER))
                         self.nodeGraph.removeNode(node)
                         self.nodeGraph.addNode(node, self.nodeToNodeDistance)
+    """
 
     def nodeToNodeDistance(self, node0, node1):
         return node0.position.distance_to(node1.position)

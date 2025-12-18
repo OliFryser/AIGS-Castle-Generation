@@ -101,6 +101,9 @@ class Simulation:
     def runSimulation(self):
         self.stepCount = 0
         n = 0
+
+        self.sanityCheck("start ")
+
         while not self.target.isOccupied():
             # if all attackers are planning... the game can run "amok" while they are waiting for threads
             # this should make the simulation slightly more deterministic
@@ -126,6 +129,8 @@ class Simulation:
                 print("step Break")
                 break
         self.kills = -(len(self.attacker.units) - self.noAttackers)
+        
+        self.sanityCheck("end ")
 
     def attackersAreAllPlanning(self):
         for u in self.attacker.units:
@@ -155,6 +160,16 @@ class Simulation:
         # units might hold on to eachother and dodge the garbage collector along with nodes and level and all that jazz
         self.clearUnits()
         self.level.clearCastle()
+        self.sanityCheck(" reset ")
 
     def getTowerAmount(self):
         return self.level.getTowers()
+
+    def sanityCheck(self, spacing = ""):
+        m=0
+        for node in self.level.nodeGraph.graph.keys():
+            if node.unit is not None:
+                m +=1
+        if len(self.getUnits()) != m:       
+            print(spacing + f"    Unit Sanity check failed {m, len(self.getUnits())}")
+        print(spacing + f"Unit Sanity check {m, len(self.getUnits())}")
