@@ -33,33 +33,33 @@ class CastleGenerator:
             for _ in range(self.height // self.scale)
         ]
 
-        self.center = (
+        self.keepPosition = (
             int((targetPositionx) // self.scale),
             int((targetPositiony) // self.scale) -1,
         )
         self.centerOffset = (
-            self.center[0] * self.scale - (targetPositionx - self.scale / 2),
-            self.center[1] * self.scale - (targetPositiony - self.scale / 2),
+            self.keepPosition[0] * self.scale - (targetPositionx - self.scale / 2),
+            self.keepPosition[1] * self.scale - (targetPositiony - self.scale / 2),
         )
-        self.courtYard = (self.center[0], self.center[1] + 1)
+        self.courtYard = (self.keepPosition[0], self.keepPosition[1] + 1)
         # Place on top of Target
         """
         """
         keep = CastleElement(ElementType.KEEP)
         keep.directions = [Direction.LEFT, Direction.RIGHT, Direction.UP]
-        self.grid[self.center[1]][self.center[0]] = keep
+        self.grid[self.keepPosition[1]][self.keepPosition[0]] = keep
 
         self.evaluateInstructionCost()
 
         agents: list[CastleGenerationAgent] = []
         agents.append(
             CastleGenerationAgent(
-                self.center,
+                self.keepPosition,
                 Direction.UP,
                 self.instructionTree.root,
                 self.grid,
                 self.padding,
-                tabooCells= [self.courtYard,self.center],
+                tabooCells= [self.courtYard,self.keepPosition],
                 lastElement= keep
             )
         )
@@ -131,7 +131,7 @@ class CastleGenerator:
                             self.padding,
                             agent.fromDirection,
                             agent.lastElement,
-                            tabooCells=[self.courtYard],
+                            tabooCells=agent.tabooCells,
                         )
                     )
             else:
@@ -348,7 +348,7 @@ class CastleGenerator:
                 """
 
     def clearCourtyard(self, grid):
-        courtyard = (self.center[0], self.center[1] + 1)
+        courtyard = (self.keepPosition[0], self.keepPosition[1] + 1)
         cell = grid[courtyard[1]][courtyard[0]]
         if cell is None:
             return
