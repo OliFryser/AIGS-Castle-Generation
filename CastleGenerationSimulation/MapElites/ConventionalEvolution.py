@@ -35,8 +35,16 @@ class ConventionalEvolution(MapElites):
         archiveSavepath: str,
         resolution: int,
         iterations: int,
+        useFitnessWithCost: bool,
     ):
-        super().__init__(terrainMap, tileMap, archiveSavepath, resolution, iterations)
+        super().__init__(
+            terrainMap,
+            tileMap,
+            archiveSavepath,
+            resolution,
+            iterations,
+            useFitnessWithCost,
+        )
 
     def randomVariationCE(self, individual: InstructionTree, other: InstructionTree):
         rand = random.random()

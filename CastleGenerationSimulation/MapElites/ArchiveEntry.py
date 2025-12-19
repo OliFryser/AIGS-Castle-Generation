@@ -10,9 +10,6 @@ class ArchiveEntry:
     behavior: Behaviors
     individual: InstructionTree
 
-    def __str__(self):
-        return f"Fitness: {self.fitness}\nBehavior: Blocks {self.behavior.blocks}, area {self.behavior.area}\n{self.individual}"
-
     def to_json(self):
         return {
             "fitness": self.fitness,

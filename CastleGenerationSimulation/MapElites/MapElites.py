@@ -38,6 +38,7 @@ class MapElites:
         archiveSavepath: str,
         resolution: int,
         iterations: int,
+        useFitnessWithCost: bool,
     ):
         self.behaviorX = "West-East"
         self.behaviorY = "South-North"
@@ -85,6 +86,12 @@ class MapElites:
         self.resolution = resolution
         self.dynamicKeys = [DynamicCeiling(maximum=150), DynamicCeiling(maximum=1000)]
 
+        self.getFitness = (
+            self.getFitnessWithCost
+            if useFitnessWithCost
+            else self.getFitnessWithoutCost
+        )
+
     def generateRandomSolution(self):
         # TODO: Better random solution <3
         individual = InstructionTree(InstructionLine(""))
@@ -116,9 +123,6 @@ class MapElites:
         behaviorX = Behavior(state.eastWestRatio, self.behaviorX)
         behaviorY = Behavior(state.northSouthRatio, self.behaviorY)
         return Behaviors(behaviorX, behaviorY)
-
-    def getFitness(self, state: State) -> int:
-        return self.getFitness3(state)
 
     def getKey(self, behaviors: Behaviors):
         key = []
@@ -260,26 +264,15 @@ class MapElites:
     def getCoverage(self):
         return len(self.archive.keys())
 
-    def getFitness2(self, state: State):
+    def getFitnessWithCost(self, state: State):
         castleCost = state.cost
         castleBudget = 100
         overBudget = 0
-
-        killpercentage = state.kills / (8 + state.towers)
-
-        if castleCost > castleBudget:
-            overBudget = (castleCost - castleBudget) * 5
-
-        return (
-            state.stepCount / 10 - overBudget + 1000 * killpercentage + state.area * 10
-        )
-
-    def getFitness3(self, state: State):
-        castleCost = state.cost
-        castleBudget = 100
-        overBudget = 0
-        steps = state.stepCount // 10
+        steps = state.stepCount // 5
         if castleCost > castleBudget:
             overBudget = castleCost
 
         return steps - overBudget + state.area
+
+    def getFitnessWithoutCost(self, state: State):
+        return state.stepCount // 5

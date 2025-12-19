@@ -13,6 +13,7 @@ mapElites:
     iterations: 10
     population: 5
     resolution: 4
+    useFitnessWithCost: False
 
 terrainBuilder:
     levelFilepath: "resources/terrainMaps/bridgedRiver.txt"
@@ -25,3 +26,4 @@ conventionalEA:
     iterations: 20
     population: 5
     resolution: 4
+    useFitnessWithCost: False

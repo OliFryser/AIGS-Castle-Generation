@@ -74,7 +74,7 @@ def renderArchive(
         entrySurface = pygame.Surface((entryDimensions[0], entryDimensions[1]))
         renderer = Renderer(simulation, entrySurface, resolution)
         entrySurface = renderer.render()
-        fitnessText = fitnessFont.render(f"{entry.fitness:.1f}", True, (255, 255, 255))
+        fitnessText = fitnessFont.render(f"{entry.fitness}", True, (255, 255, 255))
         entrySurface.blit(
             fitnessText, (0.05 * entryDimensions[0], 0.05 * entryDimensions[1])
         )  # small offset from top-left
