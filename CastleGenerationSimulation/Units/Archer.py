@@ -7,9 +7,9 @@ class Archer(Unit):
     def __init__(self, *args, health: int = 100, speed: float = 0.2, size=0.3 ,**kwargs):
         super().__init__(*args, health, speed, size, **kwargs)
         self.attackDamage = 8
-        self.attackRange = 10
+        self.attackRange = 15
         self.attackCoolDown = False
-        self.attackCoolDownTime = 20
+        self.attackCoolDownTime = 15
         self.targetEnemy = None
         self.initFSMs()
         self.initFSM()

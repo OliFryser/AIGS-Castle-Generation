@@ -16,7 +16,7 @@ class MaterialType(Enum):
     STONE = "R"
     SANDSTONE = "S"
     PAVEMENT = "P"
-    EMPTY = "0"
+    EMPTY = "E"
     WATER = "v"
 
 

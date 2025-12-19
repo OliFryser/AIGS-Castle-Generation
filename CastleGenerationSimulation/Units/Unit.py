@@ -91,6 +91,7 @@ class Unit:
         # print(f"unit {self} died:")
         self.alive = False
         self.nodeGraph.getNodeFromPosition(self.position).clearUnit()
+        self.node.clearUnit()
         self.nodeGraph = None
         self.level = None
         self.position = None
@@ -105,6 +106,7 @@ class Unit:
         self.fsms = None
         self.fsm = None
         self.navGraph = None
+        self.node = None
         if self in self.teamMates:
             self.teamMates.remove(self)
         self.teamMates = None
@@ -159,7 +161,7 @@ class Unit:
             state0=State.MOVETO,
             state1=State.WAIT,
             transition=self.isBlocked,
-            onEnter=(self.setTimer, (1,), {}),
+            onEnter=(self.setTimer, (8,), {}),
             onExit=(self.unBlock, (), {}),
         )
         goToGoalFSM.addTransition(
@@ -173,7 +175,7 @@ class Unit:
             state0=State.MOVETO,
             state1=State.WAIT,
             transition=self.closeEnough,
-            onEnter=(self.setTimer, (1,), {}),
+            onEnter=(self.setTimer, (8,), {}),
         )
 
         self.fsms[goToGoalFSM.name] = goToGoalFSM
@@ -393,11 +395,14 @@ class Unit:
             if node0 is not node1 and (
                 node1.materialBlock is None or not node1.materialBlock.blocking
             ):
-                node0.clearUnit()
-                node1.setUnit(self)
+                #node0.clearUnit()
+                #node1.setUnit(self)
                 self.position = newPosition
+                #self.nodeSwitch(newPosition)
         if node0 is node1:
             self.position = newPosition
+
+        self.nodeSwitch(newPosition)
 
         # if self.node != self.nodeGraph.getNodeFromPosition(self.position):
 
@@ -436,6 +441,14 @@ class Unit:
                     nodes.append(self.nodeGraph.nodes[(x + dx, y - 1)])
 
         return nodes
+
+    def nodeSwitch(self, newPosition):
+        node0 = self.nodeGraph.getNodeFromPosition(newPosition)
+        if node0 is not None and node0 is not self.node and self.node is not None:
+            self.node.clearUnit()
+            node0.setUnit(self)
+            self.node = node0
+
 
     # Heuristic for a-star calculation, this is here because of relevance to individual units movement
     # and how they account for wall pieces, this can be used to accomodate different kinds of behaviour

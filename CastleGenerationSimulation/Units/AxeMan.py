@@ -70,13 +70,13 @@ class AxeMan(Unit):
             goToGoalFSM,
             self.hasCounted,
             (self.planPath, (), {}),
-            (self.setTimer, (1,), {}),
+            (self.setTimer, (8,), {}),
         )
         fsm.addTransition(
             demolishFsm,
             State.WAIT,
             self.targetBlockDemolished,
-            (self.setTimer, (1,), {}),
+            (self.setTimer, (8,), {}),
         )
         fsm.addTransition(
             state0=goToGoalFSM,

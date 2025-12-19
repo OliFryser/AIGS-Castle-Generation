@@ -36,7 +36,7 @@ class TerrainBuilder:
         self.statusBarOffset = 50
         self.screen = pygame.display.set_mode(
             (
-                terrainMap.width * self.resolution,
+                200 * self.resolution,
                 self.statusBarOffset + terrainMap.height * self.resolution,
             )
         )

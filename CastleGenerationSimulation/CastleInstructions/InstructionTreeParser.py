@@ -18,8 +18,6 @@ def parseInstructionTree(filepath: str):
         convert4SpacesToTab(instructions)
         convertEscapedTabToTab(instructions)
 
-    print(instructions)
-
     root = InstructionLine(instructions[0])
     instructions.remove(instructions[0])
     instructionTree = InstructionTree(root)

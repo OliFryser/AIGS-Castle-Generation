@@ -1,0 +1,44 @@
+W W T W BRANCH LEFT BRANCH W W BRANCH RIGHT W
+    W BRANCH LEFT BRANCH W
+        W W T BRANCH W LEFT LEFT LEFT W W T W BRANCH W LEFT RIGHT W BRANCH LEFT W
+            T W W W RIGHT
+            RIGHT W W W W W
+            W BRANCH BRANCH
+                
+                
+        RIGHT LEFT LEFT BRANCH RIGHT
+            T LEFT W W BRANCH W
+                LEFT W BRANCH
+                    W BRANCH BRANCH
+                        RIGHT W W W
+                        
+    W BRANCH BRANCH
+        RIGHT W W W
+        BRANCH
+            RIGHT W W W W W
+    BRANCH
+        T LEFT W W BRANCH W W
+            LEFT W BRANCH
+                W W T BRANCH W LEFT LEFT LEFT W W T W BRANCH W LEFT RIGHT W BRANCH LEFT W
+                    T W W W RIGHT
+                    RIGHT W W W W W
+                    W BRANCH BRANCH
+                        BRANCH
+                            T LEFT W W BRANCH W W
+                                LEFT W BRANCH
+                                    W W T BRANCH W LEFT LEFT LEFT W W T W BRANCH W LEFT RIGHT W BRANCH LEFT W
+                                        T W W W RIGHT
+                                        RIGHT W W W W W
+                                        W BRANCH BRANCH
+                                            
+                                            
+                        BRANCH
+                            RIGHT LEFT LEFT BRANCH RIGHT
+                                T LEFT W W BRANCH W W
+                                    LEFT W BRANCH
+                                        W W T BRANCH W LEFT LEFT LEFT W W T W BRANCH W LEFT RIGHT W BRANCH LEFT W
+                                            T W W W RIGHT
+                                            RIGHT W W W W W
+                                            W BRANCH BRANCH
+                                                
+                                                

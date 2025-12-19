@@ -88,6 +88,7 @@ class Level:
 
         self.maxBlocks = castleGenerator.getGridSize()
         self.maxArea = castleGenerator.getMaxArea()
+        self.orientationRatios()
 
 
 
@@ -102,6 +103,42 @@ class Level:
             return self.blocks[ElementType.TOWER]
         return 0
     
+    def orientationRatios(self):
+        keepPos = (0,0)
+        positions = []
+        for column in range(len(self.castleMapDuplo)):
+            for row in range(len(self.castleMapDuplo[column])):
+                if self.castleMapDuplo[column][row] is None:
+                    continue
+                if self.castleMapDuplo[column][row].elementType is ElementType.KEEP:
+                    keepPos = (row, column)
+                    continue
+                positions.append((row,column))
+
+        east = 0 
+        west = 0 
+        north = 0
+        south = 0
+
+        kx, ky = keepPos
+
+        for x, y in positions:
+            if x > kx:
+                east += 1
+            elif x < kx:
+                west += 1
+
+            if y > ky:
+                north += 1
+            elif y < ky:
+                south += 1
+
+        ewDivider = east + west
+        nsDivider = north + south
+
+        self.eastWestRatio = east / ewDivider if ewDivider else 0.5
+        self.northSouthRatio = north / nsDivider if nsDivider else 0.5
+
     def getTowerRatio(self):
         if ElementType.TOWER not in self.blocks:
             return 0
@@ -205,8 +242,9 @@ class Level:
 
         for node in nodes.values():
             nodeGraph.addNode(node,edgeCostFunc)
-
-        #print(f"Initiating node graph; level : {len(self.getLevel())} * {len(self.getLevel()[0])}, graph nodes: {len(graph.keys())}")
+        """
+        print(f"Initiating node graph; level : {len(self.getLevel())} * {len(self.getLevel()[0])}, graph nodes: {len(graph.keys())}")
+        """
         return nodeGraph
     
     def addCastleNodes(self, edgeCostFunc):
@@ -220,18 +258,21 @@ class Level:
                         node.setMaterialBlock(material)
                         self.nodeGraph.removeNode(node)
                         self.nodeGraph.addNode(node, edgeCostFunc)
+       
 
     def clearCastle(self):
-        for y in range(self.height):
-            for x in range(self.width):
-                if self.castleMap is not None:
-                    castleCell = self.castleMap[y][x]
-                    if castleCell is not None:
-                        node = Node(Vector3(x + 0.5, self.getCell(x, y), y + 0.5))
-                        if (x,y) in self.waterMap:
-                            node.setMaterialBlock(MaterialBlock(MaterialType.WATER))
-                        self.nodeGraph.removeNode(node)
-                        self.nodeGraph.addNode(node, self.nodeToNodeDistance)
+        tobeRemoved = []
+        for node in self.nodeGraph.nodes.values():
+            node.clearUnit()
+            if node.position is not None and node.materialBlock is not None and node.materialBlock.materialType is not MaterialType.WATER:
+                tobeRemoved.append(node)
+                
+        for node in tobeRemoved:    
+            newNode = Node(node.position)
+            if newNode.position2 in self.waterMap:
+                newNode.setMaterialBlock(MaterialBlock(MaterialType.WATER))
+            self.nodeGraph.removeNode(node)
+            self.nodeGraph.addNode(newNode, self.nodeToNodeDistance)
 
     def nodeToNodeDistance(self, node0, node1):
         return node0.position.distance_to(node1.position)

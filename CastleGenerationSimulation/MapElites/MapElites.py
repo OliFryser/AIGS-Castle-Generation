@@ -17,7 +17,6 @@ from CastleInstructions.InstructionTreeVariation import (
     add,
     crossover,
     remove,
-    trueCrossover,
 )
 from CastleInstructions.MutationWeights import MutationWeights
 
@@ -28,10 +27,6 @@ from TerrainMap import TerrainMap
 #for gc debug
 import gc
 from collections import Counter
-"""
-from Utils.Node import Graph, Node
-from CastleElement import CastleElement, MaterialBlock
-"""
 
 class MapElites:
     def __init__(
@@ -53,22 +48,22 @@ class MapElites:
             leftWeight=1.0,
             rightWeight=1.0,
             branchWeight=0.5,
-            emptyWeight=0.0,
+            emptyWeight=0.2,
         )
         self.variationMutationWeights = MutationWeights(
             wallWeight=2.0,
-            towerWeight=0.75,
+            towerWeight=1.0,
             leftWeight=1.0,
             rightWeight=1.0,
-            branchWeight=0.2,
-            emptyWeight=0.4,
+            branchWeight=0.5,
+            emptyWeight=1.,
         )
 
         self.resolution = resolution
         self.dynamicKeys = [DynamicCeiling(maximum=150), DynamicCeiling(maximum=1000)]
 
     def generateRandomSolution(self):
-        # TODO: Better random solution
+        # TODO: Better random solution <3
         individual = InstructionTree(InstructionLine(""))
         r = random.randint(10, 50)
         for i in range(r):
@@ -94,30 +89,14 @@ class MapElites:
             other = copy.deepcopy(self.sampleRandomSolution(pool).individual)
             crossover(individual, other)
 
-    def randomVariationCE(self, individual: InstructionTree, other: InstructionTree, budget = 8):
-        rand = random.random()
-        cost = rand * 10
-
-        if rand > 0.8:
-            trueCrossover(individual,other)
-        elif rand > 0.6:
-            remove(individual)
-        elif rand > 0.3:
-            add(individual, self.variationMutationWeights)
-        else:
-            substitute(individual, self.variationMutationWeights)
-
-        if budget > 0:
-            self.randomVariationCE(individual,other, budget-cost)
-
     #this is minor, but creating an object with multiple pieces of information on it each time is suboptimal 
     def getBehavior(self, state: State) -> Behaviors:
-        behaviorX = Behavior(state.cost, "cost")
-        behaviorY = Behavior(state.area, "area")
+        behaviorX = Behavior(state.eastWestRatio, "East/West")
+        behaviorY = Behavior(state.northSouthRatio, "North/South")
         return Behaviors(behaviorX, behaviorY)
 
     def getFitness(self, state: State) -> int:
-        return self.getFitness2(state)
+        return self.getFitness3(state)
 
     def getKey(self, behaviors: Behaviors):
         key = []
@@ -153,7 +132,7 @@ class MapElites:
         outerTimer = Timer(f"MapElites for {iterations} iterations", forcePrint=True)
         outerTimer.start()
         initParams: InitializationParameters = InitializationParameters(
-            self.terrainMap, self.tileMap, None
+            self.terrainMap, self.tileMap
         )
         simulation = Simulation(initParams)
 
@@ -165,11 +144,7 @@ class MapElites:
                 print(f"Archive size: {len(self.archive.keys())}")
             individual: InstructionTree = self.generateRandomSolution()
 
-            self.runSimulationME(simulation, individual)
-            """
-            count = sum(1 for o in gc.get_objects() if isinstance(o, CastleElement))
-            print(f"Iteration {i+1}: {count} instances of CE")
-            """
+            self.runSimulation(simulation, individual)
 
         for i in range(iterations):
             if i % 10 == 0:
@@ -181,18 +156,9 @@ class MapElites:
             individual: InstructionTree = copy.deepcopy(entry.individual)
             self.randomVariation(individual, entry)
 
-            self.runSimulationME(simulation, individual)
+            self.runSimulation(simulation, individual)
 
-            # Garbage check!
-            #simulation = None
-            """
-            gc.collect()
-            types = Counter(type(obj) for obj in gc.get_objects())
-            print(types.most_common(5))
-
-            count = sum(1 for o in gc.get_objects() if isinstance(o, MaterialBlock))
-            print(f"Iteration {i+1}: {count} instances of MaterialBlock")
-            """
+            
         
         simulation.reset()
 
@@ -229,13 +195,24 @@ class MapElites:
         outerTimer.stop()
         self.plotter.plotMaxFitnessAndQDScore()
         self.plotter.plotCoverage()
-        # self.saveArchiveToJSON()
-        self.saveArchiveVisualization()
+        self.saveArchiveToJSON()
+        self.saveArchiveVisualization(simulation)
         print("run over")
         simulation = None
 
+    def garbageCheck(self):
+        # Garbage check!
+            gc.collect()
+            types = Counter(type(obj) for obj in gc.get_objects())
+            print(types.most_common(5))
 
-    def runSimulationME(self, simulation:Simulation, individual: InstructionTree):
+            """
+            count = sum(1 for o in gc.get_objects() if isinstance(o, Node))
+            print(f"Iteration {i+1}: {count} instances of Node")
+            """
+            
+
+    def runSimulation(self, simulation:Simulation, individual: InstructionTree):
         
         simulation.prepare(individual)
 
@@ -249,6 +226,7 @@ class MapElites:
         behavior: Behaviors = self.getBehavior(state)
         fitness: int = self.getFitness(state)
 
+        simulation.reset()
         key = self.getKey(behavior)
         if key is False:
             return
@@ -256,90 +234,15 @@ class MapElites:
         if key not in self.archive or fitness > self.archive[key].fitness:
             entry = ArchiveEntry(fitness, behavior, individual)
             self.archive[key] = entry
+        
         self.plotter.addRecord(
             PlotRecord(
                 self.getMaxFitness(), self.getAverageFitness(), self.getCoverage()
             )
         )
  
-        simulation.reset()
 
-    def runCE(self, generations: int, populationSize: int):
-        outerTimer = Timer(f"conventional for {generations} genrations, population {populationSize}", forcePrint=True)
-        outerTimer.start()
-        initParams: InitializationParameters = InitializationParameters(
-            self.terrainMap, self.tileMap, None
-        )
-        simulation = Simulation(initParams)
-        selectionSize = populationSize//5
-        population = []
-        
-        for i in range(populationSize):
-            if i % 10 == 0:
-                print("Evolutionary population initalization:", i)
-                #print(f"nodeGraph sanity {len(simulation.level.nodeGraph.graph.keys())}")
-                #print(f"Archive size: {len(self.archive.keys())}")
-            individual: InstructionTree = self.generateRandomSolution()
-            population.append(individual)
-        selection = sorted(population, key = lambda individual: self.runSimulationCE(simulation, individual))[:selectionSize]
-
-        for i in range(generations):
-            if i % 10 == 0:
-                pass
-            print("generation:", i+1)
-
-            population = []
-            for j in range(populationSize):
-                choices = random.choices(selection,k=2)
-                first, other = choices[0],choices[1]
-                first: InstructionTree = copy.deepcopy(first)
-                other: InstructionTree = copy.deepcopy(other)
-                #trueCrossover(first,other)
-                self.randomVariationCE(first,other)
-                population.append(first)
-
-            population = sorted(population, key = lambda individual: self.runSimulationCE(simulation, individual))
-            selection = population[:selectionSize] + selection[:5]
-
-                #print(f"nodeGraph sanity {len(simulation.level.nodeGraph.graph.keys())}")
-                #print(f"best fitness: {len(self.archive.keys())}")
-
-        for x in range(0,10):
-            for y in range(0,10):
-                i = x*10 +y
-                if i < len(population):
-                    fitness = self.runSimulationCE(simulation, population[i])
-                    entry = ArchiveEntry(fitness, Behaviors(Behavior(x,"Conventional"),Behavior(y,"Evolution")), population[i])
-                    self.archive[(y,x)] = entry
-
-        
-        simulation.reset()
-        simulation = None
-        
-        outerTimer.stop()
-        #self.plotter.plotMaxFitnessAndQDScore()
-        #self.plotter.plotCoverage()
-        # self.saveArchiveToJSON()
-        self.saveArchiveVisualization(simulation)
-        
-
-  
-    def runSimulationCE(self, simulation:Simulation, individual: InstructionTree):
-        
-        simulation.prepare(individual)
-
-        timer = Timer("Run simulation")
-        timer.start()
-        simulation.runSimulation()
-        timer.stop()
-
-        fitness: int = self.getFitness(simulation)
-
-        simulation.reset()
-
-        return fitness
-
-    def saveArchiveVisualization(self,):
+    def saveArchiveVisualization(self,simulation):
         renderArchive(
             self.visualizationPath + "visual_" + self.dateString + ".png",
             10,
@@ -347,7 +250,7 @@ class MapElites:
             self.tileMap,
             self.terrainMap,
             self.resolution,
-            #simulation=simulation
+            simulation
         )
 
     def saveArchiveToJSON(self):
@@ -381,8 +284,16 @@ class MapElites:
 
         if castleCost > castleBudget:
             overBudget = (castleCost - castleBudget) * 5
-            #overBudget = overBudget*overBudget
-            #print(overBudget)
+
         return state.stepCount/10 - overBudget + 1000*killpercentage + state.area*10
-    """
-    """
+
+    
+    def getFitness3(self, state: State):
+        castleCost = state.cost
+        castleBudget = 100
+        overBudget = 0
+        steps = state.stepCount//10
+        if castleCost > castleBudget:
+            overBudget = castleCost
+            
+        return steps - overBudget + state.area
