@@ -46,15 +46,19 @@ def runTerrainBuilder(cfg, terrainMap):
 def runMapElites(cfg, terrainMap, tileMap):
     # Disable visual for pygame
     os.environ["SDL_VIDEODRIVER"] = "dummy"
-    mapElites = MapElites(terrainMap, tileMap, cfg.archiveSavepath, cfg.resolution)
-    mapElites.run(cfg.iterations, cfg.population)
+    mapElites = MapElites(
+        terrainMap, tileMap, cfg.archiveSavepath, cfg.resolution, cfg.iterations
+    )
+    mapElites.run(cfg.population)
 
 
 def runConventionalEA(cfg, terrainMap, tileMap):
     # Disable visual for pygame
     os.environ["SDL_VIDEODRIVER"] = "dummy"
-    mapElites = ConventionalEvolution(terrainMap, tileMap, cfg.archiveSavepath, cfg.resolution)
-    mapElites.runCE(cfg.iterations, cfg.population)
+    mapElites = ConventionalEvolution(
+        terrainMap, tileMap, cfg.archiveSavepath, cfg.resolution, cfg.iterations
+    )
+    mapElites.runCE(cfg.population)
 
 
 def runInteractiveMode(cfg, terrainMap, tileMap):
@@ -117,7 +121,6 @@ def runInteractiveMode(cfg, terrainMap, tileMap):
         renderer.render()
         pygame.display.flip()
 
-    print(i)
     # Quit pygame cleanly
     pygame.quit()
 

@@ -28,7 +28,6 @@ def renderArchive(
     fitnessFontSize = round(0.1 * entryDimensions[0])
     font = pygame.font.SysFont(None, fontSize)
     fitnessFont = pygame.font.SysFont(None, fitnessFontSize)
-    print(leftAxisPadding, bottomAxisPadding, fontSize)
 
     padding = 4
     timer = Timer("Render archive", forcePrint=True)
@@ -66,8 +65,8 @@ def renderArchive(
     #                 padding + y * (entryDimensions[1] + padding),
     #             ),
     #         )
-    #initParams = InitializationParameters(terrainMap, tileMap)
-    #simulation = Simulation(initParams)
+    # initParams = InitializationParameters(terrainMap, tileMap)
+    # simulation = Simulation(initParams)
 
     # Render real archive
     for key, entry in archive.items():

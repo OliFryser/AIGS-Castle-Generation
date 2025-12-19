@@ -1,9 +1,16 @@
 logs/
 __pycache__/
+
 resources/archives/rawDumps/*
 !resources/archives/rawDumps/.gitkeep
 resources/archives/plots/*
 !resources/archives/plots/.gitkeep
 resources/archives/visualizations/*
 !resources/archives/visualizations/.gitkeep
+
+resources/archives/MapElites/*
+!resources/archives/MapElites/.gitkeep
+resources/archives/ConventionalEA/*
+!resources/archives/ConventionalEA/.gitkeep
+
 multirun.yaml

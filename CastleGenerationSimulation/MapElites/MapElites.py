@@ -1,5 +1,6 @@
 from datetime import datetime
 import json
+import os
 import random
 import copy
 
@@ -24,23 +25,45 @@ from InitializationParameters import InitializationParameters
 from Simulation import Simulation, State
 from TerrainMap import TerrainMap
 
-#for gc debug
+# for gc debug
 import gc
 from collections import Counter
 
+
 class MapElites:
     def __init__(
-        self, terrainMap: TerrainMap, tileMap, archiveSavepath: str, resolution: int
+        self,
+        terrainMap: TerrainMap,
+        tileMap,
+        archiveSavepath: str,
+        resolution: int,
+        iterations: int,
     ):
+        self.behaviorX = "West-East"
+        self.behaviorY = "South-North"
+        self.iterations = iterations
+
         self.archive: dict[tuple[int, int], ArchiveEntry] = {}
         self.terrainMap: TerrainMap = terrainMap
         self.tileMap = tileMap
 
-        self.JSONDumpsPath = archiveSavepath + "rawDumps/"
-        self.visualizationPath = archiveSavepath + "visualizations/"
         self.dateString = str(datetime.now().strftime("%Y-%m-%d-%H_%M_%S"))
-        self.plotPath = archiveSavepath + "plots/"
-        self.plotter = MapElitesPlotter(self.plotPath + "plot_" + self.dateString)
+        self.archiveFolderPath = (
+            archiveSavepath
+            + self.dateString
+            + "__"
+            + self.behaviorX
+            + "_"
+            + self.behaviorY
+            + "__"
+            + str(self.iterations)
+            + "/"
+        )
+
+        if not os.path.exists(self.archiveFolderPath):
+            os.makedirs(self.archiveFolderPath)
+
+        self.plotter = MapElitesPlotter(self.archiveFolderPath)
 
         self.initializationMutationWeights = MutationWeights(
             wallWeight=2.75,
@@ -56,7 +79,7 @@ class MapElites:
             leftWeight=1.0,
             rightWeight=1.0,
             branchWeight=0.5,
-            emptyWeight=1.,
+            emptyWeight=1.0,
         )
 
         self.resolution = resolution
@@ -89,10 +112,9 @@ class MapElites:
             other = copy.deepcopy(self.sampleRandomSolution(pool).individual)
             crossover(individual, other)
 
-    #this is minor, but creating an object with multiple pieces of information on it each time is suboptimal 
     def getBehavior(self, state: State) -> Behaviors:
-        behaviorX = Behavior(state.eastWestRatio, "East/West")
-        behaviorY = Behavior(state.northSouthRatio, "North/South")
+        behaviorX = Behavior(state.eastWestRatio, self.behaviorX)
+        behaviorY = Behavior(state.northSouthRatio, self.behaviorY)
         return Behaviors(behaviorX, behaviorY)
 
     def getFitness(self, state: State) -> int:
@@ -109,14 +131,14 @@ class MapElites:
                 self.reShiftArchive(i)
                 pass
             keyValue = dynamicCeiling.calcValue(behavior.value)
-            #this is dangerous
-            #if keyValue <= 10:
+            # this is dangerous
+            # if keyValue <= 10:
             key.append(keyValue)
         return tuple(key)
 
     def reShiftArchive(self, keyIndex):
         newArchive: dict[tuple[int, int], ArchiveEntry] = {}
-        
+
         for k, v in self.archive.items():
             newKeyList = list(k)
             newKeyList[keyIndex] = self.dynamicKeys[keyIndex].calcValue(
@@ -128,28 +150,27 @@ class MapElites:
 
         self.archive = newArchive
 
-    def run(self, iterations: int, populationSize: int):
-        outerTimer = Timer(f"MapElites for {iterations} iterations", forcePrint=True)
+    def run(self, populationSize: int):
+        outerTimer = Timer(
+            f"MapElites for {self.iterations} iterations", forcePrint=True
+        )
         outerTimer.start()
         initParams: InitializationParameters = InitializationParameters(
             self.terrainMap, self.tileMap
         )
         simulation = Simulation(initParams)
 
-
         for i in range(populationSize):
             if i % 10 == 0:
                 print("MapElites population initalization:", i)
-                #print(f"nodeGraph sanity {len(simulation.level.nodeGraph.graph.keys())}")
                 print(f"Archive size: {len(self.archive.keys())}")
             individual: InstructionTree = self.generateRandomSolution()
 
             self.runSimulation(simulation, individual)
 
-        for i in range(iterations):
+        for i in range(self.iterations):
             if i % 10 == 0:
                 print("MapElites iteration:", i)
-                #print(f"nodeGraph sanity {len(simulation.level.nodeGraph.graph.keys())}")
                 print(f"Archive size: {len(self.archive.keys())}")
 
             entry = self.sampleRandomSolution(list(self.archive.values()))
@@ -158,62 +179,27 @@ class MapElites:
 
             self.runSimulation(simulation, individual)
 
-            
-        
         simulation.reset()
 
-        ######
-        # prepare Archive for printing
-        ######
-        """
-        print(f"Preparing Archive of size: {len(self.archive.keys())} for visualisation")
-
-        highestBehaviourValues = []
-
-        sample:ArchiveEntry = next(iter(self.archive.values()))
-        for i in range(len(sample.behavior.getBehaviors())):
-            tmpValue = 0
-            for v in self.archive.values():
-                value = v.behavior.getBehaviors()[i].value
-                
-                if value > tmpValue:
-                    tmpValue = value
-
-            highestBehaviourValues.append(tmpValue)
-
-        #self.dynamicKeys[0].floor = 40
-        for i in range(len(highestBehaviourValues)):
-            dynamicValue = self.dynamicKeys[i]
-            dynamicValue.indecies = 9
-            dynamicValue.redefineCeiling(highestBehaviourValues[i])
-            self.reShiftArchive(i)
-
-        print(f"New Archive size: {len(self.archive.keys())}")
-        """
-        
-        
         outerTimer.stop()
         self.plotter.plotMaxFitnessAndQDScore()
         self.plotter.plotCoverage()
         self.saveArchiveToJSON()
         self.saveArchiveVisualization(simulation)
-        print("run over")
         simulation = None
 
     def garbageCheck(self):
         # Garbage check!
-            gc.collect()
-            types = Counter(type(obj) for obj in gc.get_objects())
-            print(types.most_common(5))
+        gc.collect()
+        types = Counter(type(obj) for obj in gc.get_objects())
+        print(types.most_common(5))
 
-            """
+        """
             count = sum(1 for o in gc.get_objects() if isinstance(o, Node))
             print(f"Iteration {i+1}: {count} instances of Node")
             """
-            
 
-    def runSimulation(self, simulation:Simulation, individual: InstructionTree):
-        
+    def runSimulation(self, simulation: Simulation, individual: InstructionTree):
         simulation.prepare(individual)
 
         timer = Timer("Run simulation")
@@ -234,27 +220,26 @@ class MapElites:
         if key not in self.archive or fitness > self.archive[key].fitness:
             entry = ArchiveEntry(fitness, behavior, individual)
             self.archive[key] = entry
-        
+
         self.plotter.addRecord(
             PlotRecord(
                 self.getMaxFitness(), self.getAverageFitness(), self.getCoverage()
             )
         )
- 
 
-    def saveArchiveVisualization(self,simulation):
+    def saveArchiveVisualization(self, simulation):
         renderArchive(
-            self.visualizationPath + "visual_" + self.dateString + ".png",
+            self.archiveFolderPath + "visualization.png",
             10,
             self.archive,
             self.tileMap,
             self.terrainMap,
             self.resolution,
-            simulation
+            simulation,
         )
 
     def saveArchiveToJSON(self):
-        filepath = self.JSONDumpsPath + "rawDump_" + self.dateString + ".json"
+        filepath = self.archiveFolderPath + "rawDump.json"
         jsonSafeArchive = {str(k): v.to_json() for k, v in self.archive.items()}
         with open(filepath, "x") as fp:
             json.dump(jsonSafeArchive, fp, indent=2)
@@ -280,20 +265,21 @@ class MapElites:
         castleBudget = 100
         overBudget = 0
 
-        killpercentage = state.kills /(8 + state.towers)
+        killpercentage = state.kills / (8 + state.towers)
 
         if castleCost > castleBudget:
             overBudget = (castleCost - castleBudget) * 5
 
-        return state.stepCount/10 - overBudget + 1000*killpercentage + state.area*10
+        return (
+            state.stepCount / 10 - overBudget + 1000 * killpercentage + state.area * 10
+        )
 
-    
     def getFitness3(self, state: State):
         castleCost = state.cost
         castleBudget = 100
         overBudget = 0
-        steps = state.stepCount//10
+        steps = state.stepCount // 10
         if castleCost > castleBudget:
             overBudget = castleCost
-            
+
         return steps - overBudget + state.area

@@ -10,9 +10,9 @@ class PlotRecord:
 
 
 class MapElitesPlotter:
-    def __init__(self, plotFilepath: str):
+    def __init__(self, archiveFolderPath):
         self.records: list[PlotRecord] = []
-        self.plotFilepath = plotFilepath
+        self.archiveFolderPath = archiveFolderPath
 
     def addRecord(self, record: PlotRecord):
         self.records.append(record)
@@ -31,7 +31,7 @@ class MapElitesPlotter:
         plt.grid(True)
 
         plt.tight_layout()
-        plt.savefig(self.plotFilepath + "_Fitness.png", dpi=300)
+        plt.savefig(self.archiveFolderPath + "fitnessAndQDScore.png", dpi=300)
 
     def plotCoverage(self):
         iterations = list(range(len(self.records)))
@@ -46,4 +46,19 @@ class MapElitesPlotter:
         plt.grid(True)
 
         plt.tight_layout()
-        plt.savefig(self.plotFilepath + "_Coverage.png", dpi=300)
+        plt.savefig(self.archiveFolderPath + "coverage.png", dpi=300)
+
+    def plotMaxFitness(self):
+        iterations = list(range(len(self.records)))
+        plt.figure(figsize=(10, 6))
+
+        plt.plot(iterations, [x.maxFitness for x in self.records], label="Max Fitness")
+
+        plt.xlabel("Iteration")
+        plt.ylabel("Value")
+        plt.title("Max Fitness Training Progress")
+        plt.legend()
+        plt.grid(True)
+
+        plt.tight_layout()
+        plt.savefig(self.archiveFolderPath + "fitness.png", dpi=300)
