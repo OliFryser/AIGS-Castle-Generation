@@ -1,0 +1,12 @@
+RIGHT T LEFT W BRANCH BRANCH W BRANCH W RIGHT T E W W
+    BRANCH W RIGHT LEFT RIGHT LEFT RIGHT RIGHT RIGHT
+        LEFT W BRANCH LEFT E LEFT RIGHT
+            W
+    W
+    W W RIGHT W LEFT W E BRANCH
+        W W LEFT W W W LEFT W W W E BRANCH W W W W
+            W BRANCH W W BRANCH BRANCH W W
+                BRANCH LEFT W LEFT W
+                    W W LEFT
+                W
+                W W T RIGHT LEFT W T RIGHT
