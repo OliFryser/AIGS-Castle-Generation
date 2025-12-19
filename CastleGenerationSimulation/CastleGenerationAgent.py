@@ -17,7 +17,7 @@ class CastleGenerationAgent:
         tabooCells: list[tuple[int,int]] = []
     ):
         self.treeNode = treeNode
-        self.tabuCells = tabooCells
+        self.tabooCells = tabooCells
         self.directionToOffset = {
             Direction.UP: (0, -1),
             Direction.DOWN: (0, 1),
@@ -106,5 +106,4 @@ class CastleGenerationAgent:
             and nextPosition[0] < width - self.padding
             and nextPosition[1] >= self.padding
             and nextPosition[1] < height - self.padding
-            and nextPosition not in self.tabuCells
-        )
+        ) or nextPosition in self.tabooCells
