@@ -88,6 +88,7 @@ class Level:
 
         self.maxBlocks = castleGenerator.getGridSize()
         self.maxArea = castleGenerator.getMaxArea()
+        self.orientationRatios()
 
 
 
@@ -102,6 +103,42 @@ class Level:
             return self.blocks[ElementType.TOWER]
         return 0
     
+    def orientationRatios(self):
+        keepPos = (0,0)
+        positions = []
+        for column in range(len(self.castleMapDuplo)):
+            for row in range(len(self.castleMapDuplo[column])):
+                if self.castleMapDuplo[column][row] is None:
+                    continue
+                if self.castleMapDuplo[column][row].elementType is ElementType.KEEP:
+                    keepPos = (row, column)
+                    continue
+                positions.append((row,column))
+
+        east = 0 
+        west = 0 
+        north = 0
+        south = 0
+
+        kx, ky = keepPos
+
+        for x, y in positions:
+            if x > kx:
+                east += 1
+            elif x < kx:
+                west += 1
+
+            if y > ky:
+                north += 1
+            elif y < ky:
+                south += 1
+
+        ewDivider = east + west
+        nsDivider = north + south
+
+        self.eastWestRatio = east / ewDivider if ewDivider else 0.5
+        self.northSouthRatio = north / nsDivider if nsDivider else 0.5
+
     def getTowerRatio(self):
         if ElementType.TOWER not in self.blocks:
             return 0

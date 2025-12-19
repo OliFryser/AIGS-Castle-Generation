@@ -48,22 +48,22 @@ class MapElites:
             leftWeight=1.0,
             rightWeight=1.0,
             branchWeight=0.5,
-            emptyWeight=0.0,
+            emptyWeight=0.2,
         )
         self.variationMutationWeights = MutationWeights(
             wallWeight=2.0,
-            towerWeight=0.75,
+            towerWeight=1.0,
             leftWeight=1.0,
             rightWeight=1.0,
-            branchWeight=0.2,
-            emptyWeight=0.4,
+            branchWeight=0.5,
+            emptyWeight=1.,
         )
 
         self.resolution = resolution
         self.dynamicKeys = [DynamicCeiling(maximum=150), DynamicCeiling(maximum=1000)]
 
     def generateRandomSolution(self):
-        # TODO: Better random solution
+        # TODO: Better random solution <3
         individual = InstructionTree(InstructionLine(""))
         r = random.randint(10, 50)
         for i in range(r):
@@ -91,12 +91,12 @@ class MapElites:
 
     #this is minor, but creating an object with multiple pieces of information on it each time is suboptimal 
     def getBehavior(self, state: State) -> Behaviors:
-        behaviorX = Behavior(state.cost, "cost")
-        behaviorY = Behavior(state.area, "area")
+        behaviorX = Behavior(state.eastWestRatio, "East/West")
+        behaviorY = Behavior(state.northSouthRatio, "North/South")
         return Behaviors(behaviorX, behaviorY)
 
     def getFitness(self, state: State) -> int:
-        return self.getFitness2(state)
+        return self.getFitness3(state)
 
     def getKey(self, behaviors: Behaviors):
         key = []
@@ -195,7 +195,7 @@ class MapElites:
         outerTimer.stop()
         self.plotter.plotMaxFitnessAndQDScore()
         self.plotter.plotCoverage()
-        # self.saveArchiveToJSON()
+        self.saveArchiveToJSON()
         self.saveArchiveVisualization(simulation)
         print("run over")
         simulation = None
@@ -284,4 +284,16 @@ class MapElites:
 
         if castleCost > castleBudget:
             overBudget = (castleCost - castleBudget) * 5
+
         return state.stepCount/10 - overBudget + 1000*killpercentage + state.area*10
+
+    
+    def getFitness3(self, state: State):
+        castleCost = state.cost
+        castleBudget = 100
+        overBudget = 0
+        steps = state.stepCount//10
+        if castleCost > castleBudget:
+            overBudget = castleCost
+            
+        return steps - overBudget + state.area

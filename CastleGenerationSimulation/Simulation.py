@@ -18,6 +18,8 @@ class State:
     gates: int
     stepCount: int
     towers: int
+    eastWestRatio: float
+    northSouthRatio: float
 
 
 class Simulation:
@@ -93,6 +95,8 @@ class Simulation:
             gates=self.level.gates,
             stepCount=self.getStepCount(),
             towers=self.getTowerAmount(),
+            eastWestRatio=self.level.eastWestRatio,
+            northSouthRatio=self.level.northSouthRatio,
         )
         return state
 

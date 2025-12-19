@@ -1,0 +1,306 @@
+{
+  "(2, 0)": {
+    "fitness": 395,
+    "behavior": {
+      "blocks": 69,
+      "area": 0
+    },
+    "individual": "LEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\tBRANCH W W W BRANCH W\n\t\t\tT LEFT W W W W W T\n\t\t\tLEFT W LEFT W\n\t\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\t\tBRANCH W W W BRANCH W\n\t\t\t\tT LEFT W W W W W\n\t\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\t\tBRANCH\n\t\t\t\tW RIGHT W W W W\n\tW RIGHT W LEFT LEFT T W\n\t\n"
+  },
+  "(1, 0)": {
+    "fitness": 293,
+    "behavior": {
+      "blocks": 30,
+      "area": 0
+    },
+    "individual": "LEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\tBRANCH W W W BRANCH W\n\t\t\tT LEFT W W W W W T\n\t\t\tLEFT W LEFT W\n\t\tBRANCH\n\t\t\tW RIGHT W W W RIGHT\n\tW RIGHT W LEFT LEFT T W\n\t\n"
+  },
+  "(4, 0)": {
+    "fitness": 426,
+    "behavior": {
+      "blocks": 105,
+      "area": 0
+    },
+    "individual": "LEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\tBRANCH W W W BRANCH W\n\t\t\tT LEFT W W W W W\n\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T BRANCH\n\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\tBRANCH\n\t\t\tW RIGHT W W W RIGHT\n\tW RIGHT LEFT LEFT T W\n\t\n"
+  },
+  "(0, 0)": {
+    "fitness": 196,
+    "behavior": {
+      "blocks": 8,
+      "area": 0
+    },
+    "individual": "LEFT RIGHT W LEFT LEFT BRANCH\n\tW RIGHT W LEFT LEFT T W\n"
+  },
+  "(6, 0)": {
+    "fitness": 425,
+    "behavior": {
+      "blocks": 158,
+      "area": 0
+    },
+    "individual": "LEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\tBRANCH W W W BRANCH W\n\t\t\tT LEFT W W W W W\n\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\tBRANCH\n\t\t\tW RIGHT W W W RIGHT\n\tW RIGHT LEFT LEFT T W BRANCH\n\t\tLEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\t\t\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\t\t\tBRANCH W W W BRANCH W\n\t\t\t\t\tT LEFT W W W W W\n\t\t\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T BRANCH\n\t\t\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\t\t\tBRANCH\n\t\t\t\t\tW RIGHT W W W RIGHT\n\t\t\tW RIGHT LEFT LEFT T W\n\t\t\t\n\t\n"
+  },
+  "(4, 1)": {
+    "fitness": 701,
+    "behavior": {
+      "blocks": 105,
+      "area": 82
+    },
+    "individual": "LEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\tBRANCH W W W BRANCH W\n\t\t\tT LEFT W W W W W\n\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\tBRANCH\n\t\t\tBRANCH W W W BRANCH W W\n\t\t\t\tT LEFT W W W W W\n\t\t\t\tLEFT W W\n\tW RIGHT W LEFT LEFT W\n\t\n"
+  },
+  "(5, 7)": {
+    "fitness": 419,
+    "behavior": {
+      "blocks": 125,
+      "area": 527
+    },
+    "individual": "LEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\tBRANCH W W W BRANCH W\n\t\t\tT LEFT RIGHT W W W W\n\t\t\tLEFT W LEFT W\n\t\tBRANCH\n\t\t\tT LEFT W W W W W T\n\tW RIGHT W LEFT LEFT T W BRANCH\n\t\tLEFT RIGHT W BRANCH W\n\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T BRANCH\n\t\t\t\tLEFT LEFT W BRANCH\n\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\n"
+  },
+  "(6, 2)": {
+    "fitness": 588,
+    "behavior": {
+      "blocks": 155,
+      "area": 134
+    },
+    "individual": "LEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\tLEFT BRANCH RIGHT T W BRANCH W\n\t\tBRANCH W W W BRANCH W\n\t\t\tT LEFT W W W W W\n\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\tBRANCH\n\t\t\tW RIGHT W LEFT RIGHT BRANCH\n\t\t\t\tLEFT RIGHT W BRANCH W\n\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W W T BRANCH\n\t\t\t\t\t\tLEFT RIGHT W BRANCH W\n\t\t\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W W T\n\tW RIGHT W LEFT LEFT T W BRANCH\n\t\tBRANCH\n\t\t\tT LEFT W W W W W T\n\t\n"
+  },
+  "(5, 0)": {
+    "fitness": 437,
+    "behavior": {
+      "blocks": 135,
+      "area": 0
+    },
+    "individual": "LEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\tLEFT BRANCH RIGHT W BRANCH W\n\t\tBRANCH W W W BRANCH W\n\t\t\tT LEFT W W W W W\n\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\tBRANCH\n\t\t\tW RIGHT W LEFT RIGHT BRANCH\n\t\t\t\tLEFT RIGHT W BRANCH W\n\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\tLEFT RIGHT W BRANCH\n\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\n"
+  },
+  "(7, 0)": {
+    "fitness": 335,
+    "behavior": {
+      "blocks": 202,
+      "area": 0
+    },
+    "individual": "LEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\tBRANCH W W W BRANCH W\n\t\t\tT LEFT W W W W W\n\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\tBRANCH\n\t\t\tLEFT RIGHT W LEFT LEFT BRANCH\n\t\t\t\tW RIGHT W LEFT LEFT T W\n\tLEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\t\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\t\tBRANCH W W W BRANCH W\n\t\t\t\tT LEFT W W W W W T\n\t\t\t\tLEFT W LEFT W\n\t\t\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\t\t\tBRANCH W W W BRANCH W\n\t\t\t\t\tT LEFT W W W W W\n\t\t\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\t\t\tBRANCH\n\t\t\t\t\tW RIGHT W W W W\n\t\tW RIGHT W LEFT LEFT T W\n\t\tBRANCH\n\t\t\tRIGHT LEFT RIGHT RIGHT E W T T RIGHT W W W T T\n\t\n"
+  },
+  "(9, 0)": {
+    "fitness": 381,
+    "behavior": {
+      "blocks": 249,
+      "area": 0
+    },
+    "individual": "LEFT BRANCH T BRANCH LEFT LEFT BRANCH\n\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\tBRANCH W W W BRANCH W\n\t\t\tRIGHT W BRANCH\n\t\t\t\tLEFT RIGHT W BRANCH\n\t\t\t\t\tRIGHT LEFT RIGHT RIGHT W T T RIGHT W W W T T BRANCH\n\t\t\t\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\tBRANCH\n\t\t\tW RIGHT W W W RIGHT BRANCH\n\t\t\t\tLEFT W W W W W W BRANCH T\n\t\t\t\t\tLEFT RIGHT W BRANCH\n\t\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T LEFT W W W T T\n\tW RIGHT W LEFT LEFT T W BRANCH\n\t\tLEFT W LEFT BRANCH\n\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\n"
+  },
+  "(4, 4)": {
+    "fitness": 400,
+    "behavior": {
+      "blocks": 119,
+      "area": 329
+    },
+    "individual": "LEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\tBRANCH W W W BRANCH W\n\t\t\tT LEFT W W W W W\n\t\t\tLEFT W LEFT W\n\t\tBRANCH\n\t\t\tT LEFT W W W W W T\n\tW RIGHT W LEFT LEFT T W BRANCH\n\t\tLEFT RIGHT W BRANCH\n\t\t\tRIGHT LEFT RIGHT RIGHT T W T RIGHT W W W T T BRANCH\n\t\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\n"
+  },
+  "(3, 0)": {
+    "fitness": 432,
+    "behavior": {
+      "blocks": 91,
+      "area": 0
+    },
+    "individual": "LEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\tBRANCH W W W BRANCH W\n\t\t\tT LEFT W W W W W\n\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\tBRANCH\n\t\t\tW RIGHT W W W RIGHT\n\tW RIGHT LEFT LEFT T W BRANCH\n\t\tLEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\t\t\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\t\t\tBRANCH W W W BRANCH W\n\t\t\t\t\tT LEFT W W W W W\n\t\t\t\t\tLEFT W LEFT W W\n\t\t\t\tBRANCH\n\t\t\t\t\tW RIGHT W W W RIGHT\n\t\t\tW RIGHT LEFT LEFT T W\n\t\t\t\n\t\n"
+  },
+  "(5, 6)": {
+    "fitness": 419,
+    "behavior": {
+      "blocks": 134,
+      "area": 442
+    },
+    "individual": "LEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\tBRANCH W W W BRANCH W\n\t\t\tT LEFT RIGHT W W W W\n\t\t\tLEFT W LEFT W T\n\t\tBRANCH\n\t\t\tT LEFT W W W W W T\n\tW RIGHT W LEFT LEFT T W BRANCH\n\t\tLEFT RIGHT W BRANCH W\n\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T BRANCH\n\t\t\t\tLEFT LEFT W BRANCH\n\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\n"
+  },
+  "(8, 0)": {
+    "fitness": 304,
+    "behavior": {
+      "blocks": 219,
+      "area": 0
+    },
+    "individual": "LEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\tBRANCH W W W BRANCH W\n\t\t\tRIGHT W BRANCH\n\t\t\t\tLEFT RIGHT W BRANCH\n\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T BRANCH\n\t\t\t\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\t\tRIGHT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\tBRANCH\n\t\t\tW RIGHT W W W RIGHT BRANCH\n\t\t\t\tLEFT W W W W W W BRANCH T\n\t\t\t\t\tLEFT RIGHT W BRANCH\n\t\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T LEFT W W W T T\n\tW RIGHT W LEFT LEFT T W BRANCH\n\t\tLEFT W LEFT W BRANCH\n\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\n"
+  },
+  "(6, 1)": {
+    "fitness": 649,
+    "behavior": {
+      "blocks": 179,
+      "area": 91
+    },
+    "individual": "LEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\tBRANCH W W W BRANCH W\n\t\t\tT LEFT W W W W W\n\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\tBRANCH\n\t\t\tBRANCH W W W BRANCH W\n\t\t\t\tT LEFT W W W W W\n\t\t\t\tLEFT W LEFT W\n\tLEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\t\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\t\tBRANCH W W W BRANCH W\n\t\t\t\tT LEFT W W W W W T\n\t\t\t\tLEFT W LEFT W\n\t\t\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\t\t\tBRANCH W W W BRANCH W\n\t\t\t\t\tT LEFT W W W W W\n\t\t\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\t\t\tBRANCH\n\t\t\t\t\tW RIGHT W W W W\n\t\tW RIGHT W LEFT LEFT T W\n\t\tBRANCH\n\t\t\tLEFT RIGHT W BRANCH W\n\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T BRANCH\n\t\t\t\t\tLEFT LEFT W\n\t\n"
+  },
+  "(4, 2)": {
+    "fitness": 549,
+    "behavior": {
+      "blocks": 122,
+      "area": 141
+    },
+    "individual": "LEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\tLEFT BRANCH RIGHT T BRANCH W\n\t\tBRANCH W W W BRANCH W\n\t\t\tT LEFT W W W W W\n\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\tBRANCH\n\t\t\tW RIGHT W LEFT RIGHT BRANCH\n\t\t\t\tLEFT RIGHT W BRANCH W\n\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W W T BRANCH\n\t\t\t\t\t\tLEFT RIGHT W BRANCH W\n\t\t\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W W T\n\tW RIGHT W LEFT LEFT T W BRANCH\n\t\tBRANCH\n\t\t\tT LEFT W W W W W\n\t\n"
+  },
+  "(5, 1)": {
+    "fitness": 710,
+    "behavior": {
+      "blocks": 150,
+      "area": 91
+    },
+    "individual": "LEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\tBRANCH W W W BRANCH W\n\t\t\tT LEFT W W W W W\n\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\tBRANCH\n\t\t\tBRANCH W W W BRANCH W W\n\t\t\t\tT LEFT W W W W W\n\t\t\t\tLEFT W LEFT W\n\tW RIGHT W LEFT LEFT T W BRANCH\n\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\n"
+  },
+  "(5, 3)": {
+    "fitness": 441,
+    "behavior": {
+      "blocks": 136,
+      "area": 205
+    },
+    "individual": "LEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\tLEFT BRANCH RIGHT T W BRANCH W\n\t\tBRANCH W W W BRANCH W\n\t\t\tT LEFT W W W W W\n\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\tBRANCH\n\t\t\tW RIGHT W LEFT RIGHT BRANCH\n\t\t\t\tLEFT RIGHT W BRANCH W\n\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\tLEFT RIGHT W BRANCH\n\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\n"
+  },
+  "(3, 1)": {
+    "fitness": 638,
+    "behavior": {
+      "blocks": 96,
+      "area": 91
+    },
+    "individual": "LEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\tBRANCH W W W BRANCH W\n\t\t\tT LEFT W W W W W\n\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\tBRANCH\n\t\t\tBRANCH W W W BRANCH W\n\t\t\t\tT LEFT W W W W W\n\t\t\t\tLEFT W LEFT W\n\tW RIGHT W LEFT LEFT W\n\t\n"
+  },
+  "(4, 7)": {
+    "fitness": 419,
+    "behavior": {
+      "blocks": 123,
+      "area": 554
+    },
+    "individual": "LEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\tBRANCH W W W W\n\t\t\tT LEFT RIGHT W W W W\n\t\tBRANCH\n\t\t\tT LEFT W W W W W T\n\tW RIGHT W LEFT LEFT T W BRANCH\n\t\tLEFT RIGHT W BRANCH W\n\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T BRANCH\n\t\t\t\tLEFT LEFT W BRANCH\n\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\n"
+  },
+  "(5, 2)": {
+    "fitness": 549,
+    "behavior": {
+      "blocks": 145,
+      "area": 134
+    },
+    "individual": "LEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\tLEFT BRANCH RIGHT T W BRANCH W\n\t\tBRANCH W W W BRANCH W\n\t\t\tT LEFT W W W W W\n\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\tBRANCH\n\t\t\tW RIGHT W LEFT RIGHT BRANCH\n\t\t\t\tLEFT RIGHT W BRANCH W\n\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W W T BRANCH\n\t\t\t\t\t\tLEFT RIGHT W BRANCH W\n\t\t\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W W T\n\tW RIGHT W LEFT LEFT T W BRANCH\n\t\tBRANCH\n\t\t\tT LEFT W W W W W\n\t\n"
+  },
+  "(5, 9)": {
+    "fitness": 399,
+    "behavior": {
+      "blocks": 133,
+      "area": 706
+    },
+    "individual": "LEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\tBRANCH W W W BRANCH W\n\t\t\tT LEFT RIGHT W W W W\n\t\t\tLEFT W LEFT W\n\t\tBRANCH\n\t\t\tT LEFT W W W W W T\n\tW RIGHT W LEFT LEFT W BRANCH\n\t\tLEFT RIGHT W BRANCH\n\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T BRANCH\n\t\t\t\tLEFT LEFT W BRANCH\n\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\n"
+  },
+  "(9, 3)": {
+    "fitness": 639,
+    "behavior": {
+      "blocks": 245,
+      "area": 228
+    },
+    "individual": "LEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\tBRANCH W W W BRANCH W\n\t\t\tT LEFT W W W W W\n\t\t\tLEFT W LEFT W\n\t\tBRANCH\n\t\t\tT LEFT W W W W W T BRANCH\n\t\t\t\tLEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\t\t\t\t\tLEFT BRANCH RIGHT T W BRANCH W\n\t\t\t\t\t\tBRANCH W W W BRANCH W\n\t\t\t\t\t\t\tT LEFT W W W W W\n\t\t\t\t\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\t\t\t\t\tBRANCH\n\t\t\t\t\t\t\tW RIGHT W LEFT RIGHT BRANCH\n\t\t\t\t\t\t\t\tLEFT RIGHT W BRANCH W\n\t\t\t\t\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\t\t\t\tLEFT RIGHT W BRANCH\n\t\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\t\t\t\t\n\tW RIGHT W LEFT LEFT T W BRANCH\n\t\tLEFT RIGHT W BRANCH\n\t\t\tRIGHT LEFT RIGHT RIGHT T W T RIGHT W W W T T BRANCH\n\t\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\n"
+  },
+  "(8, 1)": {
+    "fitness": 667,
+    "behavior": {
+      "blocks": 223,
+      "area": 91
+    },
+    "individual": "LEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\tBRANCH W W W BRANCH W\n\t\t\tT LEFT W W W W W\n\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\tBRANCH\n\t\t\tBRANCH W W W BRANCH W\n\t\t\t\tT LEFT W W W W W\n\t\t\t\tLEFT W LEFT W\n\tLEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\t\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\t\tBRANCH W W W BRANCH W\n\t\t\t\tT LEFT W W W W W T\n\t\t\t\tLEFT W LEFT W\n\t\t\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\t\t\tBRANCH W W W BRANCH W\n\t\t\t\t\tT LEFT W W W W W\n\t\t\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\t\t\tBRANCH\n\t\t\t\t\tW RIGHT W W W W\n\t\tW RIGHT W LEFT LEFT T W\n\t\tBRANCH\n\t\t\tLEFT RIGHT W BRANCH W\n\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T BRANCH\n\t\t\t\t\tLEFT LEFT W BRANCH\n\t\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\n"
+  },
+  "(8, 2)": {
+    "fitness": 548,
+    "behavior": {
+      "blocks": 210,
+      "area": 134
+    },
+    "individual": "LEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\tLEFT BRANCH RIGHT T W BRANCH W\n\t\tBRANCH W W W BRANCH W\n\t\t\tT LEFT W W W W W\n\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\tBRANCH\n\t\t\tW RIGHT W LEFT RIGHT BRANCH\n\t\t\t\tLEFT RIGHT W BRANCH W\n\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W W T BRANCH\n\t\t\t\t\t\tLEFT RIGHT W BRANCH W\n\t\t\t\t\t\t\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\t\t\t\t\t\t\tBRANCH W W W BRANCH W\n\t\t\t\t\t\t\t\t\tT LEFT W W W W W\n\t\t\t\t\t\t\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\t\t\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\t\t\t\t\t\t\tBRANCH\n\t\t\t\t\t\t\t\t\tW RIGHT W W W RIGHT\n\tW RIGHT W LEFT LEFT T W BRANCH\n\t\tBRANCH\n\t\t\tT LEFT W W W W W\n\t\n"
+  },
+  "(7, 6)": {
+    "fitness": 415,
+    "behavior": {
+      "blocks": 196,
+      "area": 493
+    },
+    "individual": "LEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\tBRANCH W W W BRANCH W\n\t\t\tT LEFT RIGHT W W W W\n\t\t\tLEFT W LEFT W\n\t\tBRANCH\n\t\t\tT LEFT W W W W W T\n\tW RIGHT W LEFT LEFT W BRANCH\n\t\tLEFT RIGHT W BRANCH\n\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T BRANCH\n\t\t\t\tLEFT LEFT W BRANCH\n\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\tBRANCH\n\t\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\t\tBRANCH W W W BRANCH W\n\t\t\t\tT LEFT RIGHT W W W W\n\t\t\t\tLEFT W LEFT W\n\t\t\tBRANCH\n\t\t\t\tT LEFT W W W W W T BRANCH\n\t\t\t\t\tBRANCH W W W BRANCH W\n\t\t\t\t\t\tT LEFT W W W W W\n\t\t\t\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n"
+  },
+  "(7, 3)": {
+    "fitness": 440,
+    "behavior": {
+      "blocks": 199,
+      "area": 205
+    },
+    "individual": "LEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\tLEFT BRANCH RIGHT T W BRANCH W\n\t\tBRANCH W W W BRANCH W\n\t\t\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\t\t\tBRANCH W W W BRANCH W\n\t\t\t\t\tT LEFT W W W W W\n\t\t\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\t\t\tBRANCH\n\t\t\t\t\tBRANCH W W W BRANCH W\n\t\t\t\t\t\tT LEFT W W W W W\n\t\t\t\t\t\tLEFT W LEFT W\n\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\tBRANCH\n\t\t\tW RIGHT W LEFT RIGHT BRANCH\n\t\t\t\tLEFT RIGHT W BRANCH W\n\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\tLEFT RIGHT W BRANCH\n\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\n"
+  },
+  "(2, 1)": {
+    "fitness": 417,
+    "behavior": {
+      "blocks": 46,
+      "area": 59
+    },
+    "individual": "LEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\tBRANCH W W W BRANCH W\n\t\t\tT LEFT W W W W W T\n\t\t\tLEFT W LEFT W\n\t\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\t\tBRANCH W W W BRANCH W\n\t\t\t\tT LEFT W W W W W\n\t\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\t\tRIGHT LEFT RIGHT RIGHT W T T RIGHT W W W T T\n\t\t\tBRANCH\n\t\t\t\tW RIGHT W W W W\n\tW W LEFT LEFT T W\n\t\n"
+  },
+  "(7, 1)": {
+    "fitness": 709,
+    "behavior": {
+      "blocks": 199,
+      "area": 91
+    },
+    "individual": "LEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\tBRANCH W W W BRANCH W\n\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\tBRANCH\n\t\t\tBRANCH W W W BRANCH W W\n\t\t\t\tT LEFT W W W W W\n\t\t\t\tLEFT W LEFT W\n\tW RIGHT W LEFT LEFT T W BRANCH\n\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\n"
+  },
+  "(3, 2)": {
+    "fitness": 400,
+    "behavior": {
+      "blocks": 75,
+      "area": 164
+    },
+    "individual": "LEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\tBRANCH W W W BRANCH W\n\t\t\tT LEFT W W W W W\n\t\t\tLEFT W LEFT W\n\t\tBRANCH\n\t\t\tT LEFT W W W W W T\n\tW RIGHT W LEFT LEFT T W BRANCH\n\t\tLEFT RIGHT W BRANCH\n\t\t\tRIGHT LEFT RIGHT RIGHT T W T RIGHT W W W T T BRANCH\n\t\t\t\tBRANCH\n\t\t\t\t\tW RIGHT W W W RIGHT\n\t\n"
+  },
+  "(6, 3)": {
+    "fitness": 463,
+    "behavior": {
+      "blocks": 157,
+      "area": 205
+    },
+    "individual": "LEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\tLEFT BRANCH RIGHT T W BRANCH W\n\t\tBRANCH W W W BRANCH W\n\t\t\tT LEFT W W W W W\n\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\tBRANCH\n\t\t\tW RIGHT W LEFT RIGHT BRANCH\n\t\t\t\tLEFT RIGHT W BRANCH W\n\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\tLEFT RIGHT W BRANCH\n\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T BRANCH\n\t\t\tBRANCH\n\t\t\t\tBRANCH W W W BRANCH W W\n\t\t\t\t\tT LEFT W W W W W\n\t\t\t\t\tLEFT W W\n\t\n"
+  },
+  "(6, 7)": {
+    "fitness": 419,
+    "behavior": {
+      "blocks": 166,
+      "area": 527
+    },
+    "individual": "LEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\tBRANCH W W W BRANCH W\n\t\t\tT LEFT RIGHT W W W W\n\t\t\tLEFT W LEFT W\n\t\tBRANCH\n\t\t\tT LEFT W W W W W T BRANCH\n\t\t\t\tBRANCH W W W BRANCH W\n\t\t\t\t\tT LEFT W W W W W\n\t\t\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\tW RIGHT W LEFT LEFT T W BRANCH\n\t\tLEFT RIGHT W BRANCH W\n\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T BRANCH\n\t\t\t\tLEFT LEFT W BRANCH\n\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\n"
+  },
+  "(7, 2)": {
+    "fitness": 550,
+    "behavior": {
+      "blocks": 183,
+      "area": 127
+    },
+    "individual": "LEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\tLEFT BRANCH RIGHT T W BRANCH W\n\t\tBRANCH W W W BRANCH W\n\t\t\tT LEFT W W W W W\n\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\tBRANCH\n\t\t\tW RIGHT W LEFT RIGHT BRANCH\n\t\t\t\tLEFT RIGHT W BRANCH W\n\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W W T BRANCH\n\t\t\t\t\t\tLEFT W BRANCH W\n\t\t\t\t\t\t\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\t\t\t\t\t\t\tBRANCH W W W BRANCH W\n\t\t\t\t\t\t\t\t\tT LEFT W W W W W\n\t\t\t\t\t\t\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\t\t\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\t\t\t\t\t\t\tBRANCH\n\t\t\t\t\t\t\t\t\tW RIGHT W W W RIGHT\n\tW RIGHT W LEFT LEFT T W BRANCH\n\t\tBRANCH\n\t\t\tT LEFT W W W W W\n\t\n"
+  },
+  "(8, 3)": {
+    "fitness": 636,
+    "behavior": {
+      "blocks": 233,
+      "area": 250
+    },
+    "individual": "LEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\tBRANCH W W W BRANCH W\n\t\t\tT LEFT W W W W W\n\t\t\tLEFT W LEFT W\n\t\tBRANCH\n\t\t\tT LEFT W W W W T BRANCH\n\t\t\t\tLEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\t\t\t\t\tLEFT BRANCH RIGHT T W BRANCH W\n\t\t\t\t\t\tBRANCH W W W BRANCH W\n\t\t\t\t\t\t\tT LEFT W W W W W\n\t\t\t\t\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\t\t\t\t\tBRANCH\n\t\t\t\t\t\t\tW RIGHT W LEFT RIGHT BRANCH\n\t\t\t\t\t\t\t\tLEFT RIGHT W BRANCH W\n\t\t\t\t\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\t\t\t\tLEFT RIGHT W BRANCH\n\t\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\t\t\t\t\n\tW RIGHT W LEFT LEFT T W BRANCH\n\t\tLEFT RIGHT W BRANCH\n\t\t\tRIGHT LEFT RIGHT RIGHT T W T RIGHT W W W T T BRANCH\n\t\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\n"
+  },
+  "(9, 1)": {
+    "fitness": 684,
+    "behavior": {
+      "blocks": 243,
+      "area": 91
+    },
+    "individual": "LEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\tBRANCH W W W BRANCH W\n\t\t\tT LEFT W W W W W\n\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\tBRANCH\n\t\t\tBRANCH W W W BRANCH W\n\t\t\t\tT LEFT W W W W W\n\t\t\t\tLEFT W LEFT W\n\tLEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\t\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\t\tBRANCH W W W BRANCH W\n\t\t\t\tT LEFT W W W W W T\n\t\t\t\tLEFT W LEFT W\n\t\t\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\t\t\tBRANCH W W W BRANCH W\n\t\t\t\t\tT LEFT W W W W W\n\t\t\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\t\t\tBRANCH\n\t\t\t\t\tW RIGHT W W W W\n\t\tW RIGHT W LEFT LEFT T W\n\t\tBRANCH\n\t\t\tLEFT RIGHT BRANCH W\n\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T BRANCH\n\t\t\t\t\tLEFT LEFT W BRANCH\n\t\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\n"
+  },
+  "(4, 8)": {
+    "fitness": 408,
+    "behavior": {
+      "blocks": 113,
+      "area": 602
+    },
+    "individual": "LEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\tBRANCH W W W BRANCH W\n\t\t\tT LEFT RIGHT W W W W\n\t\t\tLEFT W LEFT W\n\t\tBRANCH\n\t\t\tT LEFT W W W W W T\n\tW RIGHT W LEFT LEFT W BRANCH\n\t\tLEFT RIGHT W BRANCH\n\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T BRANCH\n\t\t\t\tLEFT LEFT W BRANCH\n\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\n"
+  },
+  "(6, 6)": {
+    "fitness": 416,
+    "behavior": {
+      "blocks": 178,
+      "area": 442
+    },
+    "individual": "LEFT BRANCH W BRANCH LEFT LEFT BRANCH\n\tLEFT BRANCH RIGHT T LEFT W BRANCH W\n\t\tBRANCH W W W BRANCH W\n\t\t\tT LEFT RIGHT W W W W\n\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\tT LEFT W W W W W T\n\t\tBRANCH\n\t\t\tT LEFT W W W W W T BRANCH\n\t\t\t\tBRANCH W W W BRANCH W\n\t\t\t\t\tT LEFT W W W W W\n\t\t\t\t\tLEFT W LEFT W BRANCH\n\t\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\tW RIGHT W LEFT LEFT T W BRANCH\n\t\tLEFT RIGHT W BRANCH W\n\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T BRANCH\n\t\t\t\tLEFT LEFT W BRANCH\n\t\t\t\t\tRIGHT LEFT RIGHT RIGHT T W T T RIGHT W W W T T\n\t\n"
+  }
+}
