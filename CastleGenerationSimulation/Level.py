@@ -85,7 +85,6 @@ class Level:
         self.towerRatio = self.getTowerRatio()
         self.protectedArea = self.getProtectedArea()
         self.castleCost = castleGenerator.countBlockCost()
-
         self.maxBlocks = castleGenerator.getGridSize()
         self.maxArea = castleGenerator.getMaxArea()
         self.orientationRatios()

@@ -40,8 +40,8 @@ class MapElites:
         iterations: int,
         useFitnessWithCost: bool,
     ):
-        self.behaviorX = "West-East"
-        self.behaviorY = "South-North"
+        self.behaviorX = "Cost" #"West-East"
+        self.behaviorY = "Area" #"South-North"
         self.iterations = iterations
 
         self.archive: dict[tuple[int, int], ArchiveEntry] = {}
@@ -84,8 +84,9 @@ class MapElites:
         )
 
         self.resolution = resolution
-        self.dynamicKeys = [DynamicCeiling(maximum=150), DynamicCeiling(maximum=1000)]
-
+        self.dynamicKeys = [DynamicCeiling(maximum=120), DynamicCeiling(maximum=1000)]
+        self.dynamicKeys[0].floor = 20
+        self.dynamicKeys[0].ceiling = 30
         self.getFitness = (
             self.getFitnessWithCost
             if useFitnessWithCost
@@ -120,8 +121,8 @@ class MapElites:
             crossover(individual, other)
 
     def getBehavior(self, state: State) -> Behaviors:
-        behaviorX = Behavior(state.eastWestRatio, self.behaviorX)
-        behaviorY = Behavior(state.northSouthRatio, self.behaviorY)
+        behaviorX = Behavior(state.cost, self.behaviorX)
+        behaviorY = Behavior(state.area, self.behaviorY)
         return Behaviors(behaviorX, behaviorY)
 
     def getKey(self, behaviors: Behaviors):
@@ -268,11 +269,14 @@ class MapElites:
         castleCost = state.cost
         castleBudget = 100
         overBudget = 0
-        steps = state.stepCount // 5
+        steps = state.stepCount
+        kills = state.kills * 20
+        area = state.area // 2
+        
         if castleCost > castleBudget:
-            overBudget = castleCost
+            overBudget = castleCost - castleBudget
 
-        return steps - overBudget + state.area
+        return steps + area + kills - overBudget
 
     def getFitnessWithoutCost(self, state: State):
-        return state.stepCount // 5
+        return state.stepCount

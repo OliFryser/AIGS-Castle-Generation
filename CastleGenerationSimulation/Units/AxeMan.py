@@ -15,7 +15,7 @@ class AxeMan(Unit):
         super().__init__(*args, health, speed, size, **kwargs)
         self.blockAttackDamage = 20
         self.blockAttackRange = 1
-        self.attackDamage = 15
+        self.attackDamage = 10
         self.attackRange = 1.5
         self.count = 0
         self.nodeTarget = None

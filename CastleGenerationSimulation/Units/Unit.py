@@ -369,6 +369,7 @@ class Unit:
                     self.inMelee = tnode.unit
                     return
             # clash with walls
+                """
             for tnode in frontNodes:
                 if tnode.materialBlock is not None and tnode.materialBlock.blocking:
                     if newPosition.distance_to(tnode.position) < self.size * 4:
@@ -377,7 +378,6 @@ class Unit:
                         ).normalize()
                         self.move(newDirection, n + 1)
                         return
-                """
                 if tnode.unit is not None and tnode.unit is not self:
                     other = tnode.unit
                     print(other, self)

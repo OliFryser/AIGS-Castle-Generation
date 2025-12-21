@@ -18,7 +18,7 @@ class CastleGenerator:
         targetPositionx,
         targetPositiony,
     ):
-        self.padding = 2
+        self.padding = 3
         castleInstructionTree.reset()
         self.instructionTree: InstructionTree = castleInstructionTree
 
