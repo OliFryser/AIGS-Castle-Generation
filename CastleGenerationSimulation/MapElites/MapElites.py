@@ -270,7 +270,7 @@ class MapElites:
         castleBudget = 100
         overBudget = 0
         steps = state.stepCount
-        kills = state.kills * 20
+        kills = state.kills * 5
         area = state.area // 2
         
         if castleCost > castleBudget:

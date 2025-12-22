@@ -123,7 +123,7 @@ class Simulation:
             self.stepCount += 1
             n = 0
             if self.attacker.units == []:
-                self.stepCount = 2000
+                #self.stepCount = 2000
                 print("wipeout")
                 break
             if self.stepCount > 40000:

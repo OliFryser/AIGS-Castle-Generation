@@ -110,10 +110,12 @@ class ConventionalEvolution(MapElites):
                 key=lambda r: r.fitness,
                 reverse=True,
             )
-            selection = [
+            selection =  selection[:5] + [
                 record.individual for record in records[:selectionSize]
-            ] + selection[:5]
-
+            ] 
+            print(records[0].fitness)
+            if records[0].fitness > 1000:
+                break
             self.plotter.addRecord(PlotRecord(records[0].fitness, 0, 0))
 
         population = population + selection
