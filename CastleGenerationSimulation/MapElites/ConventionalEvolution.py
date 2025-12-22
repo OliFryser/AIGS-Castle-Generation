@@ -89,10 +89,11 @@ class ConventionalEvolution(MapElites):
 
             population = []
             for j in range(populationSize):
-                choices = random.choices(selection, k=2)
+                choices = random.sample(selection, k=2)
                 first, other = choices[0], choices[1]
 
                 other: InstructionTree = copy.deepcopy(other)
+                first: InstructionTree = copy.deepcopy(first)
 
                 self.randomVariationCE(first, other)
                 population.append(first)

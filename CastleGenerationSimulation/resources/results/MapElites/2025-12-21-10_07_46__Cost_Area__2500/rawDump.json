@@ -1,0 +1,357 @@
+{
+  "(2, 0)": {
+    "fitness": 264,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W LEFT W W BRANCH LEFT\n\t\tW W BRANCH\n\t\t\tLEFT W RIGHT W W LEFT\n\tLEFT W RIGHT W W BRANCH\n\t\tW RIGHT W W BRANCH\n\t\t\tRIGHT W T\n"
+  },
+  "(1, 0)": {
+    "fitness": 192,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W BRANCH T W RIGHT\n\tW W LEFT W W BRANCH LEFT\n\t\tW W W\n\tLEFT W RIGHT W W BRANCH\n\t\tW RIGHT W T\n"
+  },
+  "(0, 0)": {
+    "fitness": 180,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW LEFT W W BRANCH LEFT W\n\t\tW W\n\tLEFT W RIGHT W W BRANCH\n\t\tW RIGHT T\n"
+  },
+  "(3, 0)": {
+    "fitness": 291,
+    "behavior": {},
+    "individual": "RIGHT W W W LEFT LEFT LEFT W W W RIGHT W W RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W T W W W RIGHT RIGHT LEFT W LEFT T BRANCH\n\tLEFT W RIGHT W W\n"
+  },
+  "(5, 0)": {
+    "fitness": 319,
+    "behavior": {},
+    "individual": "RIGHT W W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W T T W W W RIGHT RIGHT LEFT W T BRANCH\n\tW\n"
+  },
+  "(4, 0)": {
+    "fitness": 315,
+    "behavior": {},
+    "individual": "RIGHT W W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W T W W W RIGHT RIGHT LEFT W LEFT T BRANCH\n\tW W RIGHT W W\n"
+  },
+  "(-1, 0)": {
+    "fitness": 157,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W LEFT W W BRANCH LEFT\n\t\tW W\n\tLEFT W RIGHT W W\n"
+  },
+  "(5, 3)": {
+    "fitness": 593,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W LEFT W W BRANCH LEFT\n\t\tT W BRANCH\n\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\t\tW W W W LEFT\n\t\t\t\tRIGHT W W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W W RIGHT W W T T RIGHT W W RIGHT RIGHT LEFT W LEFT T BRANCH LEFT E BRANCH\n\t\t\t\t\tW W W BRANCH\n\t\t\t\t\t\tRIGHT RIGHT W T W W\n\t\t\t\t\t\n\tLEFT W RIGHT W BRANCH\n\t\tW RIGHT T\n"
+  },
+  "(3, 2)": {
+    "fitness": 403,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W LEFT W W BRANCH LEFT\n\t\tW W BRANCH\n\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\t\tW W LEFT W BRANCH LEFT\n\t\t\t\t\tLEFT W RIGHT W W\n\t\t\t\tW RIGHT W W BRANCH\n\t\t\t\t\tRIGHT W T\n\tLEFT W RIGHT W W BRANCH\n\t\tW RIGHT W T\n"
+  },
+  "(6, 0)": {
+    "fitness": 319,
+    "behavior": {},
+    "individual": "RIGHT W W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W T T W W W RIGHT RIGHT LEFT W T BRANCH\n\tT BRANCH\n\t\tRIGHT\n"
+  },
+  "(4, 1)": {
+    "fitness": 571,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW LEFT W W BRANCH LEFT\n\t\tW W BRANCH\n\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\t\tW W W W LEFT\n\t\t\t\tRIGHT W W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W W T T RIGHT W W RIGHT RIGHT LEFT W LEFT T BRANCH LEFT E BRANCH\n\t\t\t\t\tW RIGHT W W BRANCH\n\t\t\t\t\t\tRIGHT RIGHT W T\n\t\t\t\t\t\n\tLEFT W RIGHT W BRANCH\n\t\tW RIGHT BRANCH\n\t\t\tLEFT W RIGHT W W T\n"
+  },
+  "(9, 0)": {
+    "fitness": 432,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W T W W BRANCH LEFT\n\t\tLEFT W BRANCH W W W\n\t\t\tBRANCH\n\t\t\t\tW RIGHT W W BRANCH\n\t\t\t\t\tW RIGHT W T\n\tLEFT W RIGHT W W BRANCH\n\t\tLEFT W RIGHT W W BRANCH\n\t\t\tRIGHT W W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W W T T RIGHT W W RIGHT RIGHT LEFT W LEFT T BRANCH W\n\t\t\t\t\n"
+  },
+  "(2, 2)": {
+    "fitness": 393,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W LEFT W W BRANCH LEFT\n\t\tW BRANCH\n\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\t\tW W BRANCH\n\t\t\t\t\t\tLEFT W RIGHT W W\n\t\t\t\tW W BRANCH\n\t\t\t\t\tRIGHT BRANCH\n\t\t\t\t\t\tLEFT W RIGHT W W BRANCH\n\t\t\t\t\t\t\tW RIGHT W T\n\tLEFT W RIGHT W W BRANCH\n\t\tW RIGHT W T\n"
+  },
+  "(8, 0)": {
+    "fitness": 432,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W T W W BRANCH LEFT\n\t\tLEFT W BRANCH W W W\n\t\t\tBRANCH\n\t\t\t\tW RIGHT W W BRANCH\n\t\t\t\t\tRIGHT W T\n\tLEFT W RIGHT W W BRANCH\n\t\tLEFT W RIGHT W W BRANCH\n\t\t\tRIGHT W W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W W T T RIGHT W W RIGHT RIGHT LEFT W LEFT T BRANCH W\n\t\t\t\t\n"
+  },
+  "(2, 1)": {
+    "fitness": 366,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW LEFT W W BRANCH LEFT\n\t\tW W BRANCH\n\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\t\tW W W W LEFT\n\t\t\t\tRIGHT W W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W W T T RIGHT W W RIGHT RIGHT LEFT W LEFT T BRANCH LEFT E BRANCH\n\t\t\t\t\tW RIGHT W W BRANCH\n\t\t\t\t\t\tRIGHT RIGHT W T\n\t\t\t\t\t\n\tLEFT W RIGHT W BRANCH\n\t\tW RIGHT W T\n"
+  },
+  "(6, 3)": {
+    "fitness": 729,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W LEFT W W BRANCH LEFT\n\t\tW W BRANCH\n\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\t\tW W W W LEFT\n\t\t\t\tRIGHT W W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W W RIGHT W W T T RIGHT W W RIGHT RIGHT LEFT W LEFT T BRANCH LEFT E BRANCH\n\t\t\t\t\tW RIGHT W W BRANCH\n\t\t\t\t\t\tRIGHT RIGHT W T W W\n\t\t\t\t\t\n\tLEFT W RIGHT W BRANCH\n\t\tW RIGHT W T\n"
+  },
+  "(5, 1)": {
+    "fitness": 601,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW LEFT W W BRANCH LEFT\n\t\tW W BRANCH\n\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\t\tW W W W LEFT\n\t\t\t\tRIGHT W W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W W T T RIGHT W W RIGHT RIGHT LEFT W LEFT T BRANCH LEFT E BRANCH\n\t\t\t\t\tW RIGHT W W BRANCH\n\t\t\t\t\t\tRIGHT W W T\n\t\t\t\t\t\n\tLEFT W RIGHT W BRANCH\n\t\tW RIGHT BRANCH\n\t\t\tLEFT W RIGHT W W T\n"
+  },
+  "(7, 0)": {
+    "fitness": 322,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W T W W BRANCH LEFT\n\t\tLEFT W BRANCH W W W\n\t\t\t\n\tLEFT W RIGHT W W BRANCH\n\t\tLEFT W RIGHT W W BRANCH\n\t\t\tRIGHT W W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W W T T RIGHT W W RIGHT RIGHT LEFT W LEFT T BRANCH W\n\t\t\t\t\n"
+  },
+  "(7, 2)": {
+    "fitness": 718,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT LEFT\n\tW W LEFT W W BRANCH LEFT\n\t\tW W LEFT W W BRANCH LEFT\n\t\t\tW W BRANCH\n\t\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\t\t\tW W W W BRANCH LEFT\n\t\t\t\t\t\tLEFT W RIGHT W W\n\t\t\t\t\tW RIGHT W W BRANCH\n\t\t\t\t\t\tRIGHT W W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W W W RIGHT W W W RIGHT W W T RIGHT W W RIGHT RIGHT LEFT W LEFT T BRANCH W\n\t\t\t\t\t\t\t\n\tLEFT W RIGHT W W BRANCH\n\t\tW RIGHT W T\n"
+  },
+  "(7, 3)": {
+    "fitness": 827,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W LEFT W W BRANCH LEFT\n\t\tT W BRANCH\n\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\t\tW W W LEFT\n\t\t\t\tRIGHT W W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W W RIGHT W W T T RIGHT W W RIGHT RIGHT LEFT W LEFT T BRANCH LEFT E BRANCH\n\t\t\t\t\tW RIGHT W W BRANCH\n\t\t\t\t\t\tRIGHT RIGHT W T W W\n\t\t\t\t\t\n\tLEFT W RIGHT W BRANCH\n\t\tW RIGHT W T\n"
+  },
+  "(3, 1)": {
+    "fitness": 506,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW LEFT W W BRANCH LEFT\n\t\tW W BRANCH\n\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\t\tW W W W LEFT\n\t\t\t\tRIGHT W W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W W T T RIGHT W W RIGHT RIGHT LEFT W LEFT T BRANCH LEFT E BRANCH\n\t\t\t\t\tW RIGHT W W BRANCH\n\t\t\t\t\t\tRIGHT RIGHT W T\n\t\t\t\t\t\n\tLEFT W RIGHT W BRANCH\n\t\tW RIGHT BRANCH\n\t\t\tLEFT W RIGHT W W\n"
+  },
+  "(8, 3)": {
+    "fitness": 918,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W LEFT W W BRANCH LEFT\n\t\tW W BRANCH RIGHT\n\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W BRANCH T W RIGHT\n\t\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\t\tW W BRANCH\n\t\t\t\t\t\tLEFT W RIGHT W W\n\t\t\t\tRIGHT W W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W W T T RIGHT W W RIGHT RIGHT LEFT W LEFT T BRANCH LEFT E\n\t\t\t\t\tW RIGHT W W BRANCH\n\t\t\t\t\t\tLEFT W RIGHT W W BRANCH\n\t\t\t\t\t\t\tW RIGHT W T E\n\tLEFT W RIGHT W W BRANCH\n\t\tRIGHT\n"
+  },
+  "(6, 2)": {
+    "fitness": 718,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W LEFT W W BRANCH LEFT\n\t\tW W LEFT W W BRANCH LEFT\n\t\t\tW W BRANCH\n\t\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\t\t\tLEFT W RIGHT W W\n\t\t\t\t\tW RIGHT W W BRANCH\n\t\t\t\t\t\tRIGHT W W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W W W RIGHT W W W RIGHT W W T RIGHT W W RIGHT RIGHT LEFT W LEFT T BRANCH W\n\t\t\t\t\t\t\t\n\tLEFT W RIGHT W W BRANCH\n\t\tW RIGHT W T\n"
+  },
+  "(4, 2)": {
+    "fitness": 525,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W LEFT W W BRANCH LEFT\n\t\tW W BRANCH\n\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\t\tLEFT W RIGHT W W\n\t\t\t\tW RIGHT W W BRANCH\n\t\t\t\t\tRIGHT W T\n\tLEFT W RIGHT W W BRANCH\n\t\tW RIGHT W T\n"
+  },
+  "(9, 2)": {
+    "fitness": 782,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W LEFT W W BRANCH LEFT\n\t\tW W BRANCH\n\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T RIGHT\n\t\t\t\tW W LEFT W W BRANCH LEFT LEFT\n\t\t\t\t\tW W BRANCH\n\t\t\t\t\t\tW W BRANCH\n\t\t\t\t\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\t\t\t\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\t\t\t\t\t\tW W BRANCH\n\t\t\t\t\t\t\t\t\t\tLEFT W RIGHT W W\n\t\t\t\t\t\t\t\tW RIGHT T\n\t\t\t\tLEFT W RIGHT W W BRANCH\n\t\t\t\t\tRIGHT W W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W W T RIGHT W W RIGHT RIGHT LEFT W LEFT T BRANCH W\n\t\t\t\t\t\t\n\tLEFT W RIGHT W W BRANCH\n\t\tW RIGHT W T\n"
+  },
+  "(7, 1)": {
+    "fitness": 621,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW LEFT W W BRANCH LEFT\n\t\tW W BRANCH\n\t\t\tRIGHT RIGHT BRANCH LEFT W W BRANCH T RIGHT\n\t\t\t\tRIGHT W LEFT W W BRANCH LEFT\n\t\t\t\t\tW W BRANCH\n\t\t\t\t\t\tW W BRANCH\n\t\t\t\t\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\t\t\t\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\t\t\t\t\t\tW W BRANCH\n\t\t\t\t\t\t\t\t\t\tLEFT W RIGHT W W\n\t\t\t\t\t\t\t\tRIGHT\n\t\t\t\tLEFT W RIGHT W W BRANCH\n\t\t\t\t\tRIGHT W W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W W T RIGHT W W RIGHT RIGHT LEFT W LEFT T BRANCH W\n\t\t\t\t\t\t\n\tLEFT W RIGHT W W BRANCH\n\t\tW RIGHT W T\n"
+  },
+  "(6, 1)": {
+    "fitness": 558,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W LEFT W W BRANCH LEFT\n\t\tW W BRANCH\n\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT T\n\t\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\t\tLEFT W RIGHT W W\n\t\t\t\tW RIGHT W W BRANCH\n\t\t\t\t\tRIGHT W W W LEFT LEFT LEFT W W W RIGHT LEFT T RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W W T W W W RIGHT RIGHT LEFT W LEFT T BRANCH W\n\t\t\t\t\t\t\n\tLEFT W RIGHT W W BRANCH LEFT\n\t\tW RIGHT W T\n"
+  },
+  "(9, 3)": {
+    "fitness": 763,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W LEFT W W BRANCH LEFT\n\t\tW W BRANCH RIGHT\n\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W BRANCH T W RIGHT\n\t\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\t\tW W BRANCH\n\t\t\t\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\t\t\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\t\t\t\t\tW BRANCH\n\t\t\t\t\t\t\t\t\tLEFT W RIGHT W W\n\t\t\t\t\t\t\tW RIGHT T\n\t\t\t\tRIGHT W W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W W T T RIGHT W W RIGHT RIGHT LEFT W LEFT T BRANCH LEFT E\n\t\t\t\t\tW RIGHT W W BRANCH\n\t\t\t\t\t\tLEFT W RIGHT W W BRANCH\n\t\t\t\t\t\t\tW RIGHT W T E\n\tLEFT W RIGHT W W BRANCH\n\t\tRIGHT\n"
+  },
+  "(5, 5)": {
+    "fitness": 527,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W LEFT W W BRANCH LEFT\n\t\tW W BRANCH\n\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T RIGHT\n\t\t\t\tRIGHT W LEFT W W BRANCH LEFT\n\t\t\t\t\tW BRANCH\n\t\t\t\t\t\tW W BRANCH\n\t\t\t\t\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\t\t\t\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\t\t\t\t\t\tW W BRANCH\n\t\t\t\t\t\t\t\t\t\tLEFT W RIGHT W W\n\t\t\t\t\t\t\t\tW RIGHT T\n\t\t\t\tLEFT W RIGHT W W BRANCH\n\t\t\t\t\tLEFT W RIGHT W W\n\tLEFT W RIGHT W W BRANCH\n\t\tW RIGHT W T\n"
+  },
+  "(1, 3)": {
+    "fitness": 314,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W LEFT W W BRANCH LEFT\n\t\tW W BRANCH\n\t\t\tLEFT W RIGHT W W\n\tLEFT W RIGHT W W BRANCH\n\t\tW RIGHT W W BRANCH\n\t\t\tW RIGHT W T\n"
+  },
+  "(5, 6)": {
+    "fitness": 434,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W T W W BRANCH LEFT\n\t\tLEFT W BRANCH W W W\n\t\t\tW LEFT W\n\tLEFT W RIGHT W W BRANCH\n\t\tRIGHT W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W T T W W W RIGHT RIGHT LEFT W LEFT T BRANCH\n\t\t\tRIGHT\n"
+  },
+  "(8, 2)": {
+    "fitness": 833,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W LEFT W W BRANCH LEFT\n\t\tW W BRANCH\n\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W BRANCH T W RIGHT\n\t\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\t\tW W BRANCH\n\t\t\t\t\t\tLEFT W RIGHT W W\n\t\t\t\tRIGHT W W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W W T T RIGHT W W RIGHT RIGHT LEFT W LEFT T BRANCH LEFT E\n\t\t\t\t\tW W BRANCH\n\t\t\t\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\t\t\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\t\t\t\t\tW W BRANCH\n\t\t\t\t\t\t\t\t\tLEFT W RIGHT W W\n\t\t\t\t\t\t\tLEFT W RIGHT W W BRANCH\n\t\t\t\t\t\t\t\tRIGHT W W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W W T RIGHT W W RIGHT RIGHT LEFT W LEFT T BRANCH W\n\t\t\t\t\t\t\t\t\t\n\tLEFT W RIGHT W W BRANCH\n\t\tRIGHT\n"
+  },
+  "(8, 5)": {
+    "fitness": 674,
+    "behavior": {},
+    "individual": "RIGHT W W LEFT LEFT LEFT W W W RIGHT T RIGHT LEFT RIGHT W LEFT W W RIGHT W LEFT W RIGHT W W T T RIGHT W W RIGHT RIGHT LEFT W LEFT T BRANCH LEFT\n\tW RIGHT W W BRANCH\n\t\tW RIGHT W T BRANCH\n\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\tW W BRANCH\n\t\t\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\t\t\t\tW W RIGHT W W BRANCH LEFT\n\t\t\t\t\t\t\tW W BRANCH\n\t\t\t\t\t\t\t\tLEFT W RIGHT W W T\n\t\t\t\t\t\tLEFT W RIGHT W W BRANCH\n\t\t\t\t\t\t\tRIGHT W W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W W T RIGHT W W RIGHT RIGHT LEFT W LEFT T BRANCH W\n\t\t\t\t\t\t\t\t\n"
+  },
+  "(8, 6)": {
+    "fitness": 450,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W T W W BRANCH LEFT\n\t\tLEFT W BRANCH W W W\n\t\t\t\n\tLEFT W RIGHT W W BRANCH\n\t\tRIGHT W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W T T W W W RIGHT RIGHT LEFT W LEFT T BRANCH\n\t\t\tBRANCH\n\t\t\t\tW W BRANCH\n\t\t\t\t\tLEFT W RIGHT W W BRANCH\n\t\t\t\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\t\t\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\t\t\t\t\tW W BRANCH\n\t\t\t\t\t\t\t\t\tLEFT W RIGHT W W\n\t\t\t\t\t\t\tW RIGHT T\n"
+  },
+  "(8, 4)": {
+    "fitness": 792,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W LEFT W W BRANCH LEFT\n\t\tW W BRANCH\n\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W BRANCH T W RIGHT\n\t\t\t\tLEFT W LEFT W W BRANCH LEFT\n\t\t\t\t\tW W BRANCH\n\t\t\t\t\t\tLEFT W RIGHT W W\n\t\t\t\tRIGHT W W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W W T T RIGHT W W RIGHT RIGHT LEFT W LEFT T BRANCH LEFT E\n\t\t\t\t\tW RIGHT W W BRANCH\n\t\t\t\t\t\tLEFT W RIGHT T W BRANCH\n\t\t\t\t\t\t\tW RIGHT W T E W\n\tLEFT W RIGHT W W BRANCH\n\t\tRIGHT\n"
+  },
+  "(7, 5)": {
+    "fitness": 516,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W LEFT W W BRANCH LEFT\n\t\tW W BRANCH\n\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T RIGHT\n\t\t\t\tRIGHT W LEFT W W BRANCH LEFT\n\t\t\t\t\tW BRANCH\n\t\t\t\t\t\tW W BRANCH\n\t\t\t\t\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\t\t\t\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\t\t\t\t\t\tW W BRANCH\n\t\t\t\t\t\t\t\t\t\tLEFT W RIGHT W W\n\t\t\t\t\t\t\t\tW RIGHT T\n\t\t\t\tLEFT W RIGHT W W BRANCH\n\t\t\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\t\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\t\t\t\tLEFT W RIGHT W W BRANCH\n\t\t\t\t\t\t\t\tRIGHT W W BRANCH\n\t\t\t\t\t\t\t\t\tW RIGHT W T\n\t\t\t\t\t\tLEFT W RIGHT W W\n\tLEFT W RIGHT W W BRANCH\n\t\tW RIGHT W T\n"
+  },
+  "(9, 4)": {
+    "fitness": 690,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W LEFT W W BRANCH LEFT\n\t\tW W BRANCH\n\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W BRANCH T W RIGHT\n\t\t\t\tLEFT W LEFT W W BRANCH LEFT\n\t\t\t\t\tW W BRANCH\n\t\t\t\t\t\tLEFT W RIGHT W W\n\t\t\t\tRIGHT W W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W W T T RIGHT W W RIGHT RIGHT LEFT W LEFT T BRANCH LEFT E\n\t\t\t\t\tRIGHT W W BRANCH\n\t\t\t\t\t\tLEFT W RIGHT T W BRANCH\n\t\t\t\t\t\t\tW RIGHT W T E W\n\tLEFT W RIGHT W W BRANCH\n\t\t\n"
+  },
+  "(5, 2)": {
+    "fitness": 637,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W LEFT W W BRANCH LEFT\n\t\tW W LEFT W W BRANCH LEFT E\n\t\t\tW W BRANCH\n\t\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\t\t\tLEFT W RIGHT W W\n\t\t\t\t\tW RIGHT W W BRANCH\n\t\t\t\t\t\tRIGHT W W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W W T RIGHT W W RIGHT RIGHT LEFT W LEFT T BRANCH W\n\t\t\t\t\t\t\t\n\tLEFT W RIGHT W W BRANCH\n\t\tW RIGHT W T\n"
+  },
+  "(8, 1)": {
+    "fitness": 555,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W LEFT W W BRANCH LEFT\n\t\tW W BRANCH T\n\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\t\tLEFT W RIGHT W W\n\t\t\t\tW RIGHT W W BRANCH\n\t\t\t\t\tRIGHT W W W LEFT LEFT LEFT W W W RIGHT LEFT T RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W W T RIGHT W W RIGHT RIGHT LEFT W LEFT T BRANCH W\n\t\t\t\t\t\t\n\tLEFT W RIGHT W W BRANCH LEFT\n\t\tW RIGHT W T\n"
+  },
+  "(6, 5)": {
+    "fitness": 566,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW LEFT W W BRANCH LEFT\n\t\tW W BRANCH\n\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T RIGHT\n\t\t\t\tRIGHT W LEFT W W BRANCH LEFT\n\t\t\t\t\tW W BRANCH\n\t\t\t\t\t\tW W BRANCH\n\t\t\t\t\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\t\t\t\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\t\t\t\t\t\tW W BRANCH\n\t\t\t\t\t\t\t\t\t\tLEFT W RIGHT W W\n\t\t\t\t\t\t\t\tW RIGHT\n\t\t\t\tLEFT W RIGHT W W BRANCH\n\t\t\t\t\tRIGHT W W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W W T RIGHT W W RIGHT RIGHT LEFT W LEFT T BRANCH W\n\t\t\t\t\t\t\n\tLEFT W RIGHT W W BRANCH\n\t\tW RIGHT W T\n"
+  },
+  "(6, 4)": {
+    "fitness": 797,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W LEFT W W BRANCH LEFT\n\t\tT W BRANCH\n\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\t\tW W W W LEFT\n\t\t\t\tRIGHT W W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W W RIGHT W W T T RIGHT W W RIGHT RIGHT LEFT W LEFT T BRANCH LEFT E BRANCH\n\t\t\t\t\tW RIGHT W W BRANCH\n\t\t\t\t\t\tRIGHT RIGHT W T W W\n\t\t\t\t\t\n\tLEFT W RIGHT W BRANCH\n\t\tW RIGHT T\n"
+  },
+  "(7, 6)": {
+    "fitness": 450,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W T W W BRANCH LEFT\n\t\tLEFT W BRANCH W W W\n\t\t\t\n\tLEFT W RIGHT W W BRANCH\n\t\tRIGHT W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W T T W W W RIGHT RIGHT LEFT W LEFT T BRANCH\n\t\t\tBRANCH\n\t\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\t\tW W BRANCH\n\t\t\t\t\t\tW RIGHT W W\n"
+  },
+  "(5, 7)": {
+    "fitness": 356,
+    "behavior": {},
+    "individual": "RIGHT W W W LEFT LEFT LEFT W W W RIGHT LEFT W RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W T W W W RIGHT RIGHT LEFT W LEFT T BRANCH\n\tLEFT W RIGHT W W BRANCH\n\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\tW W BRANCH\n\t\t\t\t\tLEFT W RIGHT W W T\n\t\t\tW RIGHT W T\n"
+  },
+  "(7, 4)": {
+    "fitness": 681,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W LEFT W W BRANCH LEFT\n\t\tW W BRANCH\n\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W BRANCH T W RIGHT\n\t\t\t\tLEFT W LEFT W W BRANCH LEFT\n\t\t\t\t\tW W BRANCH\n\t\t\t\t\t\tLEFT W RIGHT W W\n\t\t\t\tRIGHT W W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W W T T RIGHT W W RIGHT RIGHT LEFT W LEFT T BRANCH LEFT E\n\t\t\t\t\tW RIGHT W W BRANCH\n\t\t\t\t\t\tLEFT W RIGHT W W BRANCH\n\t\t\t\t\t\t\tW RIGHT W T E W\n\tLEFT W RIGHT W W BRANCH\n\t\tRIGHT\n"
+  },
+  "(3, 3)": {
+    "fitness": 446,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W LEFT W W BRANCH LEFT\n\t\tW W BRANCH\n\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W T RIGHT\n\t\t\t\tRIGHT W LEFT W BRANCH LEFT\n\t\t\t\t\tW BRANCH\n\t\t\t\t\t\tW W BRANCH\n\t\t\t\t\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\t\t\t\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\t\t\t\t\t\tW BRANCH\n\t\t\t\t\t\t\t\t\t\tLEFT W RIGHT W W\n\t\t\t\t\t\t\t\tW RIGHT T\n\tLEFT W RIGHT W W BRANCH\n\t\tW RIGHT W BRANCH\n\t\t\tRIGHT BRANCH\n\t\t\t\tLEFT W RIGHT W W BRANCH\n\t\t\t\t\tW RIGHT W T\n"
+  },
+  "(2, 3)": {
+    "fitness": 444,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W LEFT W W BRANCH LEFT\n\t\tW W BRANCH\n\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W T RIGHT\n\t\t\t\tRIGHT W LEFT W BRANCH LEFT\n\t\t\t\t\tW BRANCH\n\t\t\t\t\t\tW BRANCH\n\t\t\t\t\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\t\t\t\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\t\t\t\t\t\tW BRANCH\n\t\t\t\t\t\t\t\t\t\tLEFT W RIGHT W W\n\t\t\t\t\t\t\t\tW RIGHT T\n\tLEFT W RIGHT W W BRANCH\n\t\tW RIGHT W BRANCH\n\t\t\tRIGHT BRANCH\n\t\t\t\tLEFT W RIGHT W W BRANCH\n\t\t\t\t\tW RIGHT W T\n"
+  },
+  "(0, 1)": {
+    "fitness": 297,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW LEFT W W BRANCH LEFT W\n\t\tW W\n\tLEFT W RIGHT W W BRANCH\n\t\tW RIGHT W T\n"
+  },
+  "(6, 7)": {
+    "fitness": 355,
+    "behavior": {},
+    "individual": "RIGHT W W W LEFT LEFT LEFT W W W RIGHT LEFT W RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W T W W W RIGHT RIGHT LEFT W LEFT T BRANCH\n\tLEFT W RIGHT W W BRANCH\n\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\tW W BRANCH\n\t\t\t\t\tLEFT W RIGHT W W T\n\t\t\tLEFT W W W BRANCH\n\t\t\t\tRIGHT W W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W W T RIGHT W W RIGHT RIGHT LEFT W LEFT T BRANCH W\n\t\t\t\t\t\n"
+  },
+  "(9, 9)": {
+    "fitness": 321,
+    "behavior": {},
+    "individual": "RIGHT W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W LEFT W RIGHT W W T T RIGHT W W RIGHT RIGHT LEFT W LEFT T BRANCH LEFT\n\tW RIGHT W W BRANCH\n\t\tW RIGHT W T BRANCH\n\t\t\tLEFT W RIGHT W W BRANCH E\n\t\t\t\tRIGHT W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W T T W W W RIGHT RIGHT LEFT W LEFT T BRANCH\n\t\t\t\t\tRIGHT\n"
+  },
+  "(1, 2)": {
+    "fitness": 313,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W LEFT W W BRANCH LEFT\n\t\tW W BRANCH\n\t\t\tLEFT W RIGHT W W\n\tLEFT W RIGHT W BRANCH\n\t\tW RIGHT W W BRANCH\n\t\t\tW RIGHT W T\n"
+  },
+  "(5, 4)": {
+    "fitness": 726,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W LEFT W W BRANCH LEFT\n\t\tW W BRANCH\n\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\t\tW W W W LEFT\n\t\t\t\tRIGHT W W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W W RIGHT W W T T RIGHT W W RIGHT RIGHT LEFT W LEFT T BRANCH LEFT E BRANCH\n\t\t\t\t\tW RIGHT W W BRANCH\n\t\t\t\t\t\tRIGHT RIGHT W T W W\n\t\t\t\t\t\n\tLEFT W RIGHT W BRANCH\n\t\tW RIGHT W W BRANCH\n\t\t\tRIGHT RIGHT W T W W\n"
+  },
+  "(4, 5)": {
+    "fitness": 616,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W LEFT W W BRANCH LEFT\n\t\tW W BRANCH\n\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T RIGHT\n\t\t\t\tRIGHT W LEFT W W BRANCH LEFT\n\t\t\t\t\tW BRANCH\n\t\t\t\t\t\tW W BRANCH\n\t\t\t\t\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\t\t\t\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\t\t\t\t\t\tW W BRANCH\n\t\t\t\t\t\t\t\t\t\tLEFT W RIGHT W W\n\t\t\t\t\t\t\t\tW RIGHT T BRANCH\n\t\t\t\t\t\t\t\t\tLEFT W W W\n\t\t\t\tLEFT RIGHT W W BRANCH\n\t\t\t\t\tRIGHT\n\tLEFT W RIGHT W W BRANCH\n\t\tW RIGHT W W T\n"
+  },
+  "(1, 1)": {
+    "fitness": 415,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW LEFT W W BRANCH LEFT W W\n\t\tW W\n\tLEFT W RIGHT W W BRANCH\n\t\tW RIGHT W T\n"
+  },
+  "(6, 6)": {
+    "fitness": 468,
+    "behavior": {},
+    "individual": "RIGHT W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W LEFT W RIGHT W W T T RIGHT W W RIGHT RIGHT LEFT W LEFT T BRANCH LEFT\n\tW RIGHT W W BRANCH\n\t\tW RIGHT W T BRANCH\n\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\tRIGHT BRANCH\n\t\t\t\t\tLEFT W RIGHT W W BRANCH\n\t\t\t\t\t\tW RIGHT W T\n"
+  },
+  "(8, 8)": {
+    "fitness": 295,
+    "behavior": {},
+    "individual": "RIGHT W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W LEFT W RIGHT W W T T RIGHT W W RIGHT RIGHT LEFT W LEFT T BRANCH LEFT\n\tLEFT W RIGHT W W BRANCH\n\t\tRIGHT W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W T T W W W RIGHT RIGHT LEFT W LEFT T BRANCH\n\t\t\t\n"
+  },
+  "(9, 6)": {
+    "fitness": 449,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W T W W BRANCH LEFT\n\t\tLEFT W BRANCH W W W\n\t\t\t\n\tLEFT W RIGHT W W BRANCH\n\t\tRIGHT W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W T T W W W RIGHT RIGHT LEFT W LEFT T BRANCH\n\t\t\tBRANCH\n\t\t\t\tW W BRANCH\n\t\t\t\t\tLEFT W RIGHT W W BRANCH\n\t\t\t\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\t\t\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\t\t\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\t\t\t\t\t\t\tW LEFT W W BRANCH LEFT\n\t\t\t\t\t\t\t\t\t\tW W BRANCH\n\t\t\t\t\t\t\t\t\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\t\t\t\t\t\t\t\t\tT W BRANCH\n\t\t\t\t\t\t\t\t\t\t\t\t\tLEFT W W W\n\t\t\t\t\t\t\t\t\tLEFT W RIGHT W W BRANCH\n\t\t\t\t\t\t\t\t\t\tW W W W BRANCH\n\t\t\t\t\t\t\t\t\t\t\tRIGHT W T\n\t\t\t\t\t\t\tW RIGHT T\n"
+  },
+  "(4, 3)": {
+    "fitness": 524,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W LEFT W W BRANCH LEFT\n\t\tW BRANCH BRANCH T\n\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W T RIGHT\n\t\t\t\tRIGHT W LEFT W BRANCH LEFT\n\t\t\t\t\tW BRANCH\n\t\t\t\t\t\tW W BRANCH\n\t\t\t\t\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\t\t\t\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\t\t\t\t\t\tW BRANCH\n\t\t\t\t\t\t\t\t\t\tLEFT W RIGHT W W\n\t\t\t\t\t\t\t\tW RIGHT T\n\t\t\t\n\tLEFT W RIGHT W W BRANCH\n\t\tW RIGHT W\n"
+  },
+  "(9, 5)": {
+    "fitness": 461,
+    "behavior": {},
+    "individual": "RIGHT W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W LEFT W RIGHT W W T T RIGHT W W RIGHT RIGHT LEFT W LEFT T BRANCH LEFT\n\tW RIGHT W W BRANCH\n\t\tW RIGHT W T BRANCH\n\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\tW W BRANCH\n\t\t\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\t\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\t\t\t\tW W BRANCH\n\t\t\t\t\t\t\t\tLEFT W RIGHT W W T\n\t\t\t\t\t\tLEFT W RIGHT W W BRANCH\n\t\t\t\t\t\t\tRIGHT W W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W W T RIGHT W W RIGHT RIGHT LEFT W LEFT T BRANCH W\n\t\t\t\t\t\t\t\t\n"
+  },
+  "(0, 2)": {
+    "fitness": 304,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW LEFT W W BRANCH LEFT\n\t\tW W W\n\tLEFT W RIGHT W W BRANCH\n\t\tW RIGHT W T\n"
+  },
+  "(0, 3)": {
+    "fitness": 284,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W LEFT W W RIGHT LEFT\n\tLEFT W RIGHT W W BRANCH\n\t\tW RIGHT W W BRANCH\n\t\t\tW RIGHT W T\n"
+  },
+  "(4, 4)": {
+    "fitness": 597,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W LEFT W W BRANCH LEFT\n\t\tW W BRANCH\n\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W T RIGHT\n\t\t\t\tRIGHT W LEFT W BRANCH LEFT\n\t\t\t\t\tW BRANCH\n\t\t\t\t\t\tW W BRANCH\n\t\t\t\t\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\t\t\t\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\t\t\t\t\t\tBRANCH\n\t\t\t\t\t\t\t\t\t\tLEFT W RIGHT W W\n\t\t\t\t\t\t\t\tW RIGHT T\n\tLEFT W RIGHT W W BRANCH\n\t\tW RIGHT W BRANCH\n\t\t\tRIGHT BRANCH\n\t\t\t\tLEFT W RIGHT W W BRANCH\n\t\t\t\t\tW RIGHT W T\n"
+  },
+  "(3, 4)": {
+    "fitness": 481,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W LEFT W W BRANCH LEFT\n\t\tW W BRANCH\n\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W T RIGHT\n\t\t\t\tRIGHT W LEFT W BRANCH LEFT\n\t\t\t\t\tW BRANCH\n\t\t\t\t\t\tW W BRANCH\n\t\t\t\t\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W BRANCH T W RIGHT\n\t\t\t\t\t\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\t\t\t\t\t\tW BRANCH\n\t\t\t\t\t\t\t\t\t\tLEFT W RIGHT W W\n\t\t\t\t\t\t\t\tW RIGHT T\n\tLEFT W RIGHT W W BRANCH\n\t\tW RIGHT W\n"
+  },
+  "(3, 5)": {
+    "fitness": 480,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W LEFT W W BRANCH LEFT\n\t\tW W BRANCH\n\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T RIGHT\n\t\t\t\tRIGHT W LEFT W W BRANCH LEFT\n\t\t\t\t\tW BRANCH\n\t\t\t\t\t\tW W BRANCH\n\t\t\t\t\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\t\t\t\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\t\t\t\t\t\tW W BRANCH\n\t\t\t\t\t\t\t\t\t\tLEFT W RIGHT W W\n\t\t\t\t\t\t\t\tW RIGHT T\n\t\t\t\tLEFT RIGHT W W BRANCH\n\t\t\t\t\tRIGHT\n\tLEFT W RIGHT W W BRANCH\n\t\tW RIGHT W W T\n"
+  },
+  "(4, 7)": {
+    "fitness": 335,
+    "behavior": {},
+    "individual": "RIGHT W W W LEFT LEFT LEFT W W W RIGHT LEFT W RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W T W W W RIGHT RIGHT LEFT W LEFT T BRANCH\n\tLEFT W RIGHT W W BRANCH\n\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\tW W BRANCH\n\t\t\t\t\tLEFT W RIGHT W W\n\t\t\tW RIGHT W T\n"
+  },
+  "(1, 5)": {
+    "fitness": 341,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W LEFT W W BRANCH LEFT\n\t\tW W BRANCH\n\t\t\tLEFT W RIGHT W W LEFT\n\tLEFT W RIGHT W W BRANCH\n\t\tW W W W BRANCH\n\t\t\tRIGHT W T\n"
+  },
+  "(3, 7)": {
+    "fitness": 337,
+    "behavior": {},
+    "individual": "RIGHT W W W LEFT LEFT LEFT W W W RIGHT LEFT W RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W T W W W RIGHT RIGHT LEFT W LEFT T BRANCH\n\tLEFT W RIGHT W W\n"
+  },
+  "(1, 6)": {
+    "fitness": 345,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W LEFT W W BRANCH LEFT\n\t\tW W BRANCH\n\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\tT W BRANCH\n\t\t\t\t\tLEFT W W W\n\tLEFT W RIGHT W W BRANCH\n\t\tW W W W BRANCH\n\t\t\tRIGHT T\n"
+  },
+  "(8, 7)": {
+    "fitness": 351,
+    "behavior": {},
+    "individual": "RIGHT W W W LEFT LEFT LEFT W W W RIGHT LEFT W RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W T W W W RIGHT RIGHT LEFT W LEFT T BRANCH\n\tLEFT W RIGHT W W BRANCH\n\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\tW W BRANCH\n\t\t\t\t\tLEFT W RIGHT W W T\n\t\t\tLEFT W W W BRANCH\n\t\t\t\tRIGHT W W W LEFT LEFT LEFT W W W RIGHT W T LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W W T RIGHT W W RIGHT RIGHT LEFT W LEFT T BRANCH W\n\t\t\t\t\t\n"
+  },
+  "(2, 5)": {
+    "fitness": 345,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W LEFT W BRANCH LEFT\n\t\tW W BRANCH\n\t\t\tLEFT W RIGHT W W LEFT\n\tLEFT W RIGHT W W BRANCH\n\t\tW W W W BRANCH\n\t\t\tRIGHT W T\n"
+  },
+  "(4, 6)": {
+    "fitness": 309,
+    "behavior": {},
+    "individual": "RIGHT W W LEFT LEFT LEFT W W W RIGHT W T RIGHT LEFT RIGHT W LEFT W W RIGHT W LEFT W RIGHT W W T T RIGHT W W RIGHT RIGHT LEFT W LEFT T BRANCH LEFT\n\tW RIGHT W W BRANCH\n\t\tW RIGHT W T BRANCH\n\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\tRIGHT BRANCH E\n\t\t\t\t\tLEFT W RIGHT W BRANCH\n\t\t\t\t\t\tW RIGHT W T\n"
+  },
+  "(9, 1)": {
+    "fitness": 579,
+    "behavior": {},
+    "individual": "RIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\tW W LEFT W W BRANCH LEFT\n\t\tW W BRANCH T\n\t\t\tRIGHT RIGHT RIGHT BRANCH LEFT W W BRANCH T W RIGHT\n\t\t\t\tW W LEFT W W BRANCH LEFT\n\t\t\t\t\tLEFT W RIGHT W W BRANCH\n\t\t\t\t\t\tW RIGHT W W BRANCH\n\t\t\t\t\t\t\tW RIGHT W T\n\t\t\t\tW RIGHT W W BRANCH\n\t\t\t\t\tRIGHT W W W LEFT LEFT LEFT W W W RIGHT LEFT T RIGHT LEFT RIGHT W LEFT W W RIGHT W W W RIGHT W W T RIGHT W W RIGHT RIGHT LEFT W LEFT T BRANCH W\n\t\t\t\t\t\t\n\tLEFT W RIGHT W W BRANCH LEFT\n\t\tW RIGHT W T\n"
+  }
+}

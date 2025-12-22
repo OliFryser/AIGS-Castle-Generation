@@ -1,4 +1,4 @@
-mode: "mapElites" # interactive | mapElites | terrainBuilder | conventionalEA
+mode: "interactive" # interactive | mapElites | terrainBuilder | conventionalEA
 printTimer: False
 castleTilesFilepath: "resources/castleTiles/"
 
@@ -10,7 +10,7 @@ interactive:
 mapElites:
     levelFilepath: "resources/terrainMaps/bridgedRiver2.txt"
     archiveSavepath: "resources/archives/MapElites/"
-    iterations: 2500
+    iterations: 5000
     population: 100
     resolution: 4
     useFitnessWithCost: False
@@ -23,7 +23,7 @@ terrainBuilder:
 conventionalEA:
     levelFilepath: "resources/terrainMaps/bridgedRiver2.txt"
     archiveSavepath: "resources/archives/ConventionalEA/"
-    iterations: 1000
-    population: 50
+    iterations: 500
+    population: 20
     resolution: 4
     useFitnessWithCost: True
