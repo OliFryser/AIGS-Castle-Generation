@@ -7,6 +7,7 @@ from Utils.Node import Node, Edge, Graph
 from CastleElement import MaterialType
 import time
 import uuid
+import numpy as np
 
 
 class Unit:
@@ -312,7 +313,11 @@ class Unit:
 
     def rangeAttack(self):
         if self.targetEnemy is not None:
-            if self.targetEnemy.takeDamage(self.attackDamage):
+            #full damage at half range and below, trailing off to half damage at full range
+            distance = self.position.distance_to(self.targetEnemy.position)
+            proximity = np.clip(1.5 - distance/ self.attackRange, 0, 1)
+            damage = proximity * self.attackDamage
+            if self.targetEnemy.takeDamage(damage):
                 self.targetEnemy = None
             self.attackCoolDown = True
 
@@ -347,7 +352,7 @@ class Unit:
         if n > 8:
             return
         self.blocked = False
-        direction.normalize()
+        direction = direction.normalize()
         newPosition = self.position + direction * self.speed
         # "hit detection"
         node0 = self.nodeGraph.getNodeFromPosition(self.position)

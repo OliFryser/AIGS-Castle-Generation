@@ -6,10 +6,10 @@ from Utils.FSM import FSM,State
 class Archer(Unit):
     def __init__(self, *args, health: int = 100, speed: float = 0.2, size=0.3 ,**kwargs):
         super().__init__(*args, health, speed, size, **kwargs)
-        self.attackDamage = 15
-        self.attackRange = 14
+        self.attackDamage = 18
+        self.attackRange = 25
         self.attackCoolDown = False
-        self.attackCoolDownTime = 15
+        self.attackCoolDownTime = 20
         self.targetEnemy = None
         self.initFSMs()
         self.initFSM()

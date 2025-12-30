@@ -42,7 +42,7 @@ class Simulation:
             ),
         )
         self.defender = Team(
-            name="defeder",
+            name="defender",
             level=self.level,
             startPosition=Vector2(self.target.position.x, self.target.position.z),
             enemies=self.attacker.units,
@@ -60,6 +60,9 @@ class Simulation:
         self.defender.updateGoal(self.target.position)
         self.target.team = self.defender.units
         self.noAttackers = len(self.attacker.units)
+        self.kills = 0
+        self.stepCount = 0
+
 
     def step(self):
         # step accomodating the threading
@@ -72,6 +75,7 @@ class Simulation:
 
         for unit in self.getUnits():
             unit.step()
+
         # Node unit sanity check, should not be run, it is expensive
         """
         n = 0
@@ -81,6 +85,17 @@ class Simulation:
         if len(self.getUnits()) > n:       
             print(f"Sanity check failed {n, len(self.getUnits())}")
         """
+        while len(self.attacker.units) < self.noAttackers:
+                self.kills +=1
+                """
+                print(f"kill! {self.kills}")
+                #respawn attackers
+                self.attacker.addAxeman()
+                """
+                # or reduce number of attackers
+                self.noAttackers -=1
+        self.stepCount += 1
+        
 
     def getUnits(self):
         return self.attacker.units + self.defender.units
@@ -101,12 +116,11 @@ class Simulation:
         return state
 
     def runSimulation(self):
-        self.stepCount = 0
         n = 0
 
         #self.sanityCheck("start ")
-
         while not self.target.isOccupied():
+            
             # if all attackers are planning... the game can run "amok" while they are waiting for threads
             # this should make the simulation slightly more deterministic
             if self.attackersAreAllPlanning():
@@ -116,11 +130,9 @@ class Simulation:
                 if n > 10000:
                     print("no one could find a path")
                     self.stepCount = 0
-                    self.kills = -(len(self.attacker.units) - self.noAttackers)
                     return
                 continue
             self.step()
-            self.stepCount += 1
             n = 0
             if self.attacker.units == []:
                 #self.stepCount = 2000
@@ -129,9 +141,7 @@ class Simulation:
             if self.stepCount > 40000:
                 self.stepCount = 10000
                 print("step Break")
-                break
-        self.kills = -(len(self.attacker.units) - self.noAttackers)
-        
+                break        
        #self.sanityCheck("end ")
 
     def attackersAreAllPlanning(self):

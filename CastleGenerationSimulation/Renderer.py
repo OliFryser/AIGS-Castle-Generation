@@ -108,6 +108,7 @@ class Renderer:
             + 1,
             # 7,
         )
+        """
         if unit.path and len(unit.path) > 1:
             pygame.draw.lines(
                 self.screen,
@@ -115,6 +116,7 @@ class Renderer:
                 False,
                 [self.modelToViewSpace(pos.position) for pos in unit.path],
             )
+        """
 
     def renderTarget(self, target: Target):
         pygame.draw.circle(

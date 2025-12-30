@@ -17,12 +17,12 @@ class Team:
         self.level = level
         self.goal: Vector3 = Vector3(5, self.level.getBilinearHeight(5, 5), 5)
         self.enemies = enemies
+        self.positionNumber = 0
 
     def addAxeman(self):
         # position = self.getNextPosition()
         position = self.getNextCirclePosition()
-        self.units.append(
-            AxeMan(
+        axeMan = AxeMan(
                 self.level,
                 position,
                 goal=self.goal,
@@ -30,7 +30,8 @@ class Team:
                 teamMates=self.units,
                 enemies=self.enemies,
             )
-        )
+        self.units.append(axeMan)
+        axeMan.targetGoal()
 
     def addArcher(self):
         position = self.getNextPosition(self.line)
@@ -91,8 +92,9 @@ class Team:
             Vector2(scale, height / 2 + scale),
         ]
         position = eightWinds[
-            len(self.units) % 8
-        ]  # + Vector2(0,round(len(self.units)/8))
+            self.positionNumber
+        ]
+        self.positionNumber = (self.positionNumber + 1 ) % 8
         return self.getNextPosition2(position)
 
     def getNextPosition2(self, position):

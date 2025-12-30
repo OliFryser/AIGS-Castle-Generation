@@ -5,6 +5,8 @@ class DynamicCeiling:
         self.maximum = maximum
         self.floor = floor
 
+    def hitMaximum(self):
+        return self.ceiling >= self.maximum
 
     def calcValue(self, value):
         result = round(((value - self.floor)/ (self.ceiling)) * self.indecies)

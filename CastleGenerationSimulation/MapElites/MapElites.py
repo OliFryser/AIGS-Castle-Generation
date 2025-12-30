@@ -40,8 +40,8 @@ class MapElites:
         iterations: int,
         useFitnessWithCost: bool,
     ):
-        self.behaviorX = "Cost" #"West-East"
-        self.behaviorY = "Area" #"South-North"
+        self.behaviorX = "West-East" #| "Cost"
+        self.behaviorY = "South-North" #| "Area"
         self.iterations = iterations
 
         self.archive: dict[tuple[int, int], ArchiveEntry] = {}
@@ -84,9 +84,9 @@ class MapElites:
         )
 
         self.resolution = resolution
-        self.dynamicKeys = [DynamicCeiling(maximum=120), DynamicCeiling(maximum=1000)]
-        self.dynamicKeys[0].floor = 20
-        self.dynamicKeys[0].ceiling = 30
+        self.dynamicKeys = [DynamicCeiling(maximum=120), DynamicCeiling(maximum=1500)]
+        #self.dynamicKeys[0].floor = 20
+        #self.dynamicKeys[0].ceiling = 120
         self.getFitness = (
             self.getFitnessWithCost
             if useFitnessWithCost
@@ -121,8 +121,8 @@ class MapElites:
             crossover(individual, other)
 
     def getBehavior(self, state: State) -> Behaviors:
-        behaviorX = Behavior(state.cost, self.behaviorX)
-        behaviorY = Behavior(state.area, self.behaviorY)
+        behaviorX = Behavior(state.eastWestRatio, self.behaviorX)
+        behaviorY = Behavior(state.northSouthRatio, self.behaviorY)
         return Behaviors(behaviorX, behaviorY)
 
     def getKey(self, behaviors: Behaviors):
@@ -131,13 +131,21 @@ class MapElites:
             dynamicCeiling = self.dynamicKeys[i]
             behavior = behaviors.getBehaviors()[i]
             if behavior.value > dynamicCeiling.maximum:
+                #print("value", behavior.value, dynamicCeiling.maximum)
+                if dynamicCeiling.hitMaximum():
+                    return False
+                
+                print(f"hit maximum {behavior.value}")
+                dynamicCeiling.ceiling = dynamicCeiling.maximum
+                self.reShiftArchive(i)
+                behavior.value = dynamicCeiling.maximum
+                #print(behavior.value, dynamicCeiling.maximum)
                 return False
+            
             if dynamicCeiling.redefineCeiling(behavior.value):
                 self.reShiftArchive(i)
                 pass
             keyValue = dynamicCeiling.calcValue(behavior.value)
-            # this is dangerous
-            # if keyValue <= 10:
             key.append(keyValue)
         return tuple(key)
 

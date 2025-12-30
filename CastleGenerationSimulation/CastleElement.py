@@ -89,11 +89,11 @@ class MaterialBlock:
     def resetParameters(self):
         if self.materialType == MaterialType.WOOD:
             self.health = 100
-            self.damageThreshold = 1
+            self.damageThreshold = 0
             return
         if self.materialType == MaterialType.DOOR:
             self.health = 100
-            self.damageThreshold = 1
+            self.damageThreshold = 0
             return
         if self.materialType == MaterialType.GRANITE:
             self.health = 500

@@ -5,7 +5,7 @@ castleTilesFilepath: "resources/castleTiles/"
 interactive:
     castleGenerationFilepath: "resources/castleGenerationInstructions/emptyKeep.txt" # emptyKeep.txt | test4.txt
     resolution: 4
-    levelFilepath: "resources/terrainMaps/bridgedRiver2.txt" # bridgedRiver.txt | bridgedRiver2.txt | heightAndPath.txt
+    levelFilepath: "resources/terrainMaps/mountain.txt" # bridgedRiver.txt | bridgedRiver2.txt | mountain.txt
 
 mapElites:
     levelFilepath: "resources/terrainMaps/bridgedRiver2.txt"
@@ -13,17 +13,17 @@ mapElites:
     iterations: 5000
     population: 100
     resolution: 4
-    useFitnessWithCost: False
+    useFitnessWithCost: True
 
 terrainBuilder:
-    levelFilepath: "resources/terrainMaps/bridgedRiver2.txt"
+    levelFilepath: "resources/terrainMaps/mountain.txt"
     resolution: 4
     maxHeightMultiplier: 1
 
 conventionalEA:
-    levelFilepath: "resources/terrainMaps/bridgedRiver2.txt"
+    levelFilepath: "resources/terrainMaps/mountain.txt"
     archiveSavepath: "resources/archives/ConventionalEA/"
-    iterations: 200
+    iterations: 250
     population: 20
     resolution: 4
     useFitnessWithCost: True

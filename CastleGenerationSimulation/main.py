@@ -102,9 +102,14 @@ def runInteractiveMode(cfg, terrainMap, tileMap):
         if simulationStarted:
             i += 1
             simulation.step()
+        if simulation.target.isOccupied():
+            running = False
 
         renderer.render()
         pygame.display.flip()
+    
+    state = simulation.getState()
+    print(state.stepCount,state.cost,state.kills)
 
 
 if __name__ == "__main__":
