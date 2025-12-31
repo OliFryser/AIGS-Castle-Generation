@@ -1,5 +1,3 @@
-from pygame import Vector2, Vector3
-from Level import Level
 from Units.Unit import Unit
 from Utils.FSM import FSM,State
 
@@ -42,9 +40,4 @@ class Archer(Unit):
             State.ATTACK : self.rangeAttack,
             }
         pass
-
-
-    #########################
-    # transition
-    #########################
     

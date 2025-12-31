@@ -261,9 +261,6 @@ class CastleGenerator:
                     if cellElement is not None:
                         # if there is only one connection, it can be sidestepped
                         if len(cellElement.directions) <= 1:
-                            """
-                            print("move around")
-                            """
                             continue
                         # otherwise the wall in that direction will need a door
                         if side in cellElement.directions:
@@ -327,25 +324,14 @@ class CastleGenerator:
                                     position2[0],
                                     np.fliplr(block),
                                 )
-
-                            """                            
-                            for k,mb in castleElement.materialBlocks.items():    
-                                print(k,mb.materialType)
-                            print(f"built gate {side.name}")
-                            """
                     else:
                         nudge = 0
                 # eventually
                 onSide = switchSide(moveDirection, onSide)
-                #nudge = 0
                 if nudge:
                     for d in onSide:
-                        #path[n] = (path[n][0] + directionToOffset[d][0]/2, path[n][1] + directionToOffset[d][1]/2)
                         path[n] = (path[n][0] + directionToOffset[d][0]*nudge, path[n][1] + directionToOffset[d][1]*nudge)
-                """
-                print(f"switching side from {moveDirection.name} {onSide}")
-                print(directionTo)
-                """
+
 
     def clearCourtyard(self, grid):
         courtyard = (self.keepPosition[0], self.keepPosition[1] + 1)

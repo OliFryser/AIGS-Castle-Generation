@@ -74,7 +74,6 @@ class Level:
         timer = Timer("Adding castle to Node Graph")
         timer.start()
         self.addCastleNodes(self.nodeToNodeDistance)
-        #self.navigationGraph = self.nodeGraph.getAsData()
         timer.stop()
 
         # gather data
@@ -210,13 +209,9 @@ class Level:
     #####################################################
 
     def makeGraph(self, edgeCostFunc, scale: int = 1):
-        #nodeGraph = Graph()
-        #nodeGraph.graph, nodeGraph.nodes = self.createNodeGraph(edgeCostFunc, scale)
         nodeGraph = self.createNodeGraph(edgeCostFunc,scale)
         return nodeGraph
 
-    #  in an alternate universe you can look up by a tuple of x,z coordinates-> dict[tuple[float,float], dict[Node,list[Edge]]]
-    #  but the graph class was better in the end instead of a super nested dict T_T
     def createNodeGraph(self, edgeCostFunc, scale: int):
         nodeGraph = Graph()
         nodes = {}
@@ -227,13 +222,6 @@ class Level:
             for x in range(self.width // scale):
                 node = Node(Vector3(x + 0.5, self.getCell(x, y), y + 0.5))
                 nodes[node.position2] = node
-                """
-                if self.castleMap is not None:
-                    castleCell = self.castleMap[y][x]
-                    if castleCell is not None:
-                        material = castleCell.getMaterialBlockGlobal(x, y)
-                        node.setMaterialBlock(material)
-                """
                 
                 if (x,y) in self.waterMap:
                     node.setMaterialBlock(MaterialBlock(MaterialType.WATER))
@@ -241,9 +229,7 @@ class Level:
 
         for node in nodes.values():
             nodeGraph.addNode(node,edgeCostFunc)
-        """
-        print(f"Initiating node graph; level : {len(self.getLevel())} * {len(self.getLevel()[0])}, graph nodes: {len(graph.keys())}")
-        """
+       
         return nodeGraph
     
     def addCastleNodes(self, edgeCostFunc):
@@ -276,34 +262,6 @@ class Level:
     def nodeToNodeDistance(self, node0, node1):
         return node0.position.distance_to(node1.position)
 
-    def pathCostAdjustFunc(self, node0: Node, node1: Node):
-        diff = abs(node0.position.y - node1.position.y) * 10
-        return node0.position.distance_to(node1.position) + diff
-
-    def generatePath(self):
-        scale = self.scale
-        pathGraph = self.makeGraph(self.pathCostAdjustFunc, scale)
-        home = Vector3(
-            self.targetPosition.x / scale,
-            self.targetPosition.y,
-            self.targetPosition.z / scale,
-        )
-        nodePath = aStar(
-            Vector3(
-                self.width / scale / 2,
-                # 0,
-                self.getBilinearHeight(self.width / scale / 2, self.height / scale),
-                self.height / scale - 1,
-                # self.height / scale/2,
-                # 0,
-            ),
-            home,
-            pathGraph,
-        )
-        return [(int(node.position.x), int(node.position.z)) for node in nodePath] + [
-            (self.targetPosition.x, self.targetPosition.z)
-        ]
-    
     def inferPathOrder(self, path):
         point = Vector2(self.targetPosition.x,self.targetPosition.z)
         newPath = [point]
@@ -357,7 +315,6 @@ class Level:
                 ):
                     tempEnclosedNodes.append(edge.node)
                     openNodes.append(edge.node)
-                    #edge.node.unit = 1
                 if edge.node is None:
                     continue
                 # if touching an edge, don't count erea as being enclosed
@@ -372,8 +329,7 @@ class Level:
                     edge.node not in tmpGates
                     and edge.node.materialBlock is not None
                     and edge.node.materialBlock.materialType == MaterialType.DOOR
-                    #and edge.node.materialBlock.castleElement is not None
-                    #and edge.node.materialBlock.castleElement.elementType is ElementType.GATE
+                    
                 ):
                     tmpGates.append(edge.node.position)
 

@@ -1,34 +1,9 @@
-import random
 from pygame import Vector3
 from queue import PriorityQueue
 from Utils.Node import Node, Edge, Graph
 import numpy as np
-from CastleElement import MaterialType
 
-
-# get as node on Graph 2 gets the 3 closest nodes by distance
-def getAsNodeOnGraph2(
-    startPosition: Vector3, graph: dict[Node, list[Edge]], tmpNodes, unit, ignoreNodes
-):
-    node = Node(startPosition)
-    if node in graph:
-        return node
-    positions = sorted(
-        graph.keys(),
-        key=lambda node: node not in ignoreNodes
-        and node.position.distance_to(startPosition),
-    )[:5]
-    edges = []
-    for tmpNode in positions:
-        graph[tmpNode].append(Edge(node, tmpNode.position.distance_to(node.position)))
-        tmpEdge = Edge(tmpNode, node.position.distance_to(tmpNode.position))
-        edges.append(tmpEdge)
-
-    graph[node] = edges
-    tmpNodes.append(node)
-    return node
-
-# get as node on graph gets the four closest nodes directly from the graph
+# get as node on graph gets the four closest nodes directly from the graph and attaches a temporary node
 def getAsNodeOnGraph(startPosition: Vector3, graph: Graph, tmpNodes, unit, ignoreNodes):
     node = Node(startPosition)
     if node in graph.graph:
@@ -97,16 +72,11 @@ def aStar(
     getFirstofType=None,
 ):
     graph = nodeGraph.graph
-    # pprint(graph.values())
     tmpNodes = []
 
     startNode = getAsNodeOnGraph(startPosition, nodeGraph, tmpNodes, unit, ignoreNodes)
     targetNode = getAsNodeOnGraph(targetPosition, nodeGraph, tmpNodes, unit, ignoreNodes)
-    """
-    print(startPosition,startNode,targetNode)
-    startNode = nodeGraph.getNodeFromPosition(startPosition)
-    targetNode = nodeGraph.getNodeFromPosition(targetPosition)
-    """
+
     # distances is for storing the shortest distance to node
     distances: dict[Node, float] = {startNode: 0.0}
     open_nodes = PriorityQueue()
@@ -123,32 +93,20 @@ def aStar(
     incomming_nodes = {}
 
     while open_nodes.not_empty:
-        # we only really need the next node
         _, r, currentNode = open_nodes.get()
-        
-        """
-        if (currentNode.unit is not None and currentNode.unit is not unit):
-            print(f" unit {currentNode.unit}, {unit}")
-            print(f"price {distances[currentNode]}")
-        """
 
         if currentNode in ignoreNodes:
             print("this should have been ignored")
 
-        # if the next node is the target node the path has been set
         if distances[currentNode] > budget:
-            #print(f"could not find path within budget {distances[currentNode], len(distances.keys())}")
-            # print(currentNode.unit, currentNode.materialBlock.materialType)
             break
 
+        # if the next node is the target node the path has been set
         if currentNode == targetNode or (
             getFirstofType is not None
             and currentNode.materialBlock is not None
             and getFirstofType == currentNode.materialBlock.materialType
         ):
-            """
-            print(f"{unit.getAsData()} found path, cost {distances[currentNode]}")
-            """
 
             # backtrak to reconstruct path
             path = []
@@ -165,11 +123,6 @@ def aStar(
         for edge in graph[currentNode]:
             # cost is calculated here
             cost = costAdjustFunc(currentNode, edge)
-            """
-            if cost > 200:
-                print(cost)
-                #continue
-            """
 
             new_distance = distances[currentNode] + cost
 
@@ -187,8 +140,4 @@ def aStar(
 
     return []
 
-
-def slopeAnglePercentage(distance: float, height0: float, height1: float) -> float:
-    deltaHeight = height0 - height1
-    return distance / np.sqrt(distance * distance + deltaHeight * deltaHeight)
 

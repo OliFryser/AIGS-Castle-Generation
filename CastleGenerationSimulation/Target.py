@@ -1,5 +1,4 @@
 from Level import Level
-from Team import Team
 from Units.Unit import Unit
 
 class Target:
