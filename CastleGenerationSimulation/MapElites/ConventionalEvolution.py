@@ -50,7 +50,6 @@ class ConventionalEvolution(MapElites):
         rand = random.random()
         if rand > 0.8:
             crossover(individual, other)
-            # trueCrossover(individual,other)
         elif rand > 0.6:
             remove(individual)
         elif rand > 0.3:
@@ -115,8 +114,7 @@ class ConventionalEvolution(MapElites):
                 record.individual for record in records[:selectionSize]
             ] + selection[:eliteSize]
             print(records[0].fitness)
-            #if records[0].fitness > 1000:
-            #    break
+           
             self.plotter.addRecord(PlotRecord(records[0].fitness, 0, 0))
 
         population = population + selection
@@ -137,7 +135,6 @@ class ConventionalEvolution(MapElites):
         simulation.reset()
 
         outerTimer.stop()
-        # self.plotter.plotCoverage()
 
         self.plotter.plotMaxFitness()
         self.saveArchiveToJSON()

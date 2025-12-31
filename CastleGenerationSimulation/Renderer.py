@@ -45,16 +45,10 @@ class Renderer:
 
                     rect = pygame.Rect(x * cellSize, y * cellSize, cellSize, cellSize)
                     pygame.draw.rect(self.screen, color, rect)
-                    
-                    """
-                    if node.materialBlock.materialType is MaterialType.SANDSTONE:
-                        rect0 = pygame.Rect(x * cellSize, y * cellSize, cellSize, cellSize)
-                        pygame.draw.rect(self.screen, (53, 46, 33), rect0, 1)
-                    """
-                        
-                
-                """
+
+                                        
                 #for unit debugging
+                """
                 if node.unit is not None:
                     color = (255, 0, 0)
                     rect = pygame.Rect(x * cellSize, y * cellSize, cellSize, cellSize)
@@ -88,7 +82,6 @@ class Renderer:
             self.screen,
             (0, 0, 0),
             self.modelToViewSpace(unit.position),
-            # 5,
             unit.size
             * self.resolution
             * (1 + (unit.position[1] / self.simulation.level.maxHeight)),
@@ -106,8 +99,8 @@ class Renderer:
             * self.resolution
             * (1 + (unit.position[1] / self.simulation.level.maxHeight))
             + 1,
-            # 7,
         )
+        # path printing optional
         """
         if unit.path and len(unit.path) > 1:
             pygame.draw.lines(

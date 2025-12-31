@@ -4,9 +4,6 @@ from Target import Target
 from Level import Level
 from InitializationParameters import InitializationParameters
 from Team import Team
-from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
-from threading import Semaphore
-
 
 @dataclass
 class State:
@@ -51,8 +48,7 @@ class Simulation:
         self.target.enemies = self.attacker.units
 
         self.defender.addArchersToTowers()
-        """
-        """
+        
         for n in range(8 + len(self.defender.units)):
             self.attacker.addAxeman()
 
@@ -65,30 +61,13 @@ class Simulation:
 
 
     def step(self):
-        # step accomodating the threading
-        # should be run specifically for the non-rendered runs as it doesn't really matter with the render slow-down
-        """
-        if self.attackersAreAllPlanning():
-            print("all planning")
-            return
-        """
 
         for unit in self.getUnits():
             unit.step()
 
-        # Node unit sanity check, should not be run, it is expensive
-        """
-        n = 0
-        for node in self.level.nodeGraph.graph.keys():
-            if node.unit is not None:
-                n +=1
-        if len(self.getUnits()) > n:       
-            print(f"Sanity check failed {n, len(self.getUnits())}")
-        """
         while len(self.attacker.units) < self.noAttackers:
                 self.kills +=1
                 """
-                print(f"kill! {self.kills}")
                 #respawn attackers
                 self.attacker.addAxeman()
                 """
@@ -116,41 +95,16 @@ class Simulation:
         return state
 
     def runSimulation(self):
-        n = 0
-
-        #self.sanityCheck("start ")
         while not self.target.isOccupied():
             
-            # if all attackers are planning... the game can run "amok" while they are waiting for threads
-            # this should make the simulation slightly more deterministic
-            if self.attackersAreAllPlanning():
-                # print(f"all planning consecutive: {n}")
-                n += 1
-                # usually pathfinding shouldnt be stuck for more than 10 consecutive steps processor dependant
-                if n > 10000:
-                    print("no one could find a path")
-                    self.stepCount = 0
-                    return
-                continue
             self.step()
-            n = 0
             if self.attacker.units == []:
                 #self.stepCount = 2000
-                print("wipeout")
                 break
             if self.stepCount > 40000:
                 self.stepCount = 10000
-                print("step Break")
                 break        
-       #self.sanityCheck("end ")
 
-    def attackersAreAllPlanning(self):
-        for u in self.attacker.units:
-            f = u.future
-            if f is None or f.done():
-                # this unit is NOT planning
-                return False
-        return True
 
     def getMaxBlocks(self):
         return self.level.maxBlocks
@@ -172,7 +126,6 @@ class Simulation:
         # units might hold on to eachother and dodge the garbage collector along with nodes and level and all that jazz
         self.clearUnits()
         self.level.clearCastle()
-        #self.sanityCheck(" reset ")
 
     def getTowerAmount(self):
         return self.level.getTowers()

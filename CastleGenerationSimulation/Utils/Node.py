@@ -108,7 +108,6 @@ class Graph:
             tmp = self.nodes[toBeRemoved.position2]
             del self.nodes[toBeRemoved.position2]
             tmp.destroy()
-        #tmp.printRefs()
 
     def getNodeFromPosition(self, position: Vector3):
         nodeid = (np.floor(position.x)+0.5, np.floor(position.z) +0.5)
@@ -133,18 +132,10 @@ class Graph:
         west = (toBeAdded.position.x - 1, toBeAdded.position.z)
         south = (toBeAdded.position.x, toBeAdded.position.z + 1)
         north = (toBeAdded.position.x, toBeAdded.position.z - 1)
-        #northEast = (east[0], north[1])
-        #northWest = (west[0], north[1])
-        #southEast = (east[0], south[1])
-        #southWest = (west[0], south[1])
         for cardinalNode in [
             east,
             west,
             north,
-            #northEast,
-            #northWest,
-            #southEast,
-            #southWest,
             south,
         ]:
             if cardinalNode in self.nodes:

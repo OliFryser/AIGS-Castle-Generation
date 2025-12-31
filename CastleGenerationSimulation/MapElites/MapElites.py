@@ -85,8 +85,7 @@ class MapElites:
 
         self.resolution = resolution
         self.dynamicKeys = [DynamicCeiling(maximum=120), DynamicCeiling(maximum=1500)]
-        #self.dynamicKeys[0].floor = 20
-        #self.dynamicKeys[0].ceiling = 120
+
         self.getFitness = (
             self.getFitnessWithCost
             if useFitnessWithCost
@@ -131,7 +130,6 @@ class MapElites:
             dynamicCeiling = self.dynamicKeys[i]
             behavior = behaviors.getBehaviors()[i]
             if behavior.value > dynamicCeiling.maximum:
-                #print("value", behavior.value, dynamicCeiling.maximum)
                 if dynamicCeiling.hitMaximum():
                     return False
                 
@@ -139,7 +137,6 @@ class MapElites:
                 dynamicCeiling.ceiling = dynamicCeiling.maximum
                 self.reShiftArchive(i)
                 behavior.value = dynamicCeiling.maximum
-                #print(behavior.value, dynamicCeiling.maximum)
                 return False
             
             if dynamicCeiling.redefineCeiling(behavior.value):
@@ -202,15 +199,10 @@ class MapElites:
         simulation = None
 
     def garbageCheck(self):
-        # Garbage check!
         gc.collect()
         types = Counter(type(obj) for obj in gc.get_objects())
         print(types.most_common(5))
 
-        """
-            count = sum(1 for o in gc.get_objects() if isinstance(o, Node))
-            print(f"Iteration {i+1}: {count} instances of Node")
-            """
 
     def runSimulation(self, simulation: Simulation, individual: InstructionTree):
         simulation.prepare(individual)

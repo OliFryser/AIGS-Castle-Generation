@@ -5,10 +5,7 @@ from Utils.FSM import State
 from Utils.PathFinding import aStar
 from Utils.Node import Node, Edge, Graph
 from CastleElement import MaterialType
-import time
-import uuid
 import numpy as np
-
 
 class Unit:
     def __init__(
@@ -50,8 +47,6 @@ class Unit:
         self.inMelee = None
         self.attackCoolDown = False
         self.future = None
-        self.id = uuid.uuid1()
-        # self.navGraph = level.navigationGraph
         # place on grid
         self.node = self.nodeGraph.getNodeFromPosition(self.position)
         if self.node is not None:
@@ -62,17 +57,6 @@ class Unit:
         self.initFSM()
 
     def step(self):
-        """
-        if self.future and self.future.done():
-            path = self.future.result()
-            #self.path = list(self.nodeGraph.nodes[pos2] for pos2 in path)
-            if self.alive:
-                self.path = path
-            self.future = None
-
-        if self.future is not None:
-            return
-        """
         if self.fsm is not None:
             self.fsm.updateState()
             state = self.fsm.getState()
@@ -82,17 +66,16 @@ class Unit:
 
     def takeDamage(self, damage):
         self.health -= damage
-        # print(f"take damage {self.health}")
         if self.health < 1:
             self.die()
             return True
         return False
 
     def die(self):
-        # print(f"unit {self} died:")
         self.alive = False
         self.nodeGraph.getNodeFromPosition(self.position).clearUnit()
-        self.node.clearUnit()
+        if self.node is not None:
+            self.node.clearUnit()
         self.nodeGraph = None
         self.level = None
         self.position = None
@@ -108,7 +91,7 @@ class Unit:
         self.fsm = None
         self.navGraph = None
         self.node = None
-        if self in self.teamMates:
+        if self.teamMates is not None and self in self.teamMates:
             self.teamMates.remove(self)
         self.teamMates = None
 
@@ -323,22 +306,18 @@ class Unit:
 
     def wait(self):
         self.count -= 1
-        # print(self.count)
         pass
 
-    def planPathInner(self, toType=None):
-        raise NotImplementedError
-
-    def planPath(self, target):
-        pass
-
-    def cpu_work(self, n=10_000_000):
-        s = 0
-        for i in range(n):
-            s += i  # CPU-bound, holds GIL
-
-    def sleep_work(self, sec=0.05):
-        time.sleep(sec)  # releases GIL
+    def planPath(self):
+        self.path = aStar(
+            self.position,
+            self.target,
+            self.nodeGraph,
+            costAdjustFunc=self.moveCostAdjust,
+            ignoreNodes=self.nodesToSkip,
+            unit=self,
+            budget=self.level.height * 2 + 100,
+        )
 
     def goToTarget(self):
         if self.notHasPlan():
