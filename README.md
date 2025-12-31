@@ -1,5 +1,7 @@
 # AIGS-Castle-Generation
 
+This project implements a castle builder and combat simulation, as well as two evolutionary algorithms that can generate new castles.
+
 ## Installation
 
 We use conda for managing the python environment. We have provided the configuration file ``environment.yml`` for easy installation. We have dubbed our environment "fortify".
@@ -8,33 +10,16 @@ We use conda for managing the python environment. We have provided the configura
 2. Run ``conda env create -f environment.yml`` or ``conda env update -f environment.yml``, if you have already created the environment.
 3. Run ``conda activate fortify``.
 
-## TODO for map elite
 
-### TODO Oliver
-- Implement crossover and removing ✅
-- Implement random variation between variations ✅
-- Implement better initial sampling with different mutation weights ✅
-- Plotting of MaxFitness, coverage and QD-score ✅
-- Plotting of archive ✅
-- Restrict agent to "buildable area" ✅
+## Running the simulation
 
-- Loading from archive
-- Saving during MapElites run
+Run the simulation from the ``CastleGenerationSimulation`` folder, to ensure all relative paths work as intended. Use a conda shell and write ``python main.py``.
 
-### TODO Jakob
-- Better performance for pathfinding
-- Better AI FSM
-- Implement Archer unit
-- Profiling of simulation
+Through the file ``CastleGenerationSimulation\conf\config.yaml``, the user can specify the ``mode`` to run the simulation in. We support four modes:
 
+- interactive: The combat simulation. Click *space* to start the simulation.
+- mapElites: The mapElites runner.
+- conventionalEA: The conventional evolutionary algorithm.
+- terrainBuilder: A tool for editing terrain maps. Basic heightmaps can be generated with ``HelperScripts/LevelGenerator/main.py``
 
-## Supervision
-
-- Hard max for block behavior to limit infinite growth
-- Removing block behavior may converge to just infinite growth
-- Adding more enemy units per tower - essentially scaling defense vs. attacking units
-  
-- Baseline algorithm: Traditional EA - Do you have a good reference for this?
-
-Multi objective mapelite
-Multi emitter Map elite
+Each of the modes have their own configuration options as well. They should be fairly intuitive.
